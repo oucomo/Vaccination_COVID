@@ -8,4 +8,10 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+## Task
+
+* Merge data from all provinces
+* Check
+    + Consistency between date of birth & date of vaccination (date of vaccination >= date of birth)
+    + Check for duplication
+    + Make sure name of vaccines are consistent
