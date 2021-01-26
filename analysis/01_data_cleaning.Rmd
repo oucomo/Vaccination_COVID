@@ -1,0 +1,15 @@
+---
+title: "Data Cleaning"
+date: " 2020-01-26 (update: `r Sys.Date()`)"
+output:
+    html_document:
+      theme: cerulean
+      toc: yes
+      toc_float: yes
+editor_options:
+  chunk_output_type: console
+---
+
+## Merge data
+
+## Check data
