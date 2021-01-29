@@ -1,0 +1,98 @@
+---
+title: "Cleaning vaccine registry"
+author: |
+  |
+  | DSMB statistician: 
+  | Code preparation: Duc Du
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  word_document:
+    toc: yes
+  pdf_document:
+    includes:
+      in_header: header.tex
+    number_sections: yes
+    toc: yes
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+geometry: margin=2cm
+editor_options: 
+  chunk_output_type: inline 
+---
+
+```{r setup, include=FALSE, results="hide"}
+rm(list = ls()) #clear everything up before work.
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+options(tinytex.verbose = TRUE)
+
+library(readxl)
+library(xlsx)
+library(psych)
+library(tidyverse)
+library(magrittr)
+library(ggplot2)
+library(reshape2)
+library(lubridate)
+library(kableExtra)
+library(huxtable)
+library(stringr)
+library(dplyr)
+library(tibble)
+library(data.table)
+library(plyr)
+
+join_all <- plyr::join_all
+mutate <- dplyr::mutate
+select <- dplyr::select
+filter <- dplyr::filter
+recode <- dplyr::recode
+rename <- dplyr::rename
+```
+
+```{r merge_dataset}
+#setwd("D:/All")
+
+file.list <- list.files(pattern='*.xlsx')
+df.list <- lapply(file.list, read_excel)
+
+final.df <- rbind.fill(df.list)
+
+df <- final.df %>%
+  rename(
+    pid = "MA_DOI_TUONG",
+    province = "TENTINH",
+    district = "TENHUYEN",
+    commune = "TENXA",
+    dob = "NGAY_SINH",
+    sex = "GIOI_TINH",
+    vacname = "TEN_VACXIN",
+    vacdate = "NGAY_TIEM"
+  ) %>% as.data.frame() %>%
+  write.csv2("../vaccine.csv", quote = FALSE, row.names = FALSE)
+saveRDS(df, "../vaccine.rds")
+```
+
+```{r read_dataset}
+require(data.table)
+vaccine <- fread("vaccine.csv", header = T)
+```
+
+```{r checkid}
+library(dplyr)
+df <- vaccine %>% group_by(pid) %>% mutate(vid = row_number()) %>% as.data.frame()
+#df %>% group_by(pid) %>% dplyr::mutate(vid = 1:n())
+
+dupsID = df %>%
+  mutate(
+    pid = as.numeric(pid),
+    vid = as.numeric(vid),
+    id = pid*100+vid,
+    id = as.numeric(id)
+  ) %>%
+  group_by(id, ) %>%
+  distinct(.keep_all = TRUE) %>%
+  group_by(id) %>%
+  filter(n() == 1)
+```
