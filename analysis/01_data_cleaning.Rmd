@@ -49,6 +49,8 @@ for (i in c(1:length(files2))) {
 library(lubridate)
 dat$NGAY_SINH <- dmy(dat$NGAY_SINH)
 dat$NGAY_TIEM <- dmy(dat$NGAY_TIEM)
+
+### save
 saveRDS(dat, file = file.path("..", "tuann349_vad", "alldat.rds"))
 fwrite(x = dat, file = file.path("..", "tuann349_vad", "alldat.csv"))
 ```

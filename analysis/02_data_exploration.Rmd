@@ -9,3 +9,10 @@ output:
 editor_options:
   chunk_output_type: console
 ---
+
+## Quick look at BG
+
+```{r}
+dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
+BG <- dat[TENTINH == "Bac Giang"]
+```
