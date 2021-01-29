@@ -12,4 +12,48 @@ editor_options:
 
 ## Merge data
 
+```{r}
+data_path <- file.path("..", "tuann349")
+
+## list all files
+files <- list.files(path = data_path, recursive = TRUE)
+
+## convert to .csv files
+dir.create(path = file.path("..", "tuann349_csv"))
+library(readxl)
+for (i in c(1:length(files))) {
+  dati <- read_excel(path = file.path(data_path, files[i]), sheet = 1)
+  
+  namei <- gsub(pattern = " |/|[.xlsx]|[.xls]",
+                x = stringi::stri_trans_general(files[i], "Latin-ASCII"),
+                replacement = "")
+  write.csv(dati, file = file.path("..", "tuann349_csv", paste0(namei, ".csv")))
+}
+
+## combind .csv files
+dir.create(path = file.path("..", "tuann349_vad"))
+library(data.table)
+files2 <- list.files(path = file.path("..", "tuann349_csv"))
+dat <- NULL
+for (i in c(1:length(files2))) {
+  cat(i, "\n")
+  dati <- fread(file = file.path("..", "tuann349_csv", files2[i]), integer64 = "character")
+  dati$TENTINH <- stringi::stri_trans_general(dati$TENTINH, "Latin-ASCII")
+  dati$TENHUYEN <- stringi::stri_trans_general(dati$TENHUYEN, "Latin-ASCII")
+  dati$TENXA <- stringi::stri_trans_general(dati$TENXA, "Latin-ASCII")
+  dati$TEN_VACXIN <- stringi::stri_trans_general(dati$TEN_VACXIN, "Latin-ASCII")
+  dat <- rbindlist(l = list(dat, dati))
+}
+
+### format date
+library(lubridate)
+dat$NGAY_SINH <- dmy(dat$NGAY_SINH)
+dat$NGAY_TIEM <- dmy(dat$NGAY_TIEM)
+
+### save
+saveRDS(dat, file = file.path("..", "tuann349_vad", "alldat.rds"))
+fwrite(x = dat, file = file.path("..", "tuann349_vad", "alldat.csv"))
+```
+
+
 ## Check data
