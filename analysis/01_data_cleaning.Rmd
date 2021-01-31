@@ -1,6 +1,6 @@
 ---
 title: "Data Cleaning"
-date: " 2020-01-26 (update: `r Sys.Date()`)"
+date: " 2021-01-26 (update: `r Sys.Date()`)"
 output:
     html_document:
       theme: cerulean
@@ -27,20 +27,47 @@ data_path <- file.path("..", "tuann349_vad")
 dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
 ```
 
-
 ## Check data
 
 ### Data duplication
 
 ### Dates mismatch
+
+#### Date of vaccination before 2017-01-01
+
 ```{r}
-dat$ddif <- (dat$NGAY_TIEM - dat$NGAY_SINH)/ddays(1)
+error1 <- dat[vacdate < ymd("2017-01-01")]
+error1$type <- "Date of vaccination before 2017-01-01"
+nrow(error1)
+range(error1$vacdate)
+table(error1$province)
+```
 
-tmp <- dat[ddif < 0]
-id <- unique(tmp$MA_DOI_TUONG)
+#### Date of vaccination after 2021-01-26
 
-tmp2 <- dat[MA_DOI_TUONG %in% id]
-tmp3 <- tmp2[order(TENTINH, MA_DOI_TUONG)]
-barplot(table(tmp3$NGAY_TIEM))
+```{r}
+error2 <- dat[vacdate >= ymd("2021-01-26")]
+error2$type <- "Date of vaccination after 2021-01-26"
+nrow(error2)
+range(error2$vacdate)
+table(error2$province)
+```
+
+#### Date of vaccination before date of birth
+
+```{r}
+error3 <- dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2021-01-26")) & (vacdate < dob)]
+error3$type <- "Date of vaccination before date of birth"
+nrow(error3)
+table(error3$province)
+```
+
+#### Export list of errors
+
+```{r}
+error <- rbindlist(l = list(error1[, .(pid, file, dob, vacdate, type)], 
+                            error2[, .(pid, file, dob, vacdate, type)],
+                            error3[, .(pid, file, dob, vacdate, type)]))
+fwrite(x = error, file = file.path(data_path, "error_datetime.csv"))
 ```
 
