@@ -1,5 +1,3 @@
-# Vaccination_COVID
+# Vaccination and COVID
 
-A [workflowr][] project.
-
-[workflowr]: https://github.com/jdblischak/workflowr
+A research project on impact of COVID-19 on mass vaccination in Vietnam.
