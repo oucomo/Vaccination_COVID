@@ -10,50 +10,37 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Merge data
+## Import and merge data
 
 ```{r}
-data_path <- file.path("..", "tuann349")
+#source(file.path("code", "01_import_merge.R"))
+```
 
-## list all files
-files <- list.files(path = data_path, recursive = TRUE)
+## Load data
 
-## convert to .csv files
-dir.create(path = file.path("..", "tuann349_csv"))
-library(readxl)
-for (i in c(1:length(files))) {
-  dati <- read_excel(path = file.path(data_path, files[i]), sheet = 1)
-  
-  namei <- gsub(pattern = " |/|[.xlsx]|[.xls]",
-                x = stringi::stri_trans_general(files[i], "Latin-ASCII"),
-                replacement = "")
-  write.csv(dati, file = file.path("..", "tuann349_csv", paste0(namei, ".csv")))
-}
-
-## combind .csv files
-dir.create(path = file.path("..", "tuann349_vad"))
+```{r}
 library(data.table)
-files2 <- list.files(path = file.path("..", "tuann349_csv"))
-dat <- NULL
-for (i in c(1:length(files2))) {
-  cat(i, "\n")
-  dati <- fread(file = file.path("..", "tuann349_csv", files2[i]), integer64 = "character")
-  dati$TENTINH <- stringi::stri_trans_general(dati$TENTINH, "Latin-ASCII")
-  dati$TENHUYEN <- stringi::stri_trans_general(dati$TENHUYEN, "Latin-ASCII")
-  dati$TENXA <- stringi::stri_trans_general(dati$TENXA, "Latin-ASCII")
-  dati$TEN_VACXIN <- stringi::stri_trans_general(dati$TEN_VACXIN, "Latin-ASCII")
-  dat <- rbindlist(l = list(dat, dati))
-}
-
-### format date
 library(lubridate)
-dat$NGAY_SINH <- dmy(dat$NGAY_SINH)
-dat$NGAY_TIEM <- dmy(dat$NGAY_TIEM)
+library(tidyverse)
 
-### save
-saveRDS(dat, file = file.path("..", "tuann349_vad", "alldat.rds"))
-fwrite(x = dat, file = file.path("..", "tuann349_vad", "alldat.csv"))
+data_path <- file.path("..", "tuann349_vad")
+dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
 ```
 
 
 ## Check data
+
+### Data duplication
+
+### Dates mismatch
+```{r}
+dat$ddif <- (dat$NGAY_TIEM - dat$NGAY_SINH)/ddays(1)
+
+tmp <- dat[ddif < 0]
+id <- unique(tmp$MA_DOI_TUONG)
+
+tmp2 <- dat[MA_DOI_TUONG %in% id]
+tmp3 <- tmp2[order(TENTINH, MA_DOI_TUONG)]
+barplot(table(tmp3$NGAY_TIEM))
+```
+

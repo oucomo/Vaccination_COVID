@@ -16,3 +16,4 @@ editor_options:
 dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
 BG <- dat[TENTINH == "Bac Giang"]
 ```
+
