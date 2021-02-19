@@ -14,6 +14,7 @@ editor_options:
 
 ```{r}
 #source(file.path("code", "01_import_merge.R"))
+#source(file.path("code", "01_import_merge (win).R")) # for Windows version
 ```
 
 ## Load data
@@ -22,6 +23,9 @@ editor_options:
 library(data.table)
 library(lubridate)
 library(tidyverse)
+library(dplyr)
+
+mutate <- dplyr::mutate
 
 data_path <- file.path("..", "tuann349_vad")
 dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
@@ -30,6 +34,28 @@ dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
 ## Check data
 
 ### Data duplication
+
+```{r}
+## To increase the storage capacity
+memory.limit(size=60000)
+
+dupsID = dat %>%
+  group_by(pid, vacdate, vacname) %>%
+  distinct(.keep_all = TRUE) %>%
+  group_by(pid, vacdate, vacname) %>%
+  filter(n() == 1)
+
+dat$check = dat$pid %in% dupsID$pid
+nodups <- dat[check==TRUE]
+dups <- dat[check==FALSE]
+dups$type <- "Have a same vaccine in a same date in different provinces"
+nrow(dups)
+range(dups$vacdate)
+table(dups$province)
+
+dups_error <- dups[, .(pid, file, dob, vacname, vacdate, type)]
+fwrite(x = dups_error, file = file.path(data_path, "error_duplicate.csv"))
+```
 
 ### Dates mismatch
 

@@ -21,33 +21,66 @@ library(gtsummary)
 
 ## Quick look at babies
 
+```{r}
+#child <- readRDS(file = file.path("..", "tuann349_vad", "child.rds"))
+#child$year <- year(child$dob)
+#child$month <- month(child$dob)
+#
+#child_overall <- child[, .N, by = .(year, month)]
+#child_province <- child[, .N, by = .(year, month, province)]
+#child_sex <- child[, .N, by = .(year, month, sex)]
+#child_province_sex <- child[, .N, by = .(year, month, province, sex)]
+# 
+#save(child_overall, child_province, child_sex, child_province_sex, file = file.path("..", "tuann349_vad", "child.Rdata"))
+#
+#tab_child_sum <- tbl_summary(child[year >= 2017 & year <= 2020, .(province, sex, factor(year))])
+#
+#save(tab_child_sum, file = file.path("..", "tuann349_vad", "tab_child.Rdata"))
+```
+
 ## Quick look at vaccine shots
 
 ```{r}
-vaccine_vad <- readRDS(file = file.path("..", "tuann349_vad", "vaccine_vad.rds"))
-vaccine_overall <- vaccine_vad[, .N, by = .(vacyear, vacmonth)]
-vaccine_province <- vaccine_vad[, .N, by = .(vacyear, vacmonth, province)]
-vaccine_vacname <- vaccine_vad[, .N, by = .(vacyear, vacmonth, vacname2)]
-vaccine_province_vacname <- vaccine_vad[, .N, by = .(vacyear, vacmonth, province, vacname2)]
-save(vaccine_overall, vaccine_province, vaccine_vacname, vaccine_province_vacname, file = file.path("..", "tuann349_vad", "vaccine.Rdata"))
-
-tab_vac_sum <- tbl_summary(vaccine_vad[vacyear >= 2017 & vacyear <= 2020, .(province, vacname2, factor(vacyear))])
-save(tab_vac_sum, file = file.path("..", "tuann349_vad", "tab_vaccine.Rdata"))
+# vaccine_vad <- readRDS(file = file.path("..", "tuann349_vad", "vaccine_vad.rds"))
+# vaccine_overall <- vaccine_vad[, .N, by = .(vacyear, vacmonth)]
+# vaccine_province <- vaccine_vad[, .N, by = .(vacyear, vacmonth, province)]
+# vaccine_vacname <- vaccine_vad[, .N, by = .(vacyear, vacmonth, vacname2)]
+# vaccine_province_vacname <- vaccine_vad[, .N, by = .(vacyear, vacmonth, province, vacname2)]
+# save(vaccine_overall, vaccine_province, vaccine_vacname, vaccine_province_vacname, file = file.path("..", "tuann349_vad", "vaccine.Rdata"))
+# 
+# tab_vac_sum <- tbl_summary(vaccine_vad[vacyear >= 2017 & vacyear <= 2020, .(province, vacname2, factor(vacyear))])
+# save(tab_vac_sum, file = file.path("..", "tuann349_vad", "tab_vaccine.Rdata"))
 ```
 
 ```{r}
 load(file.path("..", "tuann349_vad", "vaccine.Rdata"))
 load(file.path("..", "tuann349_vad", "tab_vaccine.Rdata"))
+
+load(file.path("..", "tuann349_vad", "child.Rdata"))
+load(file.path("..", "tuann349_vad", "tab_child.Rdata"))
 ```
 
 ### Descriptive table
 
 ```{r}
 tab_vac_sum
+tab_child_sum
 ```
 
 
 ### Overall
+
+```{r}
+ggplot(data = child_overall[year >= 2017 & year <= 2020], aes(x = factor(month), y = N/1000, color = factor(year))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = year), size = 1.5) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of babies born (x 10^3)", breaks = seq(from = 50, to = 100, by = 10)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of babies born by month and year")
+```
 
 ```{r}
 ggplot(data = vaccine_overall[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = N/1000, color = factor(vacyear))) +
@@ -63,6 +96,20 @@ ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, hei
 ```
 
 ### By province
+
+```{r}
+ggplot(data = child_province[year >= 2017 & year <= 2020], aes(x = factor(month), y = N/1000, color = factor(year))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
+  geom_point() +
+  geom_line(aes(group = year)) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of babies born (x 10^3)") +
+  scale_color_discrete(name = "Year") +
+  facet_wrap(~ province, scale = "free_y") +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  ggtitle("Number of vaccination babies born in each province by month and year")
+```
 
 ```{r}
 ggplot(data = vaccine_province[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = N/1000, color = factor(vacyear))) +
