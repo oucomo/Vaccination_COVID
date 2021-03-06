@@ -154,32 +154,6 @@ gg<- ggplot(data = vaccine_overall[vacyear >= 2017 & vacyear <= 2020], aes(x = f
 
 gg + stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5)
 ```
-```{r}
-ggplot(data = vaccine_delay[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y=vacdelay, color = factor(vacyear))) +
-  geom_line() +
-  facet_wrap(~ vacyear) +
-  theme_bw()
-  
-+
-  geom_histogram() +
-
-
-
-+
-  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
-  geom_point(size = 3) +
-  geom_line(aes(group = vacyear), size = 1.5) +
-  scale_x_discrete(name = "Month") +
-  geom_smooth() +
-  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5) +
-  scale_y_continuous(name = "Number of shot (x 10^3)", breaks = seq(from = 50, to = 1100, by = 100)) +
-  scale_color_discrete(name = "Year") +
-  theme_bw() +
-  ggtitle("Total number of vaccination shot by month and year")
-#ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
-
-gg + stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5)
-```
 
 ```{r}
 ggplot(vaccine_overall[vacyear >= 2017 & vacyear <= 2020], aes(vacmonth, N/1000, color = factor(vacyear))) +
@@ -292,6 +266,7 @@ ggplot(data = vaccine_province_vacname[vacyear >= 2017 & vacyear <= 2020 & provi
 
 ```{r}
 measle <- readRDS(file = file.path("..", "..", "tuann349_vad", "measle.rds"))
+measle$vacweek <- week(measle$vacdate)
 
 mea <- measle[, .N, by = .(vacyear, vacmonth, vacdelay, vacname2)]
 mea2 <- measle[, .N, by = .(vacyear, vacmonth, vacweek, vacdelay, vacname2)]
@@ -302,13 +277,11 @@ mea2 <- measle[, .N, by = .(vacyear, vacmonth, vacweek, vacdelay, vacname2)]
 ```{r}
 ggplot(data = mea[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = vacdelay, color = factor(vacyear))) +
   geom_point() +
-  facet_grid(vacname2~ vacyear)
-  
-  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
-  geom_point(size = 3) +
-  geom_line(aes(group = vacyear), size = 1.5) +
+  facet_grid(vacname2~ vacyear) +
+  #geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
+  #geom_line(aes(group = vacyear), size = 1.5) +
   scale_x_discrete(name = "Month") +
-  scale_y_continuous(name = "Number of shot (x 10^3)", breaks = seq(from = 50, to = 1100, by = 100)) +
+  scale_y_continuous(name = "Number of shot (x 10^3)", breaks = seq(from = -20, to = 60, by = 20)) +
   scale_color_discrete(name = "Year") +
   theme_bw() +
   ggtitle("Total number of vaccination shot by month and year")
