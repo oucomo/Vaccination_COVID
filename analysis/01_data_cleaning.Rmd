@@ -105,6 +105,8 @@ fwrite(x = error, file = file.path(data_path, "error_datetime.csv"))
 load(file.path("..", "tuann349_vad", "vacinfo.Rdata"))
 names(vacinfo) <- c("vacname2", "epi", "shot", "start")
 
+memory.limit(size=60000)
+
 tmp1 <- merge(dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2021-01-26")) & (vacdate >= dob) & (!vacname %in% c("BKT 0,1ml tu khoa (BCG)", "BKT 0.1ml (BCG)", "BKT 0.5 ml", "BKT 1 ml", "BKT 5 ml")), .(pid, province, district, commune, sex, dob, vacname, vacdate)],
               vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
 tmp2 <- tmp1[!is.na(vacname2)] %>%

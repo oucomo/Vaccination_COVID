@@ -8,7 +8,7 @@ output:
       toc_float: yes
       keep_md: yes
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r}
@@ -23,42 +23,55 @@ library(gtsummary)
 ## Quick look at babies
 
 ```{r}
-#child <- readRDS(file = file.path("..", "tuann349_vad", "child.rds"))
+#child <- readRDS(file = file.path("..", "..", "tuann349_vad", "child.rds"))
 #child$year <- year(child$dob)
 #child$month <- month(child$dob)
-#
+#child$week <- week(child$dob)
+
 #child_overall <- child[, .N, by = .(year, month)]
+#child_overall2 <- child[, .N, by = .(year, month, week)]
 #child_province <- child[, .N, by = .(year, month, province)]
+#child_province2 <- child[, .N, by = .(year, month, week, province)]
 #child_sex <- child[, .N, by = .(year, month, sex)]
+#child_sex2 <- child[, .N, by = .(year, month, week, sex)]
 #child_province_sex <- child[, .N, by = .(year, month, province, sex)]
-# 
-#save(child_overall, child_province, child_sex, child_province_sex, file = file.path("..", "tuann349_vad", "child.Rdata"))
-#
+#child_province_sex2 <- child[, .N, by = .(year, month, week, province, sex)]
+ 
+#save(child_overall, child_overall2, child_province, child_province2, child_sex, child_sex2, child_province_sex, child_province_sex2, file = file.path("..", "..", "tuann349_vad", "child.Rdata"))
+
 #tab_child_sum <- tbl_summary(child[year >= 2017 & year <= 2020, .(province, sex, factor(year))])
-#
-#save(tab_child_sum, file = file.path("..", "tuann349_vad", "tab_child.Rdata"))
+
+#save(tab_child_sum, file = file.path("..", "..", "tuann349_vad", "tab_child.Rdata"))
 ```
 
 ## Quick look at vaccine shots
 
 ```{r}
-# vaccine_vad <- readRDS(file = file.path("..", "tuann349_vad", "vaccine_vad.rds"))
-# vaccine_overall <- vaccine_vad[, .N, by = .(vacyear, vacmonth)]
-# vaccine_province <- vaccine_vad[, .N, by = .(vacyear, vacmonth, province)]
-# vaccine_vacname <- vaccine_vad[, .N, by = .(vacyear, vacmonth, vacname2)]
-# vaccine_province_vacname <- vaccine_vad[, .N, by = .(vacyear, vacmonth, province, vacname2)]
-# save(vaccine_overall, vaccine_province, vaccine_vacname, vaccine_province_vacname, file = file.path("..", "tuann349_vad", "vaccine.Rdata"))
-# 
-# tab_vac_sum <- tbl_summary(vaccine_vad[vacyear >= 2017 & vacyear <= 2020, .(province, vacname2, factor(vacyear))])
-# save(tab_vac_sum, file = file.path("..", "tuann349_vad", "tab_vaccine.Rdata"))
+#memory.limit(size=60000)
+
+#vaccine_vad <- readRDS(file = file.path("..", "..", "tuann349_vad", "vaccine_vad.rds"))
+#vaccine_vad$vacweek <- week(vaccine_vad$vacdate)
+
+#vaccine_overall <- vaccine_vad[, .N, by = .(vacyear, vacmonth)]
+#vaccine_overall2 <- vaccine_vad[, .N, by = .(vacyear, vacmonth, vacweek)]
+#vaccine_province <- vaccine_vad[, .N, by = .(vacyear, vacmonth, province)]
+#vaccine_province2 <- vaccine_vad[, .N, by = .(vacyear, vacmonth, vacweek, province)]
+#vaccine_vacname <- vaccine_vad[, .N, by = .(vacyear, vacmonth, vacname2)]
+#vaccine_vacname2 <- vaccine_vad[, .N, by = .(vacyear, vacmonth, vacweek, vacname2)]
+#vaccine_province_vacname <- vaccine_vad[, .N, by = .(vacyear, vacmonth, province, vacname2)]
+#vaccine_province_vacname2 <- vaccine_vad[, .N, by = .(vacyear, vacmonth, vacweek, province, vacname2)]
+#save(vaccine_overall, vaccine_overall2, vaccine_province, vaccine_province2, vaccine_vacname, vaccine_vacname2, vaccine_province_vacname, #vaccine_province_vacname2, file = file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
+ 
+#tab_vac_sum <- tbl_summary(vaccine_vad[vacyear >= 2017 & vacyear <= 2020, .(province, vacname2, factor(vacyear))])
+#save(tab_vac_sum, file = file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
 ```
 
 ```{r}
-load(file.path("..", "tuann349_vad", "vaccine.Rdata"))
-load(file.path("..", "tuann349_vad", "tab_vaccine.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
 
-load(file.path("..", "tuann349_vad", "child.Rdata"))
-load(file.path("..", "tuann349_vad", "tab_child.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "child.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "tab_child.Rdata"))
 ```
 
 ### Descriptive table
@@ -82,18 +95,132 @@ ggplot(data = child_overall[year >= 2017 & year <= 2020], aes(x = factor(month),
   theme_bw() +
   ggtitle("Total number of babies born by month and year")
 ```
+```{r}
+ggplot(child_overall[year >= 2017 & year <= 2020], aes(month, N/1000, color = factor(year))) +
+  geom_point(size=3) +
+  geom_line(aes(group=year)) +
+  geom_smooth () + 
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of babies born (x 10^3)", breaks = seq(from = 50, to = 1100, by = 200)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of babies born by month and year") +
+  facet_wrap(~ year)
+#ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
+```
+
 
 ```{r}
-ggplot(data = vaccine_overall[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = N/1000, color = factor(vacyear))) +
+ggplot(data = child_overall2[year >= 2017 & year <= 2020], aes(x = factor(week), y = N/1000, color = factor(year))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = year), size = 1.5) +
+  stat_smooth(method="loess", colour="blue", size=1.5) +
+  scale_x_discrete(name = "Week") +
+  scale_y_continuous(name = "Number of babies born (x 10^3)", breaks = seq(from = 50, to = 100, by = 10)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of babies born by week and year")
+```
+```{r}
+ggplot(child_overall2[year >= 2017 & year <= 2020], aes(week, N/1000, color = factor(year))) +
+  geom_point(size=3) +
+  geom_line(aes(group=year)) +
+  geom_smooth () + 
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1) +
+  scale_x_discrete(name = "Week") +
+  scale_y_continuous(name = "Number of babies born (x 10^3)", breaks = seq(from = 50, to = 1100, by = 200)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of babies born by week and year") +
+  facet_wrap(~ year)
+#ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
+```
+
+```{r}
+gg<- ggplot(data = vaccine_overall[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = N/1000, color = factor(vacyear))) +
   geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
   geom_point(size = 3) +
   geom_line(aes(group = vacyear), size = 1.5) +
   scale_x_discrete(name = "Month") +
+  geom_smooth() +
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5) +
   scale_y_continuous(name = "Number of shot (x 10^3)", breaks = seq(from = 50, to = 1100, by = 100)) +
   scale_color_discrete(name = "Year") +
   theme_bw() +
   ggtitle("Total number of vaccination shot by month and year")
-ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
+#ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
+
+gg + stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5)
+```
+```{r}
+ggplot(data = vaccine_delay[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y=vacdelay, color = factor(vacyear))) +
+  geom_line() +
+  facet_wrap(~ vacyear) +
+  theme_bw()
+  
++
+  geom_histogram() +
+
+
+
++
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = vacyear), size = 1.5) +
+  scale_x_discrete(name = "Month") +
+  geom_smooth() +
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5) +
+  scale_y_continuous(name = "Number of shot (x 10^3)", breaks = seq(from = 50, to = 1100, by = 100)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of vaccination shot by month and year")
+#ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
+
+gg + stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5)
+```
+
+```{r}
+ggplot(vaccine_overall[vacyear >= 2017 & vacyear <= 2020], aes(vacmonth, N/1000, color = factor(vacyear))) +
+  geom_point(size=3) +
+  geom_line(aes(group=vacyear)) +
+  geom_smooth () + 
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of shot (x 10^3)", breaks = seq(from = 50, to = 1100, by = 200)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of vaccination shot by month and year") +
+  facet_wrap(~ vacyear)
+#ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
+```
+
+```{r}
+ggplot(data = vaccine_overall2[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacweek), y = N/1000, color = factor(vacyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = vacyear), size = 1.5) +
+  scale_x_discrete(name = "Week") +
+  scale_y_continuous(name = "Number of shot (x 10^3)", breaks = seq(from = 50, to = 1100, by = 100)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of vaccination shot by week and year")
+#ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
+```
+```{r}
+ggplot(vaccine_overall2[vacyear >= 2017 & vacyear <= 2020], aes(vacweek, N/1000, color = factor(vacyear))) +
+  geom_point(size=3) +
+  geom_line(aes(group=vacyear)) +
+  geom_smooth () + 
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1) +
+  scale_x_discrete(name = "Week") +
+  scale_y_continuous(name = "Number of shot (x 10^3)", breaks = seq(from = 50, to = 1100, by = 200)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of vaccination shot by month and year") +
+  facet_wrap(~ vacyear)
+#ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
 ```
 
 ### By province
@@ -124,24 +251,24 @@ ggplot(data = vaccine_province[vacyear >= 2017 & vacyear <= 2020], aes(x = facto
   theme_bw() +
   theme(legend.position = "bottom") +
   ggtitle("Number of vaccination shot in each province by month and year")
-ggsave(filename = file.path("figures", "vaccine_month_year_province.png"), width = 10, height = 7)
+#ggsave(filename = file.path("figures", "vaccine_month_year_province.png"), width = 10, height = 7)
 ```
 
 ### By vaccine
 
 ```{r}
-ggplot(data = vaccine_vacname[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = N)) +
+ggplot(data = vaccine_vacname[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = N/1000)) +
   geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
   geom_point(aes(color = factor(vacyear))) +
   geom_line(aes(group = vacyear, color = factor(vacyear))) +
   scale_x_discrete(name = "Month") +
-  scale_y_continuous(name = "Number of shot") +
+  scale_y_continuous(name = "Number of shot (x 10^3)") +
   scale_color_discrete(name = "Year") +
   facet_wrap(~ vacname2, scale = "free_y") +
   theme_bw() +
   theme(legend.position = "bottom") +
   ggtitle("Number of shot of each vaccine by month and year")
-ggsave(filename = file.path("figures", "vaccine_month_year_vaccine.png"), width = 10, height = 7)
+#ggsave(filename = file.path("figures", "vaccine_month_year_vaccine.png"), width = 10, height = 7)
 ```
 
 ### In Cao Bang, Ha Noi and Nghe An by vaccine
@@ -158,19 +285,25 @@ ggplot(data = vaccine_province_vacname[vacyear >= 2017 & vacyear <= 2020 & provi
   theme_bw() +
   theme(legend.position = "bottom") +
   ggtitle("Number of shot of each vaccine by province and time")
-ggsave(filename = file.path("figures", "vaccine_month_year_vaccine_CB_HN_NA.png"), width = 10, height = 7)
+#ggsave(filename = file.path("figures", "vaccine_month_year_vaccine_CB_HN_NA.png"), width = 10, height = 7)
 ```
 
 ### Measle
 
 ```{r}
-measle <- readRDS(file = file.path("..", "tuann349_vad", "measle.rds"))
+measle <- readRDS(file = file.path("..", "..", "tuann349_vad", "measle.rds"))
+
+mea <- measle[, .N, by = .(vacyear, vacmonth, vacdelay, vacname2)]
+mea2 <- measle[, .N, by = .(vacyear, vacmonth, vacweek, vacdelay, vacname2)]
 ```
 
 #### Overall
 
 ```{r}
-ggplot(data = mea[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = N/1000, color = factor(vacyear))) +
+ggplot(data = mea[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = vacdelay, color = factor(vacyear))) +
+  geom_point() +
+  facet_grid(vacname2~ vacyear)
+  
   geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
   geom_point(size = 3) +
   geom_line(aes(group = vacyear), size = 1.5) +
@@ -179,6 +312,6 @@ ggplot(data = mea[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), 
   scale_color_discrete(name = "Year") +
   theme_bw() +
   ggtitle("Total number of vaccination shot by month and year")
-ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
+#ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
 ```
 
