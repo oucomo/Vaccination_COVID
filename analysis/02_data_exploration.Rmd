@@ -298,7 +298,7 @@ ggplot(mea[vacyear >= 2017 & vacyear <= 2020], aes(vacmonth, N/1000, color = fac
   scale_color_discrete(name = "Year") +
   theme_bw() +
   ggtitle("Total number of Measle vaccination shot by month and year") +
-  facet_wrap(~ vacyear)
+  facet_wrap(~ vacyear, scale = "free_y")
 #ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
 ```
 
