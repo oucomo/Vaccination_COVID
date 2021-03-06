@@ -95,6 +95,7 @@ ggplot(data = child_overall[year >= 2017 & year <= 2020], aes(x = factor(month),
   theme_bw() +
   ggtitle("Total number of babies born by month and year")
 ```
+
 ```{r}
 ggplot(child_overall[year >= 2017 & year <= 2020], aes(month, N/1000, color = factor(year))) +
   geom_point(size=3) +
@@ -123,6 +124,7 @@ ggplot(data = child_overall2[year >= 2017 & year <= 2020], aes(x = factor(week),
   theme_bw() +
   ggtitle("Total number of babies born by week and year")
 ```
+
 ```{r}
 ggplot(child_overall2[year >= 2017 & year <= 2020], aes(week, N/1000, color = factor(year))) +
   geom_point(size=3) +
@@ -151,11 +153,6 @@ ggplot(data = vaccine_overall[vacyear >= 2017 & vacyear <= 2020], aes(x = factor
   theme_bw() +
   ggtitle("Total number of vaccination shot by month and year")
 #ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
-<<<<<<< HEAD
-=======
-
-gg + stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5)
->>>>>>> 364071a3848d3fc5813c5da46cefbc4397b35dcb
 ```
 
 ```{r}
@@ -185,6 +182,7 @@ ggplot(data = vaccine_overall2[vacyear >= 2017 & vacyear <= 2020], aes(x = facto
   ggtitle("Total number of vaccination shot by week and year")
 #ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
 ```
+
 ```{r}
 ggplot(vaccine_overall2[vacyear >= 2017 & vacyear <= 2020], aes(vacweek, N/1000, color = factor(vacyear))) +
   geom_point(size=3) +
@@ -279,7 +277,6 @@ mea_delay <- measle[, .N, by = .(vacyear, vacmonth, vacdelay, vacname2)]
 #### Overall
 
 ```{r}
-<<<<<<< HEAD
 ggplot(data = mea[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = N/1000, color = factor(vacyear))) +
   geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
   geom_point(size = 3) +
@@ -288,20 +285,12 @@ ggplot(data = mea[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), 
   geom_smooth() +
   stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5) +
   scale_y_continuous(name = "Number of shot (x 10^3)", breaks = seq(from = 0, to = 200, by = 50)) +
-=======
-ggplot(data = mea[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacmonth), y = vacdelay, color = factor(vacyear))) +
-  geom_point() +
-  facet_grid(vacname2~ vacyear) +
-  #geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
-  #geom_line(aes(group = vacyear), size = 1.5) +
-  scale_x_discrete(name = "Month") +
-  scale_y_continuous(name = "Number of shot (x 10^3)", breaks = seq(from = -20, to = 60, by = 20)) +
->>>>>>> 364071a3848d3fc5813c5da46cefbc4397b35dcb
   scale_color_discrete(name = "Year") +
   theme_bw() +
   ggtitle("Total number of Measle vaccination shot by month and year")
 #ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
 ```
+
 ```{r}
 ggplot(mea[vacyear >= 2017 & vacyear <= 2020], aes(vacmonth, N/1000, color = factor(vacyear))) +
   geom_point(size=3) +
@@ -331,6 +320,7 @@ ggplot(data = mea2[vacyear >= 2017 & vacyear <= 2020], aes(x = factor(vacweek), 
   ggtitle("Total number of Measle vaccination shot by week and year")
 #ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
 ```
+
 ```{r}
 ggplot(mea2[vacyear >= 2017 & vacyear <= 2020], aes(vacweek, N/1000, color = factor(vacyear))) +
   geom_point(size=3) +
