@@ -1,0 +1,21 @@
+name: Vaccination_COVID
+output_dir: ../docs
+navbar:
+  title: Vaccination_COVID
+  left:
+  - text: Home
+    href: index.html
+  - text: About
+    href: about.html
+  - text: License
+    href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/oucomo/Vaccination_COVID
+output:
+  workflowr::wflow_html:
+    toc: yes
+    toc_float: yes
+    theme: cerulean
+    highlight: textmate

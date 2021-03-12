@@ -1,0 +1,17 @@
+---
+title: "Home"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+## Task
+
+* Merge data from all provinces
+* Check
+    + Consistency between date of birth & date of vaccination (date of vaccination >= date of birth)
+    + Check for duplication
+    + Make sure name of vaccines are consistent
