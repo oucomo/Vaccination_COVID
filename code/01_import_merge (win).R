@@ -4,7 +4,7 @@
 #  LamPK, DucDH
 #  ---
 
-Sys.setlocale("LC_CTYPE", locale="Vietnamese")
+#Sys.setlocale("LC_CTYPE", locale="Vietnamese")
 
 library(readxl)
 library(data.table)
@@ -13,8 +13,9 @@ library(stringi)
 library(reticulate)
 
 ## handle non-native file paths
-wd <- file.path("..", "tuann349")
+wd <- file.path("..", "..", "tuann349")
 filename <- gsub(paste0(wd,"/"),"",rstudioapi::getActiveDocumentContext()$path)
+setwd(wd)
 
 os <- import("os")
 listdir <- os$listdir(wd)
