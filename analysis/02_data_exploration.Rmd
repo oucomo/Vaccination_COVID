@@ -866,7 +866,7 @@ head(hepatitisb_check)
 ### Polio
 
 ```{r}
-polio <- readRDS(file = file.path("..", "tuann349_vad", "polio.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+polio <- readRDS(file = file.path("..", "..", "tuann349_vad", "polio.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 polio$vacweek <- week(polio$vacdate)
 
 pol <- polio[, .N, by = .(vacyear, vacmonth)]
