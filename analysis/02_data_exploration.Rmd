@@ -78,14 +78,14 @@ library(gtsummary)
 ```
 
 ```{r}
-load(file.path("..", "tuann349_vad", "vaccine.Rdata"))
-load(file.path("..", "tuann349_vad", "tab_vaccine.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
 
-load(file.path("..", "tuann349_vad", "child.Rdata"))
-load(file.path("..", "tuann349_vad", "tab_child.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "child.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "tab_child.Rdata"))
 
-error_datetime <- read.csv(file.path("..", "tuann349_vad", "error_datetime.csv"))
-error_duplicate <- read.csv(file.path("..", "tuann349_vad", "error_duplicate.csv"))
+error_datetime <- read.csv(file.path("..", "..", "tuann349_vad", "error_datetime.csv"))
+error_duplicate <- read.csv(file.path("..", "..", "tuann349_vad", "error_duplicate.csv"))
 ```
 
 ### Descriptive table
@@ -282,7 +282,7 @@ ggplot(data = vaccine_province_vacname[vacyear >= 2017 & vacyear <= 2020 & provi
 ### Measle
 
 ```{r}
-measle <- readRDS(file = file.path("..", "tuann349_vad", "measle.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+measle <- readRDS(file = file.path("..", "..", "tuann349_vad", "measle.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 measle$vacweek <- week(measle$vacdate)
 
 mea <- measle[, .N, by = .(vacyear, vacmonth)]
@@ -438,7 +438,7 @@ table(measle_check2$province)
 head(measle_check2)
 #122229/3814265*100 = 3.2%
 
-data_path <- file.path("..", "tuann349_vad")
+data_path <- file.path("..", "..", "tuann349_vad")
 
 measle_check <- rbindlist(l = list(measle_check1[, .(pid, province, district, commune, sex, dob, vacname2, vacdate, vacdelay, type)], 
                             measle_check2[, .(pid, province, district, commune, sex, dob, vacname2, vacdate, vacdelay, type)]))
@@ -456,7 +456,7 @@ measle_check %>% select(-pid, -district, -commune, -type) %>% mutate(vacdelay=fa
 ### Diptheria
 
 ```{r}
-diptheria <- readRDS(file = file.path("..", "tuann349_vad", "diptheria.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+diptheria <- readRDS(file = file.path("..", "..", "tuann349_vad", "diptheria.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 diptheria$vacweek <- week(diptheria$vacdate)
 
 dip <- diptheria[, .N, by = .(vacyear, vacmonth)]
@@ -595,7 +595,7 @@ table(diptheria_check3$province)
 head(diptheria_check3)
 #239/240*100 = 99.6%
 
-data_path <- file.path("..", "tuann349_vad")
+data_path <- file.path("..", "..", "tuann349_vad")
 
 diptheria_check <- rbindlist(l = list(diptheria_check1[, .(pid, province, district, commune, sex, dob, vacname2, vacdate, vacdelay, type)],
                                       diptheria_check2[, .(pid, province, district, commune, sex, dob, vacname2, vacdate, vacdelay, type)],
@@ -614,7 +614,7 @@ diptheria_check %>% select(-pid, -district, -commune, -type) %>% mutate(vacdelay
 ### Tuberculosis
 
 ```{r}
-tuberculosis <- readRDS(file = file.path("..", "tuann349_vad", "tuberculosis.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+tuberculosis <- readRDS(file = file.path("..", "..", "tuann349_vad", "tuberculosis.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 tuberculosis$vacweek <- week(tuberculosis$vacdate)
 
 tub <- tuberculosis[, .N, by = .(vacyear, vacmonth)]
@@ -740,7 +740,7 @@ head(tuberculosis_check)
 ### Hepatitis B
 
 ```{r}
-hepatitisb <- readRDS(file = file.path("..", "tuann349_vad", "hepatitisb.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+hepatitisb <- readRDS(file = file.path("..", "..", "tuann349_vad", "hepatitisb.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 hepatitisb$vacweek <- week(hepatitisb$vacdate)
 
 hep <- hepatitisb[, .N, by = .(vacyear, vacmonth)]
@@ -847,7 +847,7 @@ ggplot(data = hepatitisb[vacyear >= 2017 & vacyear <= 2020], aes(x = vacdelay, y
   labs(y = "Months in year", x="Duration of delays in Hepatitis B vaccination (months)") +
   scale_color_discrete(name = "Year") +
   ggtitle("Delays in Hepatitis B vaccination (months) by month and year")
-ggsave(filename = file.path("figures", "hepatitisb_delay_year2.png"), width = 7, height = 5)
+#ggsave(filename = file.path("figures", "hepatitisb_delay_year2.png"), width = 7, height = 5)
 ```
 
 #### Check Date of Hepatitis B vaccination before schedule
