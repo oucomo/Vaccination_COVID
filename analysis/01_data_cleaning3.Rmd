@@ -1,18 +1,18 @@
 ---
-title: "Data Cleaning"
+  title: "Data Cleaning"
 date: " 2021-01-26 (update: `r Sys.Date()`)"
 output:
-    html_document:
-      theme: cerulean
-      toc: yes
-      toc_float: yes
+  html_document:
+  theme: cerulean
+toc: yes
+toc_float: yes
 editor_options:
   chunk_output_type: console
 ---
 
-## Import and merge data
+  ## Import and merge data
 
-```{r}
+  ```{r}
 #source(file.path("code", "01_import_merge.R"))
 #source(file.path("code", "01_import_merge (win).R")) # for Windows version
 ```
@@ -91,7 +91,7 @@ table(error3$province)
 #### Export list of errors
 
 ```{r}
-error <- rbindlist(l = list(error1[, .(pid, file, dob, vacdate, type)], 
+error <- rbindlist(l = list(error1[, .(pid, file, dob, vacdate, type)],
                             error2[, .(pid, file, dob, vacdate, type)],
                             error3[, .(pid, file, dob, vacdate, type)]))
 fwrite(x = error, file = file.path(data_path, "error_datetime.csv"))
@@ -130,7 +130,7 @@ fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean.csv"))
 ```
 
 
-## VAD 
+## VAD
 
 ```{r}
 load(file.path("..", "tuann349_vad", "vacinfo.Rdata"))
@@ -144,16 +144,16 @@ rm(list = c("tmp2", "tmp3"))
 gc()
 
 
-vaccine_vad <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vacname2, 
-                        epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate, 
-                        vyear = year(vacdate), 
-                        vmonth = month(vacdate), 
+vaccine_vad <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vacname2,
+                        epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate,
+                        vyear = year(vacdate),
+                        vmonth = month(vacdate),
                         vagem = as.period(interval(dob, vacdate), unit = 'month')$month,
-                        vagem2 = ((vacdate - dob)/dyears(1)) * 12)][, 
-                                                                     .(pid, province, district, commune, sex, dob, vacname, vacname2, 
-                                                                       epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate, 
-                                                                       vyear, vmonth, vagem, vagem2,
-                                                                       vdelay = vagem2 - start)][order(pid, vacdate)]
+                        vagem2 = ((vacdate - dob)/dyears(1)) * 12)][,
+                                                                    .(pid, province, district, commune, sex, dob, vacname, vacname2,
+                                                                      epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate,
+                                                                      vyear, vmonth, vagem, vagem2,
+                                                                      vdelay = vagem2 - start)][order(pid, vacdate)]
 rm(list = c("tmp1"))
 gc()
 saveRDS(vaccine_vad, file = file.path("..", "tuann349_vad", "vaccine_vad.rds"))
@@ -189,4 +189,3 @@ fwrite(x = polio, file = file.path(data_path, "polio.csv"))
 rm(list = c("polio"))
 gc()
 ```
-

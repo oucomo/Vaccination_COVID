@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Report</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Vaccination_COVID</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/oucomo/Vaccination_COVID">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Report</h1>
+<h4 class="date">2020-02-21 (update: 2021-02-22)</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-02-22
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Vaccination_COVID/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210126code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210126)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210126code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210126)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree074a0a4126e9e21636ec53aae4c9175f198a0216targetblank074a0a4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/074a0a4126e9e21636ec53aae4c9175f198a0216" target="_blank">074a0a4</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree074a0a4126e9e21636ec53aae4c9175f198a0216targetblank074a0a4a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/074a0a4126e9e21636ec53aae4c9175f198a0216" target="_blank">074a0a4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  -Lam’s MacBook Pro.Rhistory
+    Untracked:  03_analysis.R
+    Untracked:  analysis/03_report.Rmd
+
+Unstaged changes:
+    Modified:   analysis/01_data_cleaning.Rmd
+    Modified:   analysis/02_data_exploration.Rmd
+    Modified:   code/01_import_merge (win).R
+    Modified:   code/02_vacname-Lam’s MacBook Pro.R
+    Modified:   code/02_vacname.R
+    Modified:   figures/vaccine_month_year.png
+    Modified:   figures/vaccine_month_year_province.png
+    Modified:   figures/vaccine_month_year_vaccine.png
+    Modified:   figures/vaccine_month_year_vaccine_CB_HN_NA.png
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>library(data.table)
+library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+✓ tibble  3.0.3     ✓ dplyr   1.0.2
+✓ tidyr   1.1.2     ✓ stringr 1.4.0
+✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>Warning: package &#39;tibble&#39; was built under R version 4.0.2</code></pre>
+<pre><code>Warning: package &#39;tidyr&#39; was built under R version 4.0.2</code></pre>
+<pre><code>Warning: package &#39;dplyr&#39; was built under R version 4.0.2</code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+x dplyr::between()   masks data.table::between()
+x dplyr::filter()    masks stats::filter()
+x dplyr::first()     masks data.table::first()
+x dplyr::lag()       masks stats::lag()
+x dplyr::last()      masks data.table::last()
+x purrr::transpose() masks data.table::transpose()</code></pre>
+<pre class="r"><code>library(lubridate)</code></pre>
+<pre><code>
+Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:data.table&#39;:
+
+    hour, isoweek, mday, minute, month, quarter, second, wday, week,
+    yday, year</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(gt)</code></pre>
+<pre><code>Warning: package &#39;gt&#39; was built under R version 4.0.2</code></pre>
+<pre class="r"><code>library(gtsummary)</code></pre>
+<pre><code>Warning: package &#39;gtsummary&#39; was built under R version 4.0.2</code></pre>
+<div id="overview-of-vaccination-in-vietnam" class="section level2">
+<h2>Overview of vaccination in Vietnam</h2>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods</h2>
+<div id="dataset" class="section level3">
+<h3>Dataset</h3>
+<pre class="r"><code>load(file.path(&quot;..&quot;, &quot;tuann349_vad&quot;, &quot;vaccine.Rdata&quot;))</code></pre>
+<pre class="r"><code>gt(vaccine_sum$province[order(-N)])</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#pphsnnkypr .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#pphsnnkypr .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#pphsnnkypr .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#pphsnnkypr .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#pphsnnkypr .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#pphsnnkypr .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#pphsnnkypr .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#pphsnnkypr .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pphsnnkypr .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pphsnnkypr .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#pphsnnkypr .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#pphsnnkypr .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#pphsnnkypr .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#pphsnnkypr .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pphsnnkypr .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pphsnnkypr .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#pphsnnkypr .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#pphsnnkypr .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#pphsnnkypr .gt_left {
+  text-align: left;
+}
+
+#pphsnnkypr .gt_center {
+  text-align: center;
+}
+
+#pphsnnkypr .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#pphsnnkypr .gt_font_normal {
+  font-weight: normal;
+}
+
+#pphsnnkypr .gt_font_bold {
+  font-weight: bold;
+}
+
+#pphsnnkypr .gt_font_italic {
+  font-style: italic;
+}
+
+#pphsnnkypr .gt_super {
+  font-size: 65%;
+}
+
+#pphsnnkypr .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="pphsnnkypr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">province</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">N</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">Ha Noi</td>
+      <td class="gt_row gt_center">3832492</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Thanh Hoa</td>
+      <td class="gt_row gt_center">2791700</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Nghe An</td>
+      <td class="gt_row gt_center">2522912</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Bac Giang</td>
+      <td class="gt_row gt_center">1591808</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Nam Dinh</td>
+      <td class="gt_row gt_center">1342473</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Thai Binh</td>
+      <td class="gt_row gt_center">1186992</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Hai Duong</td>
+      <td class="gt_row gt_center">1184588</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Hai Phong</td>
+      <td class="gt_row gt_center">1143049</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Son La</td>
+      <td class="gt_row gt_center">1105532</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Ha Tinh</td>
+      <td class="gt_row gt_center">1030035</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Phu Tho</td>
+      <td class="gt_row gt_center">1005937</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Bac Ninh</td>
+      <td class="gt_row gt_center">927027</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Thai Nguyen</td>
+      <td class="gt_row gt_center">917404</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Vinh Phuc</td>
+      <td class="gt_row gt_center">910584</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Quang Ninh</td>
+      <td class="gt_row gt_center">826492</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Hung Yen</td>
+      <td class="gt_row gt_center">816231</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Ninh Binh</td>
+      <td class="gt_row gt_center">789776</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Ha Giang</td>
+      <td class="gt_row gt_center">732869</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Yen Bai</td>
+      <td class="gt_row gt_center">671758</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Ha Nam</td>
+      <td class="gt_row gt_center">617162</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Hoa Binh</td>
+      <td class="gt_row gt_center">608148</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Lang Son</td>
+      <td class="gt_row gt_center">607244</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Lao Cai</td>
+      <td class="gt_row gt_center">604380</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Tuyen Quang</td>
+      <td class="gt_row gt_center">597191</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Dien Bien</td>
+      <td class="gt_row gt_center">574971</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Lai Chau</td>
+      <td class="gt_row gt_center">430268</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Cao Bang</td>
+      <td class="gt_row gt_center">379215</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Bac Kan</td>
+      <td class="gt_row gt_center">244880</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+<pre class="r"><code>gt(vaccine_sum$vacname[order(-N)])</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#qismozzsxu .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#qismozzsxu .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#qismozzsxu .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#qismozzsxu .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#qismozzsxu .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#qismozzsxu .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#qismozzsxu .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#qismozzsxu .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#qismozzsxu .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#qismozzsxu .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#qismozzsxu .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#qismozzsxu .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#qismozzsxu .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#qismozzsxu .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qismozzsxu .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qismozzsxu .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#qismozzsxu .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#qismozzsxu .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#qismozzsxu .gt_left {
+  text-align: left;
+}
+
+#qismozzsxu .gt_center {
+  text-align: center;
+}
+
+#qismozzsxu .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#qismozzsxu .gt_font_normal {
+  font-weight: normal;
+}
+
+#qismozzsxu .gt_font_bold {
+  font-weight: bold;
+}
+
+#qismozzsxu .gt_font_italic {
+  font-style: italic;
+}
+
+#qismozzsxu .gt_super {
+  font-size: 65%;
+}
+
+#qismozzsxu .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="qismozzsxu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">vacname2</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">N</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">DPT_HepB_Hib</td>
+      <td class="gt_row gt_center">6545043</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">OPV</td>
+      <td class="gt_row gt_center">6541255</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">JEV</td>
+      <td class="gt_row gt_center">5083570</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">BCG</td>
+      <td class="gt_row gt_center">3214602</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">HepBN</td>
+      <td class="gt_row gt_center">2474179</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Measle</td>
+      <td class="gt_row gt_center">2182006</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Measle_Rubella</td>
+      <td class="gt_row gt_center">1651180</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">IPV</td>
+      <td class="gt_row gt_center">1161812</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">DPT</td>
+      <td class="gt_row gt_center">1137891</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Tetanus</td>
+      <td class="gt_row gt_center">1337</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Td</td>
+      <td class="gt_row gt_center">243</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+<pre class="r"><code>gt(vaccine_sum$year[order(vyear)])</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#ilanvimtvn .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ilanvimtvn .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ilanvimtvn .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ilanvimtvn .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ilanvimtvn .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ilanvimtvn .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ilanvimtvn .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ilanvimtvn .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ilanvimtvn .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ilanvimtvn .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ilanvimtvn .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ilanvimtvn .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ilanvimtvn .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#ilanvimtvn .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ilanvimtvn .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ilanvimtvn .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ilanvimtvn .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#ilanvimtvn .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#ilanvimtvn .gt_left {
+  text-align: left;
+}
+
+#ilanvimtvn .gt_center {
+  text-align: center;
+}
+
+#ilanvimtvn .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ilanvimtvn .gt_font_normal {
+  font-weight: normal;
+}
+
+#ilanvimtvn .gt_font_bold {
+  font-weight: bold;
+}
+
+#ilanvimtvn .gt_font_italic {
+  font-style: italic;
+}
+
+#ilanvimtvn .gt_super {
+  font-size: 65%;
+}
+
+#ilanvimtvn .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="ilanvimtvn" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">vyear</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">N</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_right">2017</td>
+      <td class="gt_row gt_center">4336085</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_right">2018</td>
+      <td class="gt_row gt_center">8101547</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_right">2019</td>
+      <td class="gt_row gt_center">8945653</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_right">2020</td>
+      <td class="gt_row gt_center">8609820</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_right">2021</td>
+      <td class="gt_row gt_center">13</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+</div>
+</div>
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<pre class="r"><code>ggplot(data = vaccine_overall, aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = &quot;grey80&quot;, color = &quot;grey90&quot;, alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = vyear), size = 1.5) +
+  scale_x_discrete(name = &quot;Month&quot;) +
+  scale_y_continuous(name = &quot;Number of shot (x 10^3)&quot;, breaks = seq(from = 50, to = 1100, by = 100)) +
+  scale_color_discrete(name = &quot;Year&quot;) +
+  theme_bw() +
+  ggtitle(&quot;Total number of vaccination shot by month and year&quot;)</code></pre>
+<p><img src="figure/03_report.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = file.path(&quot;figures&quot;, &quot;vaccine_month_year.png&quot;), width = 7, height = 5)</code></pre>
+<div id="by-province" class="section level3">
+<h3>By province</h3>
+<pre class="r"><code>ggplot(data = vaccine_province, aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = &quot;grey80&quot;, color = &quot;grey90&quot;, alpha = 0.015) +
+  geom_point() +
+  geom_line(aes(group = vyear)) +
+  scale_x_discrete(name = &quot;Month&quot;) +
+  scale_y_continuous(name = &quot;Number of shot (x 10^3)&quot;) +
+  scale_color_discrete(name = &quot;Year&quot;) +
+  facet_wrap(~ province, scale = &quot;free_y&quot;) +
+  theme_bw() +
+  theme(legend.position = &quot;bottom&quot;) +
+  ggtitle(&quot;Number of vaccination shot in each province by month and year&quot;)</code></pre>
+<p><img src="figure/03_report.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = file.path(&quot;figures&quot;, &quot;vaccine_month_year_province.png&quot;), width = 10, height = 7)</code></pre>
+</div>
+<div id="by-vaccine" class="section level3">
+<h3>By vaccine</h3>
+<pre class="r"><code>ggplot(data = vaccine_vacname, aes(x = factor(vmonth), y = N)) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = &quot;grey80&quot;, color = &quot;grey90&quot;, alpha = 0.015) +
+  geom_point(aes(color = factor(vyear))) +
+  geom_line(aes(group = vyear, color = factor(vyear))) +
+  scale_x_discrete(name = &quot;Month&quot;) +
+  scale_y_continuous(name = &quot;Number of shot&quot;) +
+  scale_color_discrete(name = &quot;Year&quot;) +
+  facet_wrap(~ vacname2, scale = &quot;free_y&quot;) +
+  theme_bw() +
+  theme(legend.position = &quot;bottom&quot;) +
+  ggtitle(&quot;Number of shot of each vaccine by month and year&quot;)</code></pre>
+<p><img src="figure/03_report.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = file.path(&quot;figures&quot;, &quot;vaccine_month_year_vaccine.png&quot;), width = 10, height = 7)</code></pre>
+</div>
+<div id="in-cao-bang-ha-noi-and-nghe-an-by-vaccine" class="section level3">
+<h3>In Cao Bang, Ha Noi and Nghe An by vaccine</h3>
+<pre class="r"><code>ggplot(data = vaccine_province_vacname[vyear &lt;= 2020 &amp; province %in% c(&quot;Cao Bang&quot;, &quot;Ha Noi&quot;, &quot;Nghe An&quot;)], aes(x = factor(vmonth), y = N)) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = &quot;grey80&quot;, color = &quot;grey90&quot;, alpha = 0.015) +
+  geom_point(aes(color = factor(vacname2))) +
+  geom_line(aes(group = vacname2, color = factor(vacname2))) +
+  scale_x_discrete(name = &quot;Month&quot;) +
+  scale_y_continuous(name = &quot;Number of shot&quot;) +
+  scale_color_discrete(name = &quot;Name of vaccine&quot;) +
+  facet_grid(province ~ vyear, scale = &quot;free_y&quot;) +
+  theme_bw() +
+  theme(legend.position = &quot;bottom&quot;) +
+  ggtitle(&quot;Number of shot of each vaccine by province and time&quot;)</code></pre>
+<p><img src="figure/03_report.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = file.path(&quot;figures&quot;, &quot;vaccine_month_year_vaccine_CB_HN_NA.png&quot;), width = 10, height = 7)</code></pre>
+</div>
+</div>
+<div id="vaccination-during-2017-2019" class="section level2">
+<h2>Vaccination during 2017-2019</h2>
+<div id="vaccine-coverage" class="section level3">
+<h3>Vaccine coverage</h3>
+</div>
+<div id="specific-vaccines" class="section level3">
+<h3>Specific vaccines</h3>
+<div id="bcg" class="section level4">
+<h4>BCG</h4>
+</div>
+<div id="hepatitis-b" class="section level4">
+<h4>Hepatitis B</h4>
+</div>
+<div id="diptheria" class="section level4">
+<h4>Diptheria</h4>
+</div>
+<div id="measle" class="section level4">
+<h4>Measle</h4>
+</div>
+</div>
+</div>
+<div id="vaccination-since-2020" class="section level2">
+<h2>Vaccination since 2020</h2>
+<div id="vaccine-coverage-1" class="section level3">
+<h3>Vaccine coverage</h3>
+</div>
+<div id="specific-vaccines-1" class="section level3">
+<h3>Specific vaccines</h3>
+<div id="bcg-1" class="section level4">
+<h4>BCG</h4>
+</div>
+<div id="hepatitis-b-1" class="section level4">
+<h4>Hepatitis B</h4>
+</div>
+<div id="diptheria-1" class="section level4">
+<h4>Diptheria</h4>
+</div>
+<div id="measle-1" class="section level4">
+<h4>Measle</h4>
+</div>
+</div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.1 (2020-06-06)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Catalina 10.15.4
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] gtsummary_1.3.5   gt_0.2.2          lubridate_1.7.9   forcats_0.5.0    
+ [5] stringr_1.4.0     dplyr_1.0.2       purrr_0.3.4       readr_1.3.1      
+ [9] tidyr_1.1.2       tibble_3.0.3      ggplot2_3.3.2     tidyverse_1.3.0  
+[13] data.table_1.12.8
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.5        assertthat_0.2.1  rprojroot_1.3-2   digest_0.6.27    
+ [5] R6_2.4.1          cellranger_1.1.0  backports_1.1.8   reprex_0.3.0     
+ [9] evaluate_0.14     httr_1.4.2        highr_0.8         pillar_1.4.6     
+[13] rlang_0.4.10      readxl_1.3.1      rstudioapi_0.11   blob_1.2.1       
+[17] checkmate_2.0.0   rmarkdown_2.6.6   labeling_0.3      munsell_0.5.0    
+[21] broom_0.7.1       compiler_4.0.1    httpuv_1.5.4      modelr_0.1.8     
+[25] xfun_0.21         pkgconfig_2.0.3   htmltools_0.5.1.1 tidyselect_1.1.0 
+[29] workflowr_1.6.2   fansi_0.4.1       crayon_1.3.4      dbplyr_1.4.4     
+[33] withr_2.2.0       later_1.1.0.1     grid_4.0.1        jsonlite_1.7.2   
+[37] gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0         git2r_0.27.1     
+[41] magrittr_2.0.1    scales_1.1.1      cli_2.0.2         stringi_1.5.3    
+[45] farver_2.0.3      fs_1.4.1          promises_1.1.1    xml2_1.3.2       
+[49] ellipsis_0.3.1    generics_0.0.2    vctrs_0.3.2       tools_4.0.1      
+[53] glue_1.4.2        hms_0.5.3         yaml_2.2.1        colorspace_1.4-1 
+[57] rvest_0.3.5       knitr_1.31        haven_2.3.1       sass_0.2.0       </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
