@@ -381,6 +381,21 @@ ggplot(data = measle[vacyear >= 2017 & vacyear <= 2020], aes(x = vacdelay, y = f
 #ggsave(filename = file.path("figures", "measle_delay_year2.png"), width = 7, height = 5)
 ```
 
+```{r}
+library(ggridges)
+measle$byear <- year(measle$dob)
+measle$bmonth <- month(measle$dob)
+ggplot(data = measle[byear>= 2017 & byear <= 2020], aes(x = vacdelay, y = factor(bmonth), color = factor(byear))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~byear, scale = "free_y") +
+  labs(y = "Months in year", x="Duration of delays in Measle vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in Measle vaccination (months) by month and year")
+#ggsave(filename = file.path("figures", "measle_delay_year2.png"), width = 7, height = 5)
+```
+
 ```{r, eval=FALSE, echo=FALSE}
 ggplot(data = mea_delay[vacyear >= 2017 & vacyear <= 2020], aes(vacdelay, color = factor(vacyear))) +
   geom_histogram(aes(y = ..density..), binwidth = 1) +
