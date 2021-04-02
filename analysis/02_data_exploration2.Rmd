@@ -18,6 +18,7 @@ editor_options:
 ```{r}
 knitr::opts_chunk$set()
 
+library(workflowr)
 library(data.table)
 library(tidyverse)
 library(lubridate)
@@ -62,21 +63,21 @@ library(ggridges)
 error_datetime <- read.csv(file.path("..", "..", "tuann349_vad", "error_datetime.csv"))
 error_duplicate <- read.csv(file.path("..", "..", "tuann349_vad", "error_duplicate.csv"))
 
-#vaccine_vad <- readRDS(file = file.path("..", "..", "tuann349_vad", "vaccine_vad.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
-#vaccine_vad$vweek <- week(vaccine_vad$vacdate)
+vaccine_vad <- readRDS(file = file.path("..", "..", "tuann349_vad", "vaccine_vad.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+vaccine_vad$vweek <- week(vaccine_vad$vacdate)
 
-#vaccine_overall <- vaccine_vad[, .N, by = .(vyear, vmonth)]
-#vaccine_overall2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek)]
-#vaccine_province <- vaccine_vad[, .N, by = .(vyear, vmonth, province)]
-#vaccine_province2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province)]
-#vaccine_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, vacname2)]
-#vaccine_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, vacname2)]
-#vaccine_province_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, province, vacname2)]
-#vaccine_province_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province, vacname2)]
-#save(vaccine_overall, vaccine_overall2, vaccine_province, vaccine_province2, vaccine_vacname, vaccine_vacname2, vaccine_province_vacname, vaccine_province_vacname2, file = file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
+vaccine_overall <- vaccine_vad[, .N, by = .(vyear, vmonth)]
+vaccine_overall2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek)]
+vaccine_province <- vaccine_vad[, .N, by = .(vyear, vmonth, province)]
+vaccine_province2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province)]
+vaccine_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, vacname2)]
+vaccine_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, vacname2)]
+vaccine_province_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, province, vacname2)]
+vaccine_province_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province, vacname2)]
+save(vaccine_overall, vaccine_overall2, vaccine_province, vaccine_province2, vaccine_vacname, vaccine_vacname2, vaccine_province_vacname, vaccine_province_vacname2, file = file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
  
-#tab_vac_sum <- tbl_summary(vaccine_vad[vyear >= 2017 & vyear <= 2020, .(province, vacname2, factor(vyear))])
-#save(tab_vac_sum, file = file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
+tab_vac_sum <- tbl_summary(vaccine_vad[vyear >= 2017 & vyear <= 2020, .(province, vacname2, factor(vyear))])
+save(tab_vac_sum, file = file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
 ```
 
 ```{r}
@@ -290,6 +291,8 @@ mea_delay <- measle[, .N, by = .(vyear, vmonth, vdelay, vacname2)]
 
 measle$byear <- year(measle$dob)
 measle$bmonth <- month(measle$dob)
+measle$vsyear = year(measle$vsche)
+measle$vsmonth = month(measle$vsche)
 ```
 
 #### Overall
@@ -383,6 +386,18 @@ ggplot(data = measle[vyear >= 2017 & vyear <= 2020], aes(x = vdelay, y = factor(
 ```
 
 ```{r}
+ggplot(data = measle[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vsmonth), color = factor(vsyear))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~ vsyear, scale = "free_y") +
+  labs(y = "Months in year", x="Duration of delays in Measle vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in Measle vaccination (months) by month and year")
+#ggsave(filename = file.path("figures", "measle_delay_year2.png"), width = 7, height = 5)
+```
+
+```{r}
 ggplot(data = measle[byear>= 2017 & byear <= 2020], aes(x = vdelay, y = factor(bmonth), color = factor(byear))) +
   geom_density_ridges() +
   theme_ridges() + 
@@ -451,7 +466,7 @@ table(measle_check2$province)
 head(measle_check2)
 #122229/3814265*100 = 3.2%
 
-data_path <- file.path("..", "..", "tuann349_vad")
+data_path <- file.path("..", "tuann349_vad")
 
 measle_check <- rbindlist(l = list(measle_check1[, .(pid, province, district, commune, sex, dob, vacname2, vacdate, vdelay, type)], 
                             measle_check2[, .(pid, province, district, commune, sex, dob, vacname2, vacdate, vdelay, type)]))
@@ -609,7 +624,7 @@ table(diptheria_check3$province)
 head(diptheria_check3)
 #239/240*100 = 99.6%
 
-data_path <- file.path("..", "..", "tuann349_vad")
+data_path <- file.path("..", "tuann349_vad")
 
 diptheria_check <- rbindlist(l = list(diptheria_check1[, .(pid, province, district, commune, sex, dob, vacname2, vacdate, vdelay, type)],
                                       diptheria_check2[, .(pid, province, district, commune, sex, dob, vacname2, vacdate, vdelay, type)],
@@ -1038,6 +1053,8 @@ vaccine_vad2 <- vaccine_vad %>%
   select(vyear, vmonth, vacdate, byear, bmonth, vdelay, vacname2)
 
 # summarize the data with gt_summary package
+
+memory.limit(size=150000)
 
 vaccine_sum <- vaccine_vad2 %>%
   select(byear, bmonth, vdelay, vacname2) %>%
