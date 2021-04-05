@@ -58,34 +58,42 @@ library(ggridges)
 ## Quick look at vaccine shots
 
 ```{r}
-#memory.limit(size=150000)
+memory.limit(size=1500000)
 
-error_datetime <- read.csv(file.path("..", "..", "tuann349_vad", "error_datetime.csv"))
-error_duplicate <- read.csv(file.path("..", "..", "tuann349_vad", "error_duplicate.csv"))
+error_datetime <- read.csv(file.path("..", "tuann349_vad", "error_datetime.csv"))
+error_duplicate <- read.csv(file.path("..", "tuann349_vad", "error_duplicate.csv"))
 
-vaccine_vad <- readRDS(file = file.path("..", "..", "tuann349_vad", "vaccine_vad.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+vaccine_vad <- readRDS(file = file.path("..", "tuann349_vad", "vaccine_vad.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 vaccine_vad$vweek <- week(vaccine_vad$vacdate)
+vaccine_vad$vsche <- as.Date(vaccine_vad$vsche)
+vaccine_vad$vsyear <- year(vaccine_vad$vsche)
+vaccine_vad$vsmonth <- month(vaccine_vad$vsche)
+vaccine_vad$vsweek <- week(vaccine_vad$vsche)
 
-vaccine_overall <- vaccine_vad[, .N, by = .(vyear, vmonth)]
-vaccine_overall2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek)]
-vaccine_province <- vaccine_vad[, .N, by = .(vyear, vmonth, province)]
-vaccine_province2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province)]
-vaccine_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, vacname2)]
-vaccine_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, vacname2)]
-vaccine_province_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, province, vacname2)]
-vaccine_province_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province, vacname2)]
-save(vaccine_overall, vaccine_overall2, vaccine_province, vaccine_province2, vaccine_vacname, vaccine_vacname2, vaccine_province_vacname, vaccine_province_vacname2, file = file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
+#vaccine_overall <- vaccine_vad[, .N, by = .(vyear, vmonth)]
+#vaccine_overall2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek)]
+
+#vaccine_schedule <- vaccine_vad[, .N, by = .(vsyear, vsmonth)]
+#vaccine_schedule2 <- vaccine_vad[, .N, by = .(vsyear, vsmonth, vsweek)]
+
+#vaccine_province <- vaccine_vad[, .N, by = .(vyear, vmonth, province)]
+#vaccine_province2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province)]
+#vaccine_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, vacname2)]
+#vaccine_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, vacname2)]
+#vaccine_province_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, province, vacname2)]
+#vaccine_province_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province, vacname2)]
+#save(vaccine_overall, vaccine_overall2, vaccine_province, vaccine_province2, vaccine_vacname, vaccine_vacname2, vaccine_province_vacname, vaccine_province_vacname2, file = file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
  
-tab_vac_sum <- tbl_summary(vaccine_vad[vyear >= 2017 & vyear <= 2020, .(province, vacname2, factor(vyear))])
-save(tab_vac_sum, file = file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
+#tab_vac_sum <- tbl_summary(vaccine_vad[vyear >= 2017 & vyear <= 2020, .(province, vacname2, factor(vyear))])
+#save(tab_vac_sum, file = file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
 ```
 
 ```{r}
-load(file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
-load(file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
+load(file.path("..", "tuann349_vad", "vaccine.Rdata"))
+load(file.path("..", "tuann349_vad", "tab_vaccine.Rdata"))
 
-load(file.path("..", "..", "tuann349_vad", "child.Rdata"))
-load(file.path("..", "..", "tuann349_vad", "tab_child.Rdata"))
+load(file.path("..", "tuann349_vad", "child.Rdata"))
+load(file.path("..", "tuann349_vad", "tab_child.Rdata"))
 ```
 
 ### Descriptive table
@@ -282,7 +290,7 @@ ggplot(data = vaccine_province_vacname[vyear >= 2017 & vyear <= 2020 & province 
 ### Measle
 
 ```{r}
-measle <- readRDS(file = file.path("..", "..", "tuann349_vad", "measle.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+measle <- readRDS(file = file.path("..", "tuann349_vad", "measle.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 measle$vweek <- week(measle$vacdate)
 
 mea <- measle[, .N, by = .(vyear, vmonth)]
@@ -291,6 +299,7 @@ mea_delay <- measle[, .N, by = .(vyear, vmonth, vdelay, vacname2)]
 
 measle$byear <- year(measle$dob)
 measle$bmonth <- month(measle$dob)
+
 measle$vsyear = year(measle$vsche)
 measle$vsmonth = month(measle$vsche)
 ```
@@ -360,7 +369,7 @@ ggplot(mea2[vyear >= 2017 & vyear <= 2020], aes(vweek, N/1000, color = factor(vy
 #### Delays in vaccination (months)
 
 ```{r, eval=FALSE, echo=FALSE}
-ggplot(data = measle[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), y = vdelay, color = factor(vyear))) +
+ggplot(data = measle[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = factor(vmonth), y = vdelay, color = factor(vyear))) +
   geom_point() +
   facet_grid(vacname2 ~ vyear, scale = "free_y") +
   #geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
@@ -374,39 +383,39 @@ ggplot(data = measle[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), y =
 ```
 
 ```{r}
-ggplot(data = measle[vyear >= 2017 & vyear <= 2020], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
+ggplot(data = measle[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
   facet_grid(vacname2~ vyear, scale = "free_y") +
-  labs(y = "Months in year", x="Duration of delays in Measle vaccination (months)") +
+  labs(y = "Months of vaccine shots taken", x="Duration of delays in Measle vaccination (months)") +
   scale_color_discrete(name = "Year") +
-  ggtitle("Delays in Measle vaccination (months) by month and year")
+  ggtitle("Delays in Measle vaccination (months) by dates of vaccine shots")
 #ggsave(filename = file.path("figures", "measle_delay_year2.png"), width = 7, height = 5)
 ```
 
 ```{r}
-ggplot(data = measle[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vsmonth), color = factor(vsyear))) +
+ggplot(data = measle[vsyear >= 2017 & vsyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vsmonth), color = factor(vsyear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
   facet_grid(vacname2~ vsyear, scale = "free_y") +
-  labs(y = "Months in year", x="Duration of delays in Measle vaccination (months)") +
+  labs(y = "Months schedule of vaccine shots", x="Duration of delays in Measle vaccination (months)") +
   scale_color_discrete(name = "Year") +
-  ggtitle("Delays in Measle vaccination (months) by month and year")
-#ggsave(filename = file.path("figures", "measle_delay_year2.png"), width = 7, height = 5)
+  ggtitle("Delays in Measle vaccination (months) by month and year scheduled")
+#ggsave(filename = file.path("figures", "measle_delay_year3.png"), width = 7, height = 5)
 ```
 
 ```{r}
-ggplot(data = measle[byear>= 2017 & byear <= 2020], aes(x = vdelay, y = factor(bmonth), color = factor(byear))) +
+ggplot(data = measle[byear>= 2017 & byear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(bmonth), color = factor(byear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
   facet_grid(vacname2~byear, scale = "free_y") +
-  labs(y = "Months in year", x="Duration of delays in Measle vaccination (months)") +
+  labs(y = "Birth months", x="Duration of delays in Measle vaccination (months)") +
   scale_color_discrete(name = "Year") +
-  ggtitle("Delays in Measle vaccination (months) by month and year")
-#ggsave(filename = file.path("figures", "measle_delay_year3.png"), width = 7, height = 5)
+  ggtitle("Delays in Measle vaccination (months) for children born 2017-2020")
+#ggsave(filename = file.path("figures", "measle_delay_year4.png"), width = 7, height = 5)
 ```
 
 ```{r, eval=FALSE, echo=FALSE}
@@ -484,12 +493,18 @@ measle_check %>% select(-pid, -district, -commune, -type) %>% mutate(vdelay=fact
 ### Diptheria
 
 ```{r}
-diptheria <- readRDS(file = file.path("..", "..", "tuann349_vad", "diptheria.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+diptheria <- readRDS(file = file.path("..", "tuann349_vad", "diptheria.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 diptheria$vweek <- week(diptheria$vacdate)
 
 dip <- diptheria[, .N, by = .(vyear, vmonth)]
 dip2 <- diptheria[, .N, by = .(vyear, vmonth, vweek)]
 dip_delay <- diptheria[, .N, by = .(vyear, vmonth, vdelay, vacname2)]
+
+diptheria$byear <- year(diptheria$dob)
+diptheria$bmonth <- month(diptheria$dob)
+
+diptheria$vsyear = year(diptheria$vsche)
+diptheria$vsmonth = month(diptheria$vsche)
 ```
 
 #### Overall
@@ -571,27 +586,39 @@ ggplot(data = diptheria[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), 
 ```
 
 ```{r}
-ggplot(data = diptheria[vyear >= 2017 & vyear <= 2020], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
+ggplot(data = diptheria[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
   facet_grid(vacname2~ vyear, scale = "free_y") +
-  labs(y = "Months in year", x="Duration of delays in Diptheria vaccination (months)") +
+  labs(y = "Months of vaccine shots taken", x="Duration of delays in Diptheria vaccination (months)") +
   scale_color_discrete(name = "Year") +
-  ggtitle("Delays in Diptheria vaccination (months) by month and year")
+  ggtitle("Delays in Diptheria vaccination (months) by dates of vaccine shots")
 #ggsave(filename = file.path("figures", "diptheria_delay_year2.png"), width = 7, height = 5)
 ```
 
-```{r, eval=FALSE, echo=FALSE}
-ggplot(data = diptheria[vyear >= 2017 & vyear <= 2020], aes(vdelay, color = factor(vyear))) +
-  geom_histogram(aes(y = ..density..), binwidth = 1) +
-  geom_density() +
-  facet_grid(vacname2~ vyear, scale = "free_y") +
-  labs(y = "Density", x="Months delay of vaccination") +
+```{r}
+ggplot(data = diptheria[vsyear >= 2017 & vsyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vsmonth), color = factor(vsyear))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~ vsyear, scale = "free_y") +
+  labs(y = "Months schedule of vaccine shots", x="Duration of delays in Diptheria vaccination (months)") +
   scale_color_discrete(name = "Year") +
-  theme_bw() +
-  ggtitle("Delays of Diptheria vaccination (months) by types of vaccine and year")
-#ggsave(filename = file.path("figures", "vaccine_month_year.png"), width = 7, height = 5)
+  ggtitle("Delays in diptheria vaccination (months) by month and year scheduled")
+#ggsave(filename = file.path("figures", "diptheria_delay_year3.png"), width = 7, height = 5)
+```
+
+```{r}
+ggplot(data = diptheria[byear>= 2017 & byear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(bmonth), color = factor(byear))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~byear, scale = "free_y") +
+  labs(y = "Birth months", x="Duration of delays in Diptheria vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in Diptheria vaccination (months) for children born 2017-2020")
+#ggsave(filename = file.path("figures", "diptheria_delay_year4.png"), width = 7, height = 5)
 ```
 
 #### Check Date of Diptheria vaccination before schedule
@@ -643,12 +670,18 @@ diptheria_check %>% select(-pid, -district, -commune, -type) %>% mutate(vdelay=f
 ### Tuberculosis
 
 ```{r}
-tuberculosis <- readRDS(file = file.path("..", "..", "tuann349_vad", "tuberculosis.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+tuberculosis <- readRDS(file = file.path("..", "tuann349_vad", "tuberculosis.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 tuberculosis$vweek <- week(tuberculosis$vacdate)
 
 tub <- tuberculosis[, .N, by = .(vyear, vmonth)]
 tub2 <- tuberculosis[, .N, by = .(vyear, vmonth, vweek)]
 tub_delay <- tuberculosis[, .N, by = .(vyear, vmonth, vdelay, vacname2)]
+
+tuberculosis$byear <- year(tuberculosis$dob)
+tuberculosis$bmonth <- month(tuberculosis$dob)
+
+tuberculosis$vsyear = year(tuberculosis$vsche)
+tuberculosis$vsmonth = month(tuberculosis$vsche)
 ```
 
 #### Overall
@@ -742,15 +775,39 @@ ggplot(data = tub_delay[vyear >= 2017 & vyear <= 2020], aes(vdelay, color = fact
 ```
 
 ```{r}
-ggplot(data = tuberculosis[vyear >= 2017 & vyear <= 2020], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
+ggplot(data = tuberculosis[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
   facet_grid(vacname2~ vyear, scale = "free_y") +
-  labs(y = "Months in year", x="Duration of delays in Tuberculosis vaccination (months)") +
+  labs(y = "Months of vaccine shots taken", x="Duration of delays in Tuberculosis vaccination (months)") +
   scale_color_discrete(name = "Year") +
-  ggtitle("Delays in Tuberculosis vaccination (months) by month and year")
+  ggtitle("Delays in Tuberculosis vaccination (months) by dates of vaccine shots")
 #ggsave(filename = file.path("figures", "tuberculosis_delay_year2.png"), width = 7, height = 5)
+```
+
+```{r}
+ggplot(data = tuberculosis[vsyear >= 2017 & vsyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vsmonth), color = factor(vsyear))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~ vsyear, scale = "free_y") +
+  labs(y = "Months schedule of vaccine shots", x="Duration of delays in Tuberculosis vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in tuberculosis vaccination (months) by month and year scheduled")
+#ggsave(filename = file.path("figures", "tuberculosis_delay_year3.png"), width = 7, height = 5)
+```
+
+```{r}
+ggplot(data = tuberculosis[byear>= 2017 & byear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(bmonth), color = factor(byear))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~byear, scale = "free_y") +
+  labs(y = "Birth months", x="Duration of delays in Tuberculosis vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in Tuberculosis vaccination (months) for children born 2017-2020")
+#ggsave(filename = file.path("figures", "tuberculosis_delay_year4.png"), width = 7, height = 5)
 ```
 
 #### Check Date of Tuberculosis vaccination before schedule
@@ -769,12 +826,18 @@ head(tuberculosis_check)
 ### Hepatitis B
 
 ```{r}
-hepatitisb <- readRDS(file = file.path("..", "..", "tuann349_vad", "hepatitisb.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+hepatitisb <- readRDS(file = file.path("..", "tuann349_vad", "hepatitisb.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 hepatitisb$vweek <- week(hepatitisb$vacdate)
 
 hep <- hepatitisb[, .N, by = .(vyear, vmonth)]
 hep2 <- hepatitisb[, .N, by = .(vyear, vmonth, vweek)]
 hep_delay <- hepatitisb[, .N, by = .(vyear, vmonth, vdelay, vacname2)]
+
+hepatitisb$byear <- year(hepatitisb$dob)
+hepatitisb$bmonth <- month(hepatitisb$dob)
+
+hepatitisb$vsyear = year(hepatitisb$vsche)
+hepatitisb$vsmonth = month(hepatitisb$vsche)
 ```
 
 #### Overall
@@ -868,15 +931,39 @@ ggplot(data = hep_delay[vyear >= 2017 & vyear <= 2020], aes(vdelay, color = fact
 ```
 
 ```{r}
-ggplot(data = hepatitisb[vyear >= 2017 & vyear <= 2020], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
+ggplot(data = hepatitisb[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
   facet_grid(vacname2~ vyear, scale = "free_y") +
-  labs(y = "Months in year", x="Duration of delays in Hepatitis B vaccination (months)") +
+  labs(y = "Months of vaccine shots taken", x="Duration of delays in Hepatitis B vaccination (months)") +
   scale_color_discrete(name = "Year") +
-  ggtitle("Delays in Hepatitis B vaccination (months) by month and year")
+  ggtitle("Delays in Hepatitis B vaccination (months) by dates of vaccine shots")
 #ggsave(filename = file.path("figures", "hepatitisb_delay_year2.png"), width = 7, height = 5)
+```
+
+```{r}
+ggplot(data = hepatitisb[vsyear >= 2017 & vsyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vsmonth), color = factor(vsyear))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~ vsyear, scale = "free_y") +
+  labs(y = "Months schedule of vaccine shots", x="Duration of delays in Hepatitis B vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in Hepatitis B vaccination (months) by month and year scheduled")
+#ggsave(filename = file.path("figures", "hepatitisb_delay_year3.png"), width = 7, height = 5)
+```
+
+```{r}
+ggplot(data = hepatitisb[byear>= 2017 & byear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(bmonth), color = factor(byear))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~byear, scale = "free_y") +
+  labs(y = "Birth months", x="Duration of delays in Hepatitis B vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in Hepatitis B vaccination (months) for children born 2017-2020")
+#ggsave(filename = file.path("figures", "hepatitisb_delay_year4.png"), width = 7, height = 5)
 ```
 
 #### Check Date of Hepatitis B vaccination before schedule
@@ -895,12 +982,18 @@ head(hepatitisb_check)
 ### Polio
 
 ```{r}
-polio <- readRDS(file = file.path("..", "..", "tuann349_vad", "polio.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+polio <- readRDS(file = file.path("..", "tuann349_vad", "polio.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 polio$vweek <- week(polio$vacdate)
 
 pol <- polio[, .N, by = .(vyear, vmonth)]
 pol2 <- polio[, .N, by = .(vyear, vmonth, vweek)]
 pol_delay <- polio[, .N, by = .(vyear, vmonth, vdelay, vacname2)]
+
+polio$byear <- year(polio$dob)
+polio$bmonth <- month(polio$dob)
+
+polio$vsyear = year(polio$vsche)
+polio$vsmonth = month(polio$vsche)
 ```
 
 #### Overall
@@ -994,16 +1087,41 @@ ggplot(data = pol_delay[vyear >= 2017 & vyear <= 2020], aes(vdelay, color = fact
 ```
 
 ```{r}
-ggplot(data = polio[vyear >= 2017 & vyear <= 2020], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
+ggplot(data = polio[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
-  facet_grid(vacname2~ vyear, scale = "free_y") +
-  labs(y = "Months in year", x="Duration of delays in Polio vaccination (months)") +
+  facet_grid(vacname2 ~ vyear, scale = "free_y") +
+  labs(y = "Months of vaccine shots taken", x="Duration of delays in Polio vaccination (months)") +
   scale_color_discrete(name = "Year") +
-  ggtitle("Delays in Polio vaccination (months) by month and year")
+  ggtitle("Delays in Polio vaccination (months) by dates of vaccine shots")
 #ggsave(filename = file.path("figures", "polio_delay_year2.png"), width = 7, height = 5)
 ```
+
+```{r}
+ggplot(data = polio[vsyear >= 2017 & vsyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vsmonth), color = factor(vsyear))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2 ~ vsyear, scale = "free_y") +
+  labs(y = "Months schedule of vaccine shots", x="Duration of delays in Polio vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in Polio vaccination (months) by month and year scheduled")
+#ggsave(filename = file.path("figures", "polio_delay_year3.png"), width = 7, height = 5)
+```
+
+```{r}
+ggplot(data = polio[byear>= 2017 & byear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(bmonth), color = factor(byear))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~byear, scale = "free_y") +
+  labs(y = "Birth months", x="Duration of delays in Polio vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in Polio vaccination (months) for children born 2017-2020")
+#ggsave(filename = file.path("figures", "polio_delay_year4.png"), width = 7, height = 5)
+```
+
 
 #### Check Date of Polio vaccination before schedule
  
@@ -1042,7 +1160,7 @@ polio_check %>% select(-pid, -district, -commune, -type) %>% mutate(sex=factor(s
 ```
 
 ```{r}
-vaccine_vad <- readRDS(file = file.path("..", "..", "tuann349_vad", "vaccine_vad.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+vaccine_vad <- readRDS(file = file.path("..", "tuann349_vad", "vaccine_vad.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 vaccine_vad$vweek <- week(vaccine_vad$vacdate)
 vaccine_vad$byear <- year(vaccine_vad$dob)
 vaccine_vad$bmonth <- month(vaccine_vad$dob)

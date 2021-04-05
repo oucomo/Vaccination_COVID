@@ -150,11 +150,9 @@ vaccine_vad <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vac
                         vmonth = month(vacdate), 
                         vagem = as.period(interval(dob, vacdate), unit = 'month')$month,
                         vagem2 = ((vacdate - dob)/dyears(1)) * 12,
-                        vsche = dob + start*dmonths(1),
-                        vsyear = year(vsche),
-                        vsmonth = month(vsche))][, .(pid, province, district, commune, sex, dob, vacname, vacname2,
+                        vsche = dob + start * dmonths(1))][, .(pid, province, district, commune, sex, dob, vacname, vacname2,
                                                              epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate,
-                                                             vyear, vmonth, vagem, vagem2, vsche, vsyear, vsmonth,
+                                                             vyear, vmonth, vagem, vagem2, vsche, 
                                                              vdelay = vagem2 - start)][order(pid, vacdate)]
 rm(list = c("tmp1"))
 gc()
