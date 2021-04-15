@@ -25,6 +25,9 @@ library(lubridate)
 library(tidyverse)
 library(dplyr)
 
+library(plyr)
+
+
 mutate <- dplyr::mutate
 
 data_path <- file.path("..", "tuann349_vad")
@@ -136,10 +139,14 @@ fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean.csv"))
 load(file.path("..", "tuann349_vad", "vacinfo.Rdata"))
 names(vacinfo) <- c("vacname2", "epi", "shot", "start")
 
-memory.limit(size=60000)
+memory.limit(size=150000)
 
 tmp1 <- merge(dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2021-01-26")) & (vacdate >= dob) & (!vacname %in% c("BKT 0,1ml tu khoa (BCG)", "BKT 0.1ml (BCG)", "BKT 0.5 ml", "BKT 1 ml", "BKT 5 ml")), .(pid, province, district, commune, sex, dob, vacname, vacdate)],
               vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
+
+tmp1 <- merge(dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2021-01-26")) & (vacdate >= dob) & (!vacname %in% c("BKT 0,1ml tu khoa (BCG)", "BKT 0.1ml (BCG)", "BKT 0.5 ml", "BKT 1 ml", "BKT 5 ml")), .(pid, province, district, commune, sex, dob, vacname, vacdate)],
+              vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
+
 tmp2 <- tmp1[!is.na(vacname2)] %>%
   group_by(pid, vacname2) %>%
   arrange(vacdate) %>%
@@ -147,18 +154,29 @@ tmp2 <- tmp1[!is.na(vacname2)] %>%
   ungroup()
 
 tmp3 <- merge(tmp2, vacname3[, c("vacname", "tub", "heb", "dip", "per", "tes", "hib", "pol", "msl", "rub", "jev")], by = "vacname", all.x = TRUE, sort = FALSE)
+
+
+tmp1 <- merge(tmp3, vacinfo, by = c("vacname2", "shot"), all.x = TRUE, sort = FALSE)
+
+rm(list = c("tmp2", "tmp3"))
+
+gc()
+
+library(data.table)
+setDT(tmp1)
+
 tmp1 <- merge(tmp3, vacinfo, by = c("vacname2", "shot"), all.x = TRUE, sort = FALSE)
 rm(list = c("tmp2", "tmp3"))
 gc()
-
 
 vaccine_vad <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vacname2, 
                         epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate, 
                         vyear = year(vacdate), 
                         vmonth = month(vacdate), 
                         vagem = as.period(interval(dob, vacdate), unit = 'month')$month,
+                        vagem2 = ((vacdate - dob)/dyears(1)) * 12)][, .(pid, province, district, commune, sex, dob, vacname, vacname2,
                         vagem2 = ((vacdate - dob)/dyears(1)) * 12)][, 
-                                                                     .(pid, province, district, commune, sex, dob, vacname, vacname2, 
+                                                                     .(pid, province, district, commune, sex, dob, vacname, vacname2,
                                                                        epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate, 
                                                                        vyear, vmonth, vagem, vagem2,
                                                                        vdelay = vagem2 - start)][order(pid, vacdate)]
