@@ -9,7 +9,7 @@ library(data.table)
 library(lubridate)
 library(stringi)
 
-data_path <- file.path("..", "tuann349")
+data_path <- file.path("..", "sharefolder", "data", "tuann349")
 
 ## list all files
 files <- list.files(path = data_path, recursive = TRUE)

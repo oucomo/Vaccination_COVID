@@ -1,6 +1,6 @@
 ---
 title: "Data Cleaning"
-date: " 2021-01-26 (update: `r Sys.Date()`)"
+date: " 2021-04-13 (update: `r Sys.Date()`)"
 output:
     html_document:
       theme: cerulean
@@ -13,8 +13,7 @@ editor_options:
 ## Import and merge data
 
 ```{r}
-#source(file.path("code", "01_import_merge.R"))
-#source(file.path("code", "01_import_merge (win).R")) # for Windows version
+#source(file.path("code", "01_import_merge_private.R"))
 ```
 
 ## Load data
@@ -28,7 +27,7 @@ library(dplyr)
 mutate <- dplyr::mutate
 
 data_path <- file.path("..", "tuann349_vad")
-dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
+dat <- readRDS(file = file.path("..", "tuann349_vad", "private_clinic.rds"))
 ```
 
 ## Check data
@@ -69,11 +68,11 @@ range(error1$vacdate)
 table(error1$province)
 ```
 
-#### Date of vaccination after 2021-01-26
+#### Date of vaccination after 2020-12-31
 
 ```{r}
-error2 <- dat[vacdate >= ymd("2021-01-26")]
-error2$type <- "Date of vaccination after 2021-01-26"
+error2 <- dat[vacdate >= ymd("2020-12-31")]
+error2$type <- "Date of vaccination after 2020-12-31"
 nrow(error2)
 range(error2$vacdate)
 table(error2$province)
@@ -82,7 +81,7 @@ table(error2$province)
 #### Date of vaccination before date of birth
 
 ```{r}
-error3 <- dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2021-01-26")) & (vacdate < dob)]
+error3 <- dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2020-12-31")) & (vacdate < dob)]
 error3$type <- "Date of vaccination before date of birth"
 nrow(error3)
 table(error3$province)
@@ -94,7 +93,7 @@ table(error3$province)
 error <- rbindlist(l = list(error1[, .(pid, file, dob, vacdate, type)], 
                             error2[, .(pid, file, dob, vacdate, type)],
                             error3[, .(pid, file, dob, vacdate, type)]))
-fwrite(x = error, file = file.path(data_path, "error_datetime.csv"))
+fwrite(x = error, file = file.path(data_path, "error_private_datetime.csv"))
 ```
 
 #### unusual vaccine shot
@@ -124,9 +123,11 @@ error_shot <- rbind(
 ## Cleaned data
 
 ```{r}
-vaccine_clean <- dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2021-01-26")) & (vacdate >= dob) & (!vacname %in% c("BKT 0,1ml tu khoa (BCG)", "BKT 0.1ml (BCG)", "BKT 0.5 ml", "BKT 1 ml", "BKT 5 ml")), .(pid, province, district, commune, sex, dob, vacname, vacdate)]
-saveRDS(vaccine_clean, file = file.path("..", "tuann349_vad", "vaccine_clean.rds"))
-fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean.csv"))
+drop <- c("ACT-HIB", "Agrippal S1", "Anti-Rab 1000IU", "ANTITETA II. 1500IU", "Biosubtyl DL (Hop 10 goi)", "Biosubtyl DL (Hop 25 goi)", "Biosubtyl DL (Hop 30 goi)", "Biosubtyl DL (Hop 50 goi)", "Biosubtyl DL (Thung 50 hop)", "BKT 3ml", "Boryung JE vaccine", "D.T.VAX", "Epaxal", "Epocassa 4000IU", "Epokine Prefilled injection 2000IU/0,5ml", "Epotiv Inj. 2000IU", "Epotiv Inj. 4000IU", "Eriprove (Lo 1 lieu 0.5ml 1000IU)", "Eriprove (Lo 1 lieu 0.5ml 2000IU)", "Eriprove (Lo 1 lieu 1ml 2000IU)", "ERITROGEN 2000IU", "ERITROGEN 4000IU", "Genoepo 4000IU", "H-B-VAX II", "HAVRIX", "Hemapo 10000IU", "Hemapo 2000IU", "Huyet Thanh Khang Noc Ran Ho Dat", "Huyet Thanh Khang Noc Ran Luc Tre", "Lyssavac", "Mumps vaccine", "Nanokine 4000IU", "OKAVAX", "Pavivac", "PNEUMO 24", "Rabipur.", "Relipoietin 10000U", "SCI-B-VAC 10mg/1ml", "SCI-B-VAC 5mg/0.5ml", "TETRACT - HIB (Lo 10 lieu)", "TRITANRIX-HB", "TYPHERIX", "Vac xin thuong han vi Polysaccharide (Lo 2.5ml)", "VI vaccine", "Vinrab 1000 I.U", "VIVAXIM", "VIVOTIF", "Zerotyph cap")
+
+vaccine_clean <- dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2020-12-31")) & (vacdate >= dob) & (!vacname %in% drop), .(pid, province, district, commune, sex, dob, vacname, vacdate)]
+saveRDS(vaccine_clean, file = file.path("..", "tuann349_vad", "vaccine_clean_private.rds"))
+fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean_private.csv"))
 ```
 
 
