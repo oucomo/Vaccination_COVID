@@ -134,33 +134,35 @@ fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean_private.csv
 ## VAD 
 
 ```{r}
-load(file.path("..", "tuann349_vad", "vacinfo.Rdata"))
-names(vacinfo) <- c("vacname2", "epi", "shot", "start")
+load(file.path("..", "tuann349_vad", "vacinfo_private.Rdata"))
+names(vacinfo_private) <- c("vacname2", "epi", "shot", "start")
 
 tmp1 <- merge(vaccine_clean, vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
 tmp2 <- tmp1[, .(province, district, commune, sex, dob, vacname, vacdate, shot = order(vacdate)), by = .(pid, vacname2)][order(pid, vacname2, shot)]
-tmp3 <- merge(tmp2, vacname3[, c("vacname", "tub", "heb", "dip", "per", "tes", "hib", "pol", "msl", "rub", "jev")], by = "vacname", all.x = TRUE, sort = FALSE)
-tmp1 <- merge(tmp3, vacinfo, by = c("vacname2", "shot"), all.x = TRUE, sort = FALSE)
+tmp3 <- merge(tmp2, vacname3[, c("vacname", "public", "tub", "heb", "dip", "per", "tes", "hib", "pol", "msl", "rub", "jev", "strep", "men", "var", "typ", "hea", "inf", "rot", "hpv", "rab", "vib", "yel")], by = "vacname", all.x = TRUE, sort = FALSE)
+tmp1 <- merge(tmp3, vacinfo_private, by = c("vacname2", "shot"), all.x = TRUE, sort = FALSE)
 rm(list = c("tmp2", "tmp3"))
 gc()
 
+#install.packages("devtools")
+devtools::install_github("krlmlr/ulimit")
 
-vaccine_vad <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vacname2, 
-                        epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate, 
+vaccine_vad_private <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vacname2, 
+                        epi, public, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, strep, men, var, typ, hea, inf, rot, hpv, rab, vib, yel, shot, start, vacdate, 
                         vyear = year(vacdate), 
                         vmonth = month(vacdate), 
                         vagem = as.period(interval(dob, vacdate), unit = 'month')$month,
                         vagem2 = ((vacdate - dob)/dyears(1)) * 12,
                         vsche = dob + start * dmonths(1))][, .(pid, province, district, commune, sex, dob, vacname, vacname2,
-                                                             epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate,
+                                                             epi, public, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, strep, men, var, typ, hea, inf, rot, hpv, rab, vib, yel, shot, start, vacdate,
                                                              vyear, vmonth, vagem, vagem2, vsche, 
                                                              vdelay = vagem2 - start,
                                                              vsche = as.Date(vsche),
                                                              vdelayd = vsche - vacdate)][order(pid, vacdate)]
 rm(list = c("tmp1"))
 gc()
-saveRDS(vaccine_vad, file = file.path("..", "tuann349_vad", "vaccine_vad.rds"))
-fwrite(x = vaccine_vad, file = file.path(data_path, "vaccine_vad.csv"))
+saveRDS(vaccine_vad_private, file = file.path("..", "tuann349_vad", "vaccine_vad_private.rds"))
+fwrite(x = vaccine_vad_private, file = file.path(data_path, "vaccine_vad_private.csv"))
 
 measle <- vaccine_vad[msl == 1]
 saveRDS(measle, file = file.path("..", "tuann349_vad", "measle.rds"))
