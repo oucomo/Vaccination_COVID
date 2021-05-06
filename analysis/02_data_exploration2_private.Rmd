@@ -114,7 +114,7 @@ ggplot(data = individual_private_overall[year <= 2020], aes(x = factor(month), y
   scale_color_discrete(name = "Year") +
   theme_bw() +
   ggtitle("Total number of individuals born by month and year")
-#ggsave(filename = file.path("figures", "individual_private_month_year.png"), width = 7, height = 5)
+ggsave(filename = file.path("figures", "individual_private_month_year.png"), width = 15, height = 10)
 ```
 
 ```{r}
