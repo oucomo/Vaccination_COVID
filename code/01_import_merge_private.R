@@ -83,8 +83,8 @@ vaccine <- unique(dat[,  .(pid, province, district, commune, vacname, vacdate, d
 saveRDS(dat, file = file.path("..", "tuann349_vad", "private_clinic.rds"))
 fwrite(x = dat, file = file.path("..", "tuann349_vad", "private_clinic.csv"))
 
-saveRDS(child, file = file.path("..", "tuann349_vad", "individual_private.rds"))
-fwrite(x = child, file = file.path("..", "tuann349_vad", "individual_private.csv"))
+saveRDS(individual, file = file.path("..", "tuann349_vad", "individual_private.rds"))
+fwrite(x = individual, file = file.path("..", "tuann349_vad", "individual_private.csv"))
 
 saveRDS(vaccine, file = file.path("..", "tuann349_vad", "vaccine_private.rds"))
 fwrite(x = vaccine, file = file.path("..", "tuann349_vad", "vaccine_private.csv"))
