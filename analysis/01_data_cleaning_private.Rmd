@@ -127,7 +127,7 @@ drop <- c("ACT-HIB", "Agrippal S1", "Anti-Rab 1000IU", "ANTITETA II. 1500IU", "B
 
 vaccine_clean <- dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2020-12-31")) & (vacdate >= dob) & (!vacname %in% drop), .(pid, province, district, commune, sex, dob, vacname, vacdate)]
 saveRDS(vaccine_clean, file = file.path("..", "tuann349_vad", "vaccine_clean_private.rds"))
-fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean_private.csv"))
+#fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean_private.csv"))
 ```
 
 
@@ -150,19 +150,26 @@ devtools::install_github("krlmlr/ulimit", force = TRUE)
 vaccine_vad_private <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vacname2, 
                         epi, public, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, strep, men, var, typ, hea, inf, rot, hpv, rab, vib, yel, shot, start, vacdate, 
                         vyear = year(vacdate), 
-                        vmonth = month(vacdate), 
+                        vmonth = month(vacdate),
+                        vweek = week(vacdate),
+                        year = year(dob),
+                        month = month(dob),
+                        week = week(dob),
                         vagem = as.period(interval(dob, vacdate), unit = 'month')$month,
                         vagem2 = ((vacdate - dob)/dyears(1)) * 12,
                         vsche = dob + start * dmonths(1))][, .(pid, province, district, commune, sex, dob, vacname, vacname2,
                                                              epi, public, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, strep, men, var, typ, hea, inf, rot, hpv, rab, vib, yel, shot, start, vacdate,
-                                                             vyear, vmonth, vagem, vagem2, vsche, 
+                                                             vyear, vmonth, vweek, year, month, week, vagem, vagem2, 
                                                              vdelay = vagem2 - start,
                                                              vsche = as.Date(vsche),
+                                                             vsyear = year(vsche),
+                                                             vsmonth = month(vsche),
+                                                             vsweek = week(vsche),
                                                              vdelayd = vsche - vacdate)][order(pid, vacdate)]
 rm(list = c("tmp1"))
 gc()
 saveRDS(vaccine_vad_private, file = file.path("..", "tuann349_vad", "vaccine_vad_private.rds"))
-fwrite(x = vaccine_vad_private, file = file.path(data_path, "vaccine_vad_private.csv"))
+#fwrite(x = vaccine_vad_private, file = file.path(data_path, "vaccine_vad_private.csv"))
 
 vaccine_vad_private <- readRDS(file = file.path("..", "tuann349_vad", "vaccine_vad_private.rds"))
 
