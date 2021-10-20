@@ -70,6 +70,22 @@ for (i in c(1:length(files))) {
   dat <- rbindlist(l = list(dat, dati))
 }
 
+### additional variables
+dat$ddif <- (dat$vacdate - dat$dob)/ddays(1)
+
+### individual data
+individual <- unique(dat[,  .(pid, province, district, commune, dob, sex, file)])
+
+### vaccine data
+vaccine <- unique(dat[,  .(pid, province, district, commune, vacname, vacdate, ddif)])
+
 ### save
 saveRDS(dat, file = file.path("..", "tuann349_vad", "private_clinic.rds"))
 fwrite(x = dat, file = file.path("..", "tuann349_vad", "private_clinic.csv"))
+
+saveRDS(individual, file = file.path("..", "tuann349_vad", "individual_private.rds"))
+fwrite(x = individual, file = file.path("..", "tuann349_vad", "individual_private.csv"))
+
+saveRDS(vaccine, file = file.path("..", "tuann349_vad", "vaccine_private.rds"))
+fwrite(x = vaccine, file = file.path("..", "tuann349_vad", "vaccine_private.csv"))
+

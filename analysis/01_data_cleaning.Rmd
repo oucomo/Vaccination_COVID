@@ -37,7 +37,7 @@ dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
 
 ```{r}
 ## To increase the storage capacity
-memory.limit(size=60000)
+#memory.limit(size=60000)
 
 dupsID = dat %>%
   group_by(pid, vacdate, vacname) %>%
@@ -147,13 +147,22 @@ gc()
 vaccine_vad <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vacname2, 
                         epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate, 
                         vyear = year(vacdate), 
-                        vmonth = month(vacdate), 
+                        vmonth = month(vacdate),
+                        vweek = week(vacdate),
+                        year = year(dob),
+                        month = month(dob),
+                        week = week(dob),
                         vagem = as.period(interval(dob, vacdate), unit = 'month')$month,
                         vagem2 = ((vacdate - dob)/dyears(1)) * 12,
                         vsche = dob + start * dmonths(1))][, .(pid, province, district, commune, sex, dob, vacname, vacname2,
                                                              epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate,
-                                                             vyear, vmonth, vagem, vagem2, vsche, 
-                                                             vdelay = vagem2 - start)][order(pid, vacdate)]
+                                                             vyear, vmonth, vweek, year, month, week, vagem, vagem2,
+                                                             vdelay = vagem2 - start,
+                                                             vsche = as.Date(vsche),
+                                                             vsyear = year(vsche),
+                                                             vsmonth = month(vsche),
+                                                             vsweek = week(vsche),
+                                                             vdelayd = vsche - vacdate)][order(pid, vacdate)]
 rm(list = c("tmp1"))
 gc()
 saveRDS(vaccine_vad, file = file.path("..", "tuann349_vad", "vaccine_vad.rds"))
