@@ -1,5 +1,5 @@
 ---
-title: "Data Exploration"
+title: "Data Exploration 2"
 date: ' 2020-01-29 (update: `r Sys.Date()`)'
 output:
   html_document:
@@ -31,69 +31,70 @@ library(ggridges)
 ## Quick look at babies
 
 ```{r}
-#child <- readRDS(file = file.path("..", "tuann349_vad", "child.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+error_datetime <- read.csv(file.path("..", "..", "tuann349_vad", "error_datetime.csv")) %>% as.data.frame()
+error_duplicate <- read.csv(file.path("..", "..", "tuann349_vad", "error_duplicate.csv")) %>% as.data.frame()
 
-#child <- readRDS(file = file.path("..", "tuann349_vad", "child.rds"))
+child <- readRDS(file = file.path("..", "..", "tuann349_vad", "child.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 
-#child$year <- year(child$dob)
-#child$month <- month(child$dob)
-#child$week <- week(child$dob)
+child <- readRDS(file = file.path("..", "..", "tuann349_vad", "child.rds"))
 
-#child_overall <- child[, .N, by = .(year, month)]
-#child_overall2 <- child[, .N, by = .(year, month, week)]
-#child_province <- child[, .N, by = .(year, month, province)]
-#child_province2 <- child[, .N, by = .(year, month, week, province)]
-#child_sex <- child[, .N, by = .(year, month, sex)]
-#child_sex2 <- child[, .N, by = .(year, month, week, sex)]
-#child_province_sex <- child[, .N, by = .(year, month, province, sex)]
-#child_province_sex2 <- child[, .N, by = .(year, month, week, province, sex)]
+child$year <- year(child$dob)
+child$month <- month(child$dob)
+child$week <- week(child$dob)
+
+child_overall <- child[, .N, by = .(year, month)]
+child_overall2 <- child[, .N, by = .(year, month, week)]
+child_province <- child[, .N, by = .(year, month, province)]
+child_province2 <- child[, .N, by = .(year, month, week, province)]
+child_sex <- child[, .N, by = .(year, month, sex)]
+child_sex2 <- child[, .N, by = .(year, month, week, sex)]
+child_province_sex <- child[, .N, by = .(year, month, province, sex)]
+child_province_sex2 <- child[, .N, by = .(year, month, week, province, sex)]
  
-#save(child_overall, child_overall2, child_province, child_province2, child_sex, child_sex2, child_province_sex, child_province_sex2, file = file.path("..", "tuann349_vad", "child.Rdata"))
+save(child_overall, child_overall2, child_province, child_province2, child_sex, child_sex2, child_province_sex, child_province_sex2, file = file.path("..", "..", "tuann349_vad", "child.Rdata"))
 
-#tab_child_sum <- tbl_summary(child[year >= 2017 & year <= 2020, .(province, sex, factor(year))])
+tab_child_sum <- tbl_summary(child[year >= 2017 & year <= 2020, .(province, sex, factor(year))])
 
-#save(tab_child_sum, file = file.path("..", "tuann349_vad", "tab_child.Rdata"))
+save(tab_child_sum, file = file.path("..", "..", "tuann349_vad", "tab_child.Rdata"))
 ```
 
 ## Quick look at vaccine shots
 
 ```{r}
-memory.limit(size=1500000)
+#memory.limit(size=1500000)
 
-error_datetime <- read.csv(file.path("..", "tuann349_vad", "error_datetime.csv"))
-error_duplicate <- read.csv(file.path("..", "tuann349_vad", "error_duplicate.csv"))
+vaccine_vad <- readRDS(file = file.path("..", "..", "tuann349_vad", "vaccine_vad.rds"))
 
-vaccine_vad <- readRDS(file = file.path("..", "tuann349_vad", "vaccine_vad.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 vaccine_vad$vweek <- week(vaccine_vad$vacdate)
 vaccine_vad$vsche <- as.Date(vaccine_vad$vsche)
 vaccine_vad$vsyear <- year(vaccine_vad$vsche)
 vaccine_vad$vsmonth <- month(vaccine_vad$vsche)
 vaccine_vad$vsweek <- week(vaccine_vad$vsche)
 
-#vaccine_overall <- vaccine_vad[, .N, by = .(vyear, vmonth)]
-#vaccine_overall2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek)]
+vaccine_overall <- vaccine_vad[, .N, by = .(vyear, vmonth)]
+vaccine_overall2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek)]
 
-#vaccine_schedule <- vaccine_vad[, .N, by = .(vsyear, vsmonth)]
-#vaccine_schedule2 <- vaccine_vad[, .N, by = .(vsyear, vsmonth, vsweek)]
+vaccine_schedule <- vaccine_vad[, .N, by = .(vsyear, vsmonth)]
+vaccine_schedule2 <- vaccine_vad[, .N, by = .(vsyear, vsmonth, vsweek)]
 
-#vaccine_province <- vaccine_vad[, .N, by = .(vyear, vmonth, province)]
-#vaccine_province2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province)]
-#vaccine_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, vacname2)]
-#vaccine_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, vacname2)]
-#vaccine_province_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, province, vacname2)]
-#vaccine_province_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province, vacname2)]
-#save(vaccine_overall, vaccine_overall2, vaccine_province, vaccine_province2, vaccine_vacname, vaccine_vacname2, vaccine_province_vacname, vaccine_province_vacname2, file = file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
+vaccine_province <- vaccine_vad[, .N, by = .(vyear, vmonth, province)]
+vaccine_province2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province)]
+vaccine_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, vacname2)]
+vaccine_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, vacname2)]
+vaccine_province_vacname <- vaccine_vad[, .N, by = .(vyear, vmonth, province, vacname2)]
+vaccine_province_vacname2 <- vaccine_vad[, .N, by = .(vyear, vmonth, vweek, province, vacname2)]
+save(vaccine_overall, vaccine_overall2, vaccine_province, vaccine_province2, vaccine_vacname, vaccine_vacname2, vaccine_province_vacname, vaccine_province_vacname2, file = file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
  
-#tab_vac_sum <- tbl_summary(vaccine_vad[vyear >= 2017 & vyear <= 2020, .(province, vacname2, factor(vyear))])
-#save(tab_vac_sum, file = file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
+tab_vac_sum <- tbl_summary(vaccine_vad[vyear >= 2017 & vyear <= 2020, .(province, vacname2, factor(vyear))])
+save(tab_vac_sum, file = file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
 ```
 
 ```{r}
-load(file.path("..", "tuann349_vad", "vaccine.Rdata"))
-load(file.path("..", "tuann349_vad", "tab_vaccine.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "vaccine.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "tab_vaccine.Rdata"))
 
-load(file.path("..", "tuann349_vad", "child.Rdata"))
-load(file.path("..", "tuann349_vad", "tab_child.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "child.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "tab_child.Rdata"))
 ```
 
 ### Descriptive table
@@ -290,18 +291,11 @@ ggplot(data = vaccine_province_vacname[vyear >= 2017 & vyear <= 2020 & province 
 ### Measle
 
 ```{r}
-measle <- readRDS(file = file.path("..", "tuann349_vad", "measle.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
-measle$vweek <- week(measle$vacdate)
+measle <- readRDS(file = file.path("..", "..", "tuann349_vad", "measle.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 
-mea <- measle[, .N, by = .(vyear, vmonth)]
-mea2 <- measle[, .N, by = .(vyear, vmonth, vweek)]
-mea_delay <- measle[, .N, by = .(vyear, vmonth, vdelay, vacname2)]
-
-measle$byear <- year(measle$dob)
-measle$bmonth <- month(measle$dob)
-
-measle$vsyear = year(measle$vsche)
-measle$vsmonth = month(measle$vsche)
+#mea <- measle[, .N, by = .(vyear, vmonth)]
+#mea2 <- measle[, .N, by = .(vyear, vmonth, vweek)]
+#mea_delay <- measle[, .N, by = .(vyear, vmonth, vdelayd, vacname2)]
 ```
 
 #### Overall
@@ -369,7 +363,7 @@ ggplot(mea2[vyear >= 2017 & vyear <= 2020], aes(vweek, N/1000, color = factor(vy
 #### Delays in vaccination (months)
 
 ```{r, eval=FALSE, echo=FALSE}
-ggplot(data = measle[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = factor(vmonth), y = vdelay, color = factor(vyear))) +
+ggplot(data = measle[vyear >= 2017 & vyear <= 2020 & vdelayd>=0], aes(x = factor(vmonth), y = vdelayd, color = factor(vyear))) +
   geom_point() +
   facet_grid(vacname2 ~ vyear, scale = "free_y") +
   #geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
@@ -383,7 +377,7 @@ ggplot(data = measle[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = factor(
 ```
 
 ```{r}
-ggplot(data = measle[vyear >= 2017 & vyear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vmonth), color = factor(vyear))) +
+ggplot(data = measle[vyear >= 2017 & vyear <= 2020 & vdelayd>=0], aes(x = vdelayd, y = factor(vmonth), color = factor(vyear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
@@ -407,15 +401,110 @@ ggplot(data = measle[vsyear >= 2017 & vsyear <= 2020 & vdelay>=0], aes(x = vdela
 ```
 
 ```{r}
-ggplot(data = measle[byear>= 2017 & byear <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(bmonth), color = factor(byear))) +
+ggplot(data = measle[year>= 2017 & year <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(month), color = factor(year))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
-  facet_grid(vacname2~byear, scale = "free_y") +
+  facet_grid(vacname2~year, scale = "free_y") +
   labs(y = "Birth months", x="Duration of delays in Measle vaccination (months)") +
   scale_color_discrete(name = "Year") +
   ggtitle("Delays in Measle vaccination (months) for children born 2017-2020")
 #ggsave(filename = file.path("figures", "measle_delay_year4.png"), width = 7, height = 5)
+```
+
+```{r}
+#load(file.path("..", "..", "tuann349_vad", "vacinfo.Rdata"))
+#load(file.path("..", "..", "tuann349_vad", "vacinfo_private.Rdata"))
+
+measle_delay <- measle %>%
+  select(pid, province, district, commune, sex, dob, vacname2, epi, msl, start, vacdate, vyear, vmonth, year, month, vagem, vagem2, vdelay, vsche, vsyear, vsmonth, vdelayd) %>% filter(year>=2017 & year<=2021) %>%
+  mutate(vdelay_outcome=ifelse(vdelay>0,1,0),
+         age=2021-year,
+         sex=as.numeric(sex),
+         sex=recode(sex, "0"="0", "1"="1", "2"="1"),
+         sex=factor(sex, levels=c(0,1), labels=c("F","M")))
+```
+
+```{r}
+t1 <- measle_delay %>% select(age, sex, province, vacname2, vdelay, vdelay_outcome) %>% 
+  tbl_summary(
+  by=vdelay_outcome, # split table by group
+  percent = "row",
+  missing = "no" # don't list missing data separately
+  ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
+  modify_header(label = "**Variable**") %>% # update the column header
+  bold_labels() 
+t1
+```
+
+```{r}
+#install.packages("rms")
+library("rms")
+theme_set(theme_bw())
+dd <- datadist(measle_delay)
+options(datadist="dd")
+dd
+
+fit1 <- lrm(vdelay_outcome~age, data=measle_delay)
+anova(fit1)
+pred <- Predict(fit1, age=1:4, fun=plogis)
+ggplot(pred)
+```
+
+```{r}
+fit2 <- lrm(vdelay_outcome~sex, data=measle_delay)
+anova(fit2)
+pred <- Predict(fit2, sex=NA, fun=plogis)
+ggplot(pred)
+```
+
+```{r}
+fit3 <- lrm(vdelay_outcome~province, data=measle_delay)
+anova(fit3)
+pred <- Predict(fit3, province=NA, fun=plogis)
+ggplot(pred)
+```
+
+```{r}
+fit4 <- lrm(vdelay_outcome~vacname2, data=measle_delay)
+anova(fit4)
+pred <- Predict(fit4, vacname2=NA, fun=plogis)
+ggplot(pred)
+```
+
+```{r}
+fit5 <- lrm(vdelay_outcome~vmonth, data=measle_delay)
+anova(fit5)
+pred <- Predict(fit5, vmonth=NA, fun=plogis)
+ggplot(pred)
+```
+
+```{r}
+measle_model <- measle_delay %>% select (vdelay_outcome, sex, age, province)
+model <- glm(vdelay_outcome~., family = binomial(link = "logit"), data=measle_model)
+summary(model)
+
+probabilities <- predict(model, type = "response")
+predicted.classes <- ifelse(probabilities > 0.5, "Delay", "No delay")
+head(predicted.classes)
+
+# Select only numeric predictors
+measle_model <- na.omit(measle_model)
+mydata <- measle_model %>%
+  dplyr::select_if(is.numeric) 
+predictors <- colnames(mydata)
+# Bind the logit and tidying the data for plot
+mydata <- mydata %>%
+  mutate(logit = log(probabilities/(1-probabilities))) %>%
+  gather(key = "predictors", value = "predictor.value", -logit)
+
+ggplot(mydata, aes(logit, predictor.value))+
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "loess") + 
+  theme_bw() + 
+  facet_wrap(~predictors, scales = "free_y")
 ```
 
 ```{r, eval=FALSE, echo=FALSE}

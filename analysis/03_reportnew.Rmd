@@ -1,0 +1,38 @@
+---
+title: "Report"
+date: " 2020-05-25 (update: `r Sys.Date()`)"
+output:
+    html_document:
+      theme: cerulean
+      toc: yes
+      toc_float: yes
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(data.table)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(gt)
+library(gtsummary)
+data_path <- file.path("..", "tuann349_vad")
+```
+
+## Questions
+
+## Dataset
+
+```{r}
+# public dataset
+public <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds")) # 30020596 records
+
+# private dataset
+private <- readRDS(file = file.path("..", "tuann349_vad", "private_clinic.rds")) # 38411554 records
+```
+
+
+## Methods
+
+## Results

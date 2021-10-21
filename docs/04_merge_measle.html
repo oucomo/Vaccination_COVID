@@ -1,0 +1,3495 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data Exploration</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Vaccination_COVID</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/oucomo/Vaccination_COVID">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Data Exploration</h1>
+<h4 class="date">2020-01-29 (update: 2021-10-20)</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-10-20
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Vaccination_COVID/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210126code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210126)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210126code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210126)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
+</p>
+</div>
+<div id="strongCachestrongdetected" class="panel-collapse collapse">
+<div class="panel-body">
+The following chunks had caches available:
+<ul>
+<li>
+unnamed-chunk-10
+</li>
+<li>
+unnamed-chunk-11
+</li>
+<li>
+unnamed-chunk-12
+</li>
+<li>
+unnamed-chunk-13
+</li>
+<li>
+unnamed-chunk-14
+</li>
+<li>
+unnamed-chunk-15
+</li>
+<li>
+unnamed-chunk-16
+</li>
+<li>
+unnamed-chunk-2
+</li>
+<li>
+unnamed-chunk-3
+</li>
+<li>
+unnamed-chunk-4
+</li>
+<li>
+unnamed-chunk-5
+</li>
+<li>
+unnamed-chunk-6
+</li>
+<li>
+unnamed-chunk-7
+</li>
+<li>
+unnamed-chunk-8
+</li>
+<li>
+unnamed-chunk-9
+</li>
+</ul>
+<p>To ensure reproducibility of the results, delete the cache directory <code>04_merge_measle_cache</code> and re-run the analysis. To have workflowr automatically delete the cache directory prior to building the file, set <code>delete_cache = TRUE</code> when running <code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree30f1b6cd69d838e441242d401d7d2492beac1ad3targetblank30f1b6ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/30f1b6cd69d838e441242d401d7d2492beac1ad3" target="_blank">30f1b6c</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree30f1b6cd69d838e441242d401d7d2492beac1ad3targetblank30f1b6ca" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/30f1b6cd69d838e441242d401d7d2492beac1ad3" target="_blank">30f1b6c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/04_merge_measle_cache/
+
+Untracked files:
+    Untracked:  analysis/04_merge_measle.Rmd
+    Untracked:  figures/child_all_month_year.png
+    Untracked:  figures/child_all_month_year2.png
+    Untracked:  figures/child_all_province_year.png
+    Untracked:  figures/measle_all_delay_age.png
+    Untracked:  figures/measle_all_delay_period.png
+    Untracked:  figures/measle_all_delay_province.png
+    Untracked:  figures/measle_all_delay_type.png
+    Untracked:  figures/measle_all_delay_year.png
+    Untracked:  figures/measle_all_month_year.png
+    Untracked:  figures/measle_all_month_year2.png
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache.lazy = FALSE,
+                      tidy.opts=list(width.cutoff=60),
+                      tidy=TRUE)
+
+library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.6.2
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(data.table)
+library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>✓ ggplot2 3.3.3     ✓ purrr   0.3.4
+✓ tibble  3.1.0     ✓ dplyr   1.0.5
+✓ tidyr   1.1.3     ✓ stringr 1.4.0
+✓ readr   1.4.0     ✓ forcats 0.5.1</code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+x dplyr::between()   masks data.table::between()
+x dplyr::filter()    masks stats::filter()
+x dplyr::first()     masks data.table::first()
+x dplyr::lag()       masks stats::lag()
+x dplyr::last()      masks data.table::last()
+x purrr::transpose() masks data.table::transpose()</code></pre>
+<pre class="r"><code>library(lubridate)</code></pre>
+<pre><code>
+Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:data.table&#39;:
+
+    hour, isoweek, mday, minute, month, quarter, second, wday, week,
+    yday, year</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(gt)
+library(gtsummary)
+library(ggridges)</code></pre>
+<div id="children-merge" class="section level3">
+<h3>Children merge</h3>
+</div>
+<div id="descriptive-table" class="section level3">
+<h3>Descriptive table</h3>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#pphsnnkypr .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#pphsnnkypr .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#pphsnnkypr .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#pphsnnkypr .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#pphsnnkypr .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#pphsnnkypr .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#pphsnnkypr .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#pphsnnkypr .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pphsnnkypr .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pphsnnkypr .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#pphsnnkypr .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#pphsnnkypr .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#pphsnnkypr .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#pphsnnkypr .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pphsnnkypr .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pphsnnkypr .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#pphsnnkypr .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#pphsnnkypr .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pphsnnkypr .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#pphsnnkypr .gt_left {
+  text-align: left;
+}
+
+#pphsnnkypr .gt_center {
+  text-align: center;
+}
+
+#pphsnnkypr .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#pphsnnkypr .gt_font_normal {
+  font-weight: normal;
+}
+
+#pphsnnkypr .gt_font_bold {
+  font-weight: bold;
+}
+
+#pphsnnkypr .gt_font_italic {
+  font-style: italic;
+}
+
+#pphsnnkypr .gt_super {
+  font-size: 65%;
+}
+
+#pphsnnkypr .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="pphsnnkypr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>N = 8,727,357</strong><sup class="gt_footnote_marks">1</sup></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">province</td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">An Giang</td>
+      <td class="gt_row gt_center">33,741 (0.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ba Ria - Vung Tau</td>
+      <td class="gt_row gt_center">60,256 (0.7%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Giang</td>
+      <td class="gt_row gt_center">253,461 (2.9%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Kan</td>
+      <td class="gt_row gt_center">28,856 (0.3%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Lieu</td>
+      <td class="gt_row gt_center">18,623 (0.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Ninh</td>
+      <td class="gt_row gt_center">212,879 (2.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ben Tre</td>
+      <td class="gt_row gt_center">37,383 (0.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Dinh</td>
+      <td class="gt_row gt_center">53,997 (0.6%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Duong</td>
+      <td class="gt_row gt_center">154,315 (1.8%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Phuoc</td>
+      <td class="gt_row gt_center">43,989 (0.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Thuan</td>
+      <td class="gt_row gt_center">33,832 (0.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ca Mau</td>
+      <td class="gt_row gt_center">12,740 (0.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Can Tho</td>
+      <td class="gt_row gt_center">52,018 (0.6%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Cao Bang</td>
+      <td class="gt_row gt_center">47,200 (0.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Da Nang</td>
+      <td class="gt_row gt_center">78,846 (0.9%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Lak</td>
+      <td class="gt_row gt_center">92,554 (1.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Nong</td>
+      <td class="gt_row gt_center">21,019 (0.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dien Bien</td>
+      <td class="gt_row gt_center">65,264 (0.7%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Nai</td>
+      <td class="gt_row gt_center">200,967 (2.3%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Thap</td>
+      <td class="gt_row gt_center">36,976 (0.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Gia Lai</td>
+      <td class="gt_row gt_center">20,551 (0.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Giang</td>
+      <td class="gt_row gt_center">87,763 (1.0%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Nam</td>
+      <td class="gt_row gt_center">105,721 (1.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Noi</td>
+      <td class="gt_row gt_center">1,793,483 (21%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Tinh</td>
+      <td class="gt_row gt_center">165,714 (1.9%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hai Duong</td>
+      <td class="gt_row gt_center">284,535 (3.3%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hai Phong</td>
+      <td class="gt_row gt_center">306,214 (3.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hau Giang</td>
+      <td class="gt_row gt_center">13,779 (0.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hoa Binh</td>
+      <td class="gt_row gt_center">90,388 (1.0%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hung Yen</td>
+      <td class="gt_row gt_center">182,936 (2.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Khanh Hoa</td>
+      <td class="gt_row gt_center">54,602 (0.6%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kien Giang</td>
+      <td class="gt_row gt_center">25,385 (0.3%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kon Tum</td>
+      <td class="gt_row gt_center">12,295 (0.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lai Chau</td>
+      <td class="gt_row gt_center">47,302 (0.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lam Dong</td>
+      <td class="gt_row gt_center">43,507 (0.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lang Son</td>
+      <td class="gt_row gt_center">79,835 (0.9%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lao Cai</td>
+      <td class="gt_row gt_center">82,251 (0.9%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Long An</td>
+      <td class="gt_row gt_center">63,350 (0.7%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Nam Dinh</td>
+      <td class="gt_row gt_center">273,105 (3.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Nghe An</td>
+      <td class="gt_row gt_center">455,941 (5.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ninh Binh</td>
+      <td class="gt_row gt_center">128,043 (1.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ninh Thuan</td>
+      <td class="gt_row gt_center">20,477 (0.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Phu Tho</td>
+      <td class="gt_row gt_center">196,430 (2.3%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Phu Yen</td>
+      <td class="gt_row gt_center">19,393 (0.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Binh</td>
+      <td class="gt_row gt_center">17,193 (0.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Nam</td>
+      <td class="gt_row gt_center">56,968 (0.7%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Ngai</td>
+      <td class="gt_row gt_center">47,930 (0.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Ninh</td>
+      <td class="gt_row gt_center">184,402 (2.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Tri</td>
+      <td class="gt_row gt_center">15,890 (0.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Soc Trang</td>
+      <td class="gt_row gt_center">24,516 (0.3%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Son La</td>
+      <td class="gt_row gt_center">113,750 (1.3%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tay Ninh</td>
+      <td class="gt_row gt_center">38,891 (0.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thai Binh</td>
+      <td class="gt_row gt_center">205,053 (2.3%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thai Nguyen</td>
+      <td class="gt_row gt_center">151,694 (1.7%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thanh Hoa</td>
+      <td class="gt_row gt_center">467,568 (5.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thanh pho Ho Chi Minh</td>
+      <td class="gt_row gt_center">821,425 (9.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thua Thien Hue</td>
+      <td class="gt_row gt_center">45,881 (0.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tien Giang</td>
+      <td class="gt_row gt_center">52,579 (0.6%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tra Vinh</td>
+      <td class="gt_row gt_center">18,514 (0.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tuyen Quang</td>
+      <td class="gt_row gt_center">79,211 (0.9%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Vinh Long</td>
+      <td class="gt_row gt_center">28,801 (0.3%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Vinh Phuc</td>
+      <td class="gt_row gt_center">182,155 (2.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Yen Bai</td>
+      <td class="gt_row gt_center">83,020 (1.0%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">sex</td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">F</td>
+      <td class="gt_row gt_center">4,622,994 (53%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">M</td>
+      <td class="gt_row gt_center">4,104,363 (47%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">age</td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">1</td>
+      <td class="gt_row gt_center">1,407,263 (16%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2</td>
+      <td class="gt_row gt_center">2,439,800 (28%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">3</td>
+      <td class="gt_row gt_center">2,599,612 (30%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">4</td>
+      <td class="gt_row gt_center">2,280,682 (26%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">type</td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">both</td>
+      <td class="gt_row gt_center">4,034,934 (46%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">public</td>
+      <td class="gt_row gt_center">2,210,096 (25%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">private</td>
+      <td class="gt_row gt_center">2,482,327 (28%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">type2</td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">private</td>
+      <td class="gt_row gt_center">4,499,794 (52%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">public</td>
+      <td class="gt_row gt_center">4,227,563 (48%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">V6</td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2017</td>
+      <td class="gt_row gt_center">2,280,682 (26%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2018</td>
+      <td class="gt_row gt_center">2,599,612 (30%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2019</td>
+      <td class="gt_row gt_center">2,439,800 (28%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2020</td>
+      <td class="gt_row gt_center">1,407,263 (16%)</td>
+    </tr>
+  </tbody>
+  
+  <tfoot>
+    <tr class="gt_footnotes">
+      <td colspan="2">
+        <p class="gt_footnote">
+          <sup class="gt_footnote_marks">
+            <em>1</em>
+          </sup>
+           
+          n (%)
+          <br />
+        </p>
+      </td>
+    </tr>
+  </tfoot>
+</table></div>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#qismozzsxu .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#qismozzsxu .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#qismozzsxu .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#qismozzsxu .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#qismozzsxu .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#qismozzsxu .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#qismozzsxu .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#qismozzsxu .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#qismozzsxu .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#qismozzsxu .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#qismozzsxu .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#qismozzsxu .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#qismozzsxu .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#qismozzsxu .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qismozzsxu .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qismozzsxu .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#qismozzsxu .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#qismozzsxu .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qismozzsxu .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#qismozzsxu .gt_left {
+  text-align: left;
+}
+
+#qismozzsxu .gt_center {
+  text-align: center;
+}
+
+#qismozzsxu .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#qismozzsxu .gt_font_normal {
+  font-weight: normal;
+}
+
+#qismozzsxu .gt_font_bold {
+  font-weight: bold;
+}
+
+#qismozzsxu .gt_font_italic {
+  font-style: italic;
+}
+
+#qismozzsxu .gt_super {
+  font-size: 65%;
+}
+
+#qismozzsxu .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="qismozzsxu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Variable</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>N</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>both</strong>, N = 4,034,934<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>public</strong>, N = 2,210,096<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>private</strong>, N = 2,482,327<sup class="gt_footnote_marks">1</sup></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">age</td>
+      <td class="gt_row gt_center">8,727,357</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">1</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">592,605 (42%)</td>
+      <td class="gt_row gt_center">506,363 (36%)</td>
+      <td class="gt_row gt_center">308,295 (22%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1,246,130 (51%)</td>
+      <td class="gt_row gt_center">508,069 (21%)</td>
+      <td class="gt_row gt_center">685,601 (28%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">3</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1,265,434 (49%)</td>
+      <td class="gt_row gt_center">522,437 (20%)</td>
+      <td class="gt_row gt_center">811,741 (31%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">4</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">930,765 (41%)</td>
+      <td class="gt_row gt_center">673,227 (30%)</td>
+      <td class="gt_row gt_center">676,690 (30%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">sex</td>
+      <td class="gt_row gt_center">8,727,357</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">F</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2,179,985 (47%)</td>
+      <td class="gt_row gt_center">1,142,067 (25%)</td>
+      <td class="gt_row gt_center">1,300,942 (28%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">M</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1,854,949 (45%)</td>
+      <td class="gt_row gt_center">1,068,029 (26%)</td>
+      <td class="gt_row gt_center">1,181,385 (29%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">province</td>
+      <td class="gt_row gt_center">8,727,357</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">An Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">33,739 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ba Ria - Vung Tau</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">87 (0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">60,169 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">107,640 (42%)</td>
+      <td class="gt_row gt_center">136,356 (54%)</td>
+      <td class="gt_row gt_center">9,465 (3.7%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Kan</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">7,971 (28%)</td>
+      <td class="gt_row gt_center">20,317 (70%)</td>
+      <td class="gt_row gt_center">568 (2.0%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Lieu</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">3 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">18,620 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Ninh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">164,417 (77%)</td>
+      <td class="gt_row gt_center">47,153 (22%)</td>
+      <td class="gt_row gt_center">1,309 (0.6%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ben Tre</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">37,382 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Dinh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">7 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">53,990 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Duong</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">155 (0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">154,160 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Phuoc</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">7 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">43,982 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Thuan</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">4 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">33,828 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ca Mau</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">12,738 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Can Tho</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">10 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">52,008 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Cao Bang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">13,026 (28%)</td>
+      <td class="gt_row gt_center">33,898 (72%)</td>
+      <td class="gt_row gt_center">276 (0.6%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Da Nang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">34 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">78,812 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Lak</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">10 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">92,544 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Nong</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">6 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">21,013 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dien Bien</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">13,088 (20%)</td>
+      <td class="gt_row gt_center">51,937 (80%)</td>
+      <td class="gt_row gt_center">239 (0.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Nai</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">82 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">200,885 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Thap</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">3 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">36,973 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Gia Lai</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">5 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">20,546 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">12,174 (14%)</td>
+      <td class="gt_row gt_center">75,172 (86%)</td>
+      <td class="gt_row gt_center">417 (0.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Nam</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">58,924 (56%)</td>
+      <td class="gt_row gt_center">45,677 (43%)</td>
+      <td class="gt_row gt_center">1,120 (1.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Noi</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1,615,561 (90%)</td>
+      <td class="gt_row gt_center">148,962 (8.3%)</td>
+      <td class="gt_row gt_center">28,960 (1.6%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Tinh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">73,366 (44%)</td>
+      <td class="gt_row gt_center">89,744 (54%)</td>
+      <td class="gt_row gt_center">2,604 (1.6%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hai Duong</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">208,679 (73%)</td>
+      <td class="gt_row gt_center">71,058 (25%)</td>
+      <td class="gt_row gt_center">4,798 (1.7%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hai Phong</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">194,297 (63%)</td>
+      <td class="gt_row gt_center">95,367 (31%)</td>
+      <td class="gt_row gt_center">16,550 (5.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hau Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">10 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">13,769 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hoa Binh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">35,540 (39%)</td>
+      <td class="gt_row gt_center">52,969 (59%)</td>
+      <td class="gt_row gt_center">1,879 (2.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hung Yen</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">127,860 (70%)</td>
+      <td class="gt_row gt_center">53,144 (29%)</td>
+      <td class="gt_row gt_center">1,932 (1.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Khanh Hoa</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">11 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">54,591 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kien Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">5 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">25,380 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kon Tum</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">4 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">12,291 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lai Chau</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">6,722 (14%)</td>
+      <td class="gt_row gt_center">40,304 (85%)</td>
+      <td class="gt_row gt_center">276 (0.6%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lam Dong</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">6 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">43,501 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lang Son</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">27,098 (34%)</td>
+      <td class="gt_row gt_center">51,789 (65%)</td>
+      <td class="gt_row gt_center">948 (1.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lao Cai</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">20,170 (25%)</td>
+      <td class="gt_row gt_center">59,891 (73%)</td>
+      <td class="gt_row gt_center">2,190 (2.7%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Long An</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">11 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">63,339 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Nam Dinh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">192,530 (70%)</td>
+      <td class="gt_row gt_center">78,085 (29%)</td>
+      <td class="gt_row gt_center">2,490 (0.9%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Nghe An</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">201,856 (44%)</td>
+      <td class="gt_row gt_center">240,572 (53%)</td>
+      <td class="gt_row gt_center">13,513 (3.0%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ninh Binh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">58,501 (46%)</td>
+      <td class="gt_row gt_center">66,888 (52%)</td>
+      <td class="gt_row gt_center">2,654 (2.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ninh Thuan</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">20,476 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Phu Tho</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">140,953 (72%)</td>
+      <td class="gt_row gt_center">54,761 (28%)</td>
+      <td class="gt_row gt_center">716 (0.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Phu Yen</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">19,392 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Binh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">10 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">17,183 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Nam</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">3 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">56,965 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Ngai</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">3 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">47,927 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Ninh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">130,239 (71%)</td>
+      <td class="gt_row gt_center">53,295 (29%)</td>
+      <td class="gt_row gt_center">868 (0.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Tri</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">3 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">15,887 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Soc Trang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">24,515 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Son La</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">20,818 (18%)</td>
+      <td class="gt_row gt_center">92,558 (81%)</td>
+      <td class="gt_row gt_center">374 (0.3%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tay Ninh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">8 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">38,883 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thai Binh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">100,816 (49%)</td>
+      <td class="gt_row gt_center">97,811 (48%)</td>
+      <td class="gt_row gt_center">6,426 (3.1%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thai Nguyen</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">82,303 (54%)</td>
+      <td class="gt_row gt_center">67,310 (44%)</td>
+      <td class="gt_row gt_center">2,081 (1.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thanh Hoa</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">248,191 (53%)</td>
+      <td class="gt_row gt_center">215,712 (46%)</td>
+      <td class="gt_row gt_center">3,665 (0.8%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thanh pho Ho Chi Minh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">377 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">821,048 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thua Thien Hue</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">7 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">45,874 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tien Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">52,577 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tra Vinh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">8 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">18,506 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tuyen Quang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">18,893 (24%)</td>
+      <td class="gt_row gt_center">59,190 (75%)</td>
+      <td class="gt_row gt_center">1,128 (1.4%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Vinh Long</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2 (&lt;0.1%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">28,799 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Vinh Phuc</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">126,002 (69%)</td>
+      <td class="gt_row gt_center">53,960 (30%)</td>
+      <td class="gt_row gt_center">2,193 (1.2%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Yen Bai</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">26,408 (32%)</td>
+      <td class="gt_row gt_center">56,216 (68%)</td>
+      <td class="gt_row gt_center">396 (0.5%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">type2</td>
+      <td class="gt_row gt_center">8,727,357</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">private</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2,017,467 (45%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">2,482,327 (55%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">public</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2,017,467 (48%)</td>
+      <td class="gt_row gt_center">2,210,096 (52%)</td>
+      <td class="gt_row gt_center">0 (0%)</td>
+    </tr>
+  </tbody>
+  
+  <tfoot>
+    <tr class="gt_footnotes">
+      <td colspan="5">
+        <p class="gt_footnote">
+          <sup class="gt_footnote_marks">
+            <em>1</em>
+          </sup>
+           
+          n (%)
+          <br />
+        </p>
+      </td>
+    </tr>
+  </tfoot>
+</table></div>
+</div>
+<div id="child-overall" class="section level3">
+<h3>Child overall</h3>
+</div>
+<div id="overall" class="section level3">
+<h3>Overall</h3>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="measle-merge" class="section level3">
+<h3>Measle merge</h3>
+<pre><code>               pid             vacname2 province district commune sex
+1: 101010119700003 Measle_Mumps_Rubella   Ha Noi  Ba Dinh Phuc Xa   1
+2: 101010119720006 Measle_Mumps_Rubella   Ha Noi  Ba Dinh Phuc Xa   1
+3: 101010119730013 Measle_Mumps_Rubella   Ha Noi  Ba Dinh Phuc Xa   1
+4: 101010119740006 Measle_Mumps_Rubella   Ha Noi  Ba Dinh Phuc Xa   1
+5: 101010119740011 Measle_Mumps_Rubella   Ha Noi  Ba Dinh Phuc Xa   0
+6: 101010119760008 Measle_Mumps_Rubella   Ha Noi  Ba Dinh Phuc Xa   1
+          dob             vacname2    vacdate shot year month week start vyear
+1: 1970-12-26 Measle_Mumps_Rubella 2018-01-22    1 1970    12   52    NA  2018
+2: 1972-05-28 Measle_Mumps_Rubella 2019-05-08    1 1972     5   22    NA  2019
+3: 1973-12-13 Measle_Mumps_Rubella 2019-11-19    1 1973    12   50    NA  2019
+4: 1974-04-08 Measle_Mumps_Rubella 2018-11-28    1 1974     4   14    NA  2018
+5: 1974-07-05 Measle_Mumps_Rubella 2019-10-03    1 1974     7   27    NA  2019
+6: 1976-03-05 Measle_Mumps_Rubella 2019-05-30    1 1976     3   10    NA  2019
+   vmonth vweek vagem   vagem2 vdelay vsche vsyear vsmonth vsweek vdelayd
+1:      1     4   564 564.8953     NA  &lt;NA&gt;     NA      NA     NA    &lt;NA&gt;
+2:      5    19   563 563.3183     NA  &lt;NA&gt;     NA      NA     NA    &lt;NA&gt;
+3:     11    47   551 551.1951     NA  &lt;NA&gt;     NA      NA     NA    &lt;NA&gt;
+4:     11    48   535 535.6879     NA  &lt;NA&gt;     NA      NA     NA    &lt;NA&gt;
+5:     10    40   542 542.9487     NA  &lt;NA&gt;     NA      NA     NA    &lt;NA&gt;
+6:      5    22   518 518.8008     NA  &lt;NA&gt;     NA      NA     NA    &lt;NA&gt;
+      type   type2
+1: private private
+2: private private
+3: private private
+4: private private
+5: private private
+6: private private</code></pre>
+<div id="overall-1" class="section level4">
+<h4>Overall</h4>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="delays-in-vaccination-months" class="section level4">
+<h4>Delays in vaccination (months)</h4>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#ilanvimtvn .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ilanvimtvn .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ilanvimtvn .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ilanvimtvn .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ilanvimtvn .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ilanvimtvn .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ilanvimtvn .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ilanvimtvn .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ilanvimtvn .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ilanvimtvn .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ilanvimtvn .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ilanvimtvn .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ilanvimtvn .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#ilanvimtvn .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ilanvimtvn .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ilanvimtvn .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ilanvimtvn .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#ilanvimtvn .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ilanvimtvn .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#ilanvimtvn .gt_left {
+  text-align: left;
+}
+
+#ilanvimtvn .gt_center {
+  text-align: center;
+}
+
+#ilanvimtvn .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ilanvimtvn .gt_font_normal {
+  font-weight: normal;
+}
+
+#ilanvimtvn .gt_font_bold {
+  font-weight: bold;
+}
+
+#ilanvimtvn .gt_font_italic {
+  font-style: italic;
+}
+
+#ilanvimtvn .gt_super {
+  font-size: 65%;
+}
+
+#ilanvimtvn .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="ilanvimtvn" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Variable</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>N</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>0</strong>, N = 221,383<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>1</strong>, N = 3,755,740<sup class="gt_footnote_marks">1</sup></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">age</td>
+      <td class="gt_row gt_center">3,977,123</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">1</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">4,031 (2.9%)</td>
+      <td class="gt_row gt_center">135,117 (97%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">40,074 (3.9%)</td>
+      <td class="gt_row gt_center">983,760 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">3</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">55,867 (4.2%)</td>
+      <td class="gt_row gt_center">1,270,547 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">4</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">121,411 (8.2%)</td>
+      <td class="gt_row gt_center">1,366,316 (92%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">sex</td>
+      <td class="gt_row gt_center">3,977,123</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">F</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">116,129 (5.6%)</td>
+      <td class="gt_row gt_center">1,965,019 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">M</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">105,254 (5.6%)</td>
+      <td class="gt_row gt_center">1,790,721 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">province</td>
+      <td class="gt_row gt_center">3,977,123</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">An Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">102 (9.1%)</td>
+      <td class="gt_row gt_center">1,024 (91%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ba Ria - Vung Tau</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">298 (5.3%)</td>
+      <td class="gt_row gt_center">5,298 (95%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">5,334 (2.8%)</td>
+      <td class="gt_row gt_center">188,308 (97%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Kan</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">726 (2.4%)</td>
+      <td class="gt_row gt_center">29,047 (98%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Lieu</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">68 (13%)</td>
+      <td class="gt_row gt_center">468 (87%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Ninh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">15,664 (12%)</td>
+      <td class="gt_row gt_center">112,554 (88%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ben Tre</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">214 (8.1%)</td>
+      <td class="gt_row gt_center">2,420 (92%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Dinh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">141 (4.3%)</td>
+      <td class="gt_row gt_center">3,101 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Duong</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1,587 (7.1%)</td>
+      <td class="gt_row gt_center">20,732 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Phuoc</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">235 (7.3%)</td>
+      <td class="gt_row gt_center">2,964 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Thuan</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">134 (5.3%)</td>
+      <td class="gt_row gt_center">2,399 (95%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ca Mau</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">33 (5.9%)</td>
+      <td class="gt_row gt_center">522 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Can Tho</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">150 (4.9%)</td>
+      <td class="gt_row gt_center">2,933 (95%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Cao Bang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2,951 (6.4%)</td>
+      <td class="gt_row gt_center">43,055 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Da Nang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">761 (8.4%)</td>
+      <td class="gt_row gt_center">8,333 (92%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Lak</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">143 (6.8%)</td>
+      <td class="gt_row gt_center">1,971 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Nong</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">33 (9.6%)</td>
+      <td class="gt_row gt_center">312 (90%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dien Bien</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">5,420 (7.9%)</td>
+      <td class="gt_row gt_center">63,539 (92%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Nai</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1,726 (7.0%)</td>
+      <td class="gt_row gt_center">22,945 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Thap</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">117 (8.2%)</td>
+      <td class="gt_row gt_center">1,304 (92%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Gia Lai</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">85 (10%)</td>
+      <td class="gt_row gt_center">738 (90%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">7,353 (8.5%)</td>
+      <td class="gt_row gt_center">78,683 (91%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Nam</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1,888 (2.5%)</td>
+      <td class="gt_row gt_center">72,725 (97%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Noi</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">50,226 (9.8%)</td>
+      <td class="gt_row gt_center">463,940 (90%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Tinh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">4,951 (4.1%)</td>
+      <td class="gt_row gt_center">115,953 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hai Duong</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">4,596 (2.8%)</td>
+      <td class="gt_row gt_center">159,677 (97%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hai Phong</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">5,302 (3.6%)</td>
+      <td class="gt_row gt_center">142,143 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hau Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">70 (6.7%)</td>
+      <td class="gt_row gt_center">982 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hoa Binh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2,792 (3.7%)</td>
+      <td class="gt_row gt_center">72,744 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hung Yen</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">6,916 (6.4%)</td>
+      <td class="gt_row gt_center">101,005 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Khanh Hoa</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">211 (6.7%)</td>
+      <td class="gt_row gt_center">2,958 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kien Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">185 (8.6%)</td>
+      <td class="gt_row gt_center">1,969 (91%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kon Tum</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">23 (6.1%)</td>
+      <td class="gt_row gt_center">355 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lai Chau</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">3,682 (7.2%)</td>
+      <td class="gt_row gt_center">47,595 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lam Dong</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">141 (9.8%)</td>
+      <td class="gt_row gt_center">1,294 (90%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lang Son</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">4,400 (6.1%)</td>
+      <td class="gt_row gt_center">68,172 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lao Cai</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2,884 (4.0%)</td>
+      <td class="gt_row gt_center">69,107 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Long An</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">454 (6.8%)</td>
+      <td class="gt_row gt_center">6,238 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Nam Dinh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">3,272 (2.0%)</td>
+      <td class="gt_row gt_center">161,197 (98%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Nghe An</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">12,584 (4.3%)</td>
+      <td class="gt_row gt_center">277,293 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ninh Binh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1,788 (1.9%)</td>
+      <td class="gt_row gt_center">91,547 (98%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ninh Thuan</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">67 (7.7%)</td>
+      <td class="gt_row gt_center">808 (92%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Phu Tho</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">3,066 (2.4%)</td>
+      <td class="gt_row gt_center">126,294 (98%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Phu Yen</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">65 (6.8%)</td>
+      <td class="gt_row gt_center">890 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Binh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">55 (7.0%)</td>
+      <td class="gt_row gt_center">734 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Nam</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">234 (5.8%)</td>
+      <td class="gt_row gt_center">3,825 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Ngai</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">160 (5.8%)</td>
+      <td class="gt_row gt_center">2,602 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Ninh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">8,907 (8.3%)</td>
+      <td class="gt_row gt_center">97,851 (92%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Tri</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">71 (9.9%)</td>
+      <td class="gt_row gt_center">645 (90%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Soc Trang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">138 (8.6%)</td>
+      <td class="gt_row gt_center">1,459 (91%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Son La</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">13,176 (10%)</td>
+      <td class="gt_row gt_center">117,792 (90%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tay Ninh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">204 (5.7%)</td>
+      <td class="gt_row gt_center">3,347 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thai Binh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">5,576 (3.9%)</td>
+      <td class="gt_row gt_center">135,738 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thai Nguyen</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">5,570 (4.8%)</td>
+      <td class="gt_row gt_center">109,552 (95%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thanh Hoa</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">11,742 (3.5%)</td>
+      <td class="gt_row gt_center">327,369 (97%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thanh pho Ho Chi Minh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">10,274 (8.4%)</td>
+      <td class="gt_row gt_center">112,491 (92%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thua Thien Hue</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">93 (5.3%)</td>
+      <td class="gt_row gt_center">1,651 (95%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tien Giang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">373 (6.9%)</td>
+      <td class="gt_row gt_center">5,072 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tra Vinh</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">46 (5.6%)</td>
+      <td class="gt_row gt_center">776 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tuyen Quang</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2,604 (3.7%)</td>
+      <td class="gt_row gt_center">67,907 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Vinh Long</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">94 (5.4%)</td>
+      <td class="gt_row gt_center">1,631 (95%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Vinh Phuc</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">4,309 (3.8%)</td>
+      <td class="gt_row gt_center">110,536 (96%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Yen Bai</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">4,919 (6.0%)</td>
+      <td class="gt_row gt_center">77,226 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">vacname2</td>
+      <td class="gt_row gt_center">3,977,123</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Measle</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">78,917 (3.1%)</td>
+      <td class="gt_row gt_center">2,465,248 (97%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Measle_Rubella</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">142,466 (9.9%)</td>
+      <td class="gt_row gt_center">1,290,492 (90%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">shot</td>
+      <td class="gt_row gt_center">3,977,123</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">1</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">219,767 (5.6%)</td>
+      <td class="gt_row gt_center">3,738,026 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">1,584 (9.1%)</td>
+      <td class="gt_row gt_center">15,748 (91%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">3</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">30 (1.7%)</td>
+      <td class="gt_row gt_center">1,787 (98%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">4</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">2 (1.2%)</td>
+      <td class="gt_row gt_center">162 (99%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">5</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">0 (0%)</td>
+      <td class="gt_row gt_center">17 (100%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">6</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">7</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">8</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">9</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">10</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">11</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">12</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+      <td class="gt_row gt_center">0 (NA%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">vacdate_f</td>
+      <td class="gt_row gt_center">3,977,123</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Before</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">188,703 (6.4%)</td>
+      <td class="gt_row gt_center">2,738,069 (94%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">After</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">32,680 (3.1%)</td>
+      <td class="gt_row gt_center">1,017,671 (97%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">vdelay</td>
+      <td class="gt_row gt_center">3,977,123</td>
+      <td class="gt_row gt_center">-0.52 (-2.26, -0.03)</td>
+      <td class="gt_row gt_center">0.69 (0.30, 1.38)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">type</td>
+      <td class="gt_row gt_center">3,977,123</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">both</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">25,512 (6.7%)</td>
+      <td class="gt_row gt_center">357,072 (93%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">public</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">168,045 (5.2%)</td>
+      <td class="gt_row gt_center">3,057,759 (95%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">private</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">27,826 (7.5%)</td>
+      <td class="gt_row gt_center">340,909 (92%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="font-weight: bold;">type2</td>
+      <td class="gt_row gt_center">3,977,123</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center"></td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">private</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">28,412 (7.5%)</td>
+      <td class="gt_row gt_center">348,120 (92%)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">public</td>
+      <td class="gt_row gt_center"></td>
+      <td class="gt_row gt_center">192,971 (5.4%)</td>
+      <td class="gt_row gt_center">3,407,620 (95%)</td>
+    </tr>
+  </tbody>
+  
+  <tfoot>
+    <tr class="gt_footnotes">
+      <td colspan="4">
+        <p class="gt_footnote">
+          <sup class="gt_footnote_marks">
+            <em>1</em>
+          </sup>
+           
+          n (%); Median (IQR)
+          <br />
+        </p>
+      </td>
+    </tr>
+  </tfoot>
+</table></div>
+<pre><code>                            pid province  district     commune  sex        dob
+Low:effect                 &lt;NA&gt;     &lt;NA&gt;      &lt;NA&gt;        &lt;NA&gt; &lt;NA&gt; 2017-09-03
+Adjust to       104091520170007   Ha Noi Hoang Mai Quang Trung    F 2018-05-12
+High:effect                &lt;NA&gt;     &lt;NA&gt;      &lt;NA&gt;        &lt;NA&gt; &lt;NA&gt; 2019-02-02
+Low:prediction  101010120070004 An Giang    A Luoi          01    F 2017-01-01
+High:prediction 823141220190176  Yen Bai  Yen Thuy    Yet Kieu    M 2020-11-08
+Low             101010120070004 An Giang    A Luoi          01    F 2017-01-01
+High            823141220190176  Yen Bai  Yen Thuy    Yet Kieu    M 2020-12-24
+                      vacname2 start shot    vacdate vyear vmonth year month
+Low:effect                &lt;NA&gt;     9 &lt;NA&gt; 2018-12-13  2018      5 2017     3
+Adjust to               Measle     9    1 2019-08-28  2019      7 2018     6
+High:effect               &lt;NA&gt;    18 &lt;NA&gt; 2020-05-18  2020     10 2019    10
+Low:prediction          Measle     9    1 2017-01-08  2017      1 2017     1
+High:prediction Measle_Rubella    18   12 2020-12-30  2020     12 2020    12
+Low                     Measle     9    1 2017-01-02  2017      1 2017     1
+High            Measle_Rubella    18   12 2021-01-13  2021     12 2020    12
+                vagem    vagem2      vdelay      vsche vsyear vsmonth
+Low:effect          9  9.626283   0.2320329 2018-10-09   2018       4
+Adjust to          12 12.484600   0.6591376 2019-06-18   2019       7
+High:effect        18 18.628337   1.3162218 2020-03-15   2020      10
+Low:prediction      0  0.000000 -18.0000000 2017-10-01   2017       1
+High:prediction    47 47.540041  35.4662525 2021-12-24   2021      12
+Low                 0  0.000000 -18.0000000 2017-10-01   2017       1
+High               47 47.868583  37.4558522 2022-06-04   2022      12
+                            vdelayd    type   type2 vdelay_outcome age
+Low:effect      2018-10-09 17:32:51    &lt;NA&gt;    &lt;NA&gt;              0   2
+Adjust to       2019-06-18 15:58:17  public  public              0   3
+High:effect     2020-03-15 15:51:51    &lt;NA&gt;    &lt;NA&gt;              1   4
+Low:prediction  2017-10-01 17:28:52    both private              0   1
+High:prediction 2021-12-25 04:33:58 private  public              1   4
+Low             2017-10-01 17:21:46    both private              0   1
+High            2022-06-04 15:50:00 private  public              1   4
+                vacdate_f
+Low:effect           &lt;NA&gt;
+Adjust to          Before
+High:effect          &lt;NA&gt;
+Low:prediction     Before
+High:prediction     After
+Low                Before
+High                After
+
+Values:
+
+pid :
+ [1] 101010120070004  101010120170002  101010120170003  101010120170004 
+ [5] 101010120170005  101010120170006  101010120170007  101010120170008 
+ [9] 101010120170010  101010120170011  101010120170012  101010120170013 
+[13] 101010120170014  101010120170015  101010120170016  101010120170017 
+[17] 101010120170018  101010120170019  101010120170020  101010120170022 
+[21] + 3101665 others
+province :
+ [1] An Giang              Ba Ria - Vung Tau     Bac Giang            
+ [4] Bac Kan               Bac Lieu              Bac Ninh             
+ [7] Ben Tre               Binh Dinh             Binh Duong           
+[10] Binh Phuoc            Binh Thuan            Ca Mau               
+[13] Can Tho               Cao Bang              Da Nang              
+[16] Dak Lak               Dak Nong              Dien Bien            
+[19] Dong Nai              Dong Thap             Gia Lai              
+[22] Ha Giang              Ha Nam                Ha Noi               
+[25] Ha Tinh               Hai Duong             Hai Phong            
+[28] Hau Giang             Hoa Binh              Hung Yen             
+[31] Khanh Hoa             Kien Giang            Kon Tum              
+[34] Lai Chau              Lam Dong              Lang Son             
+[37] Lao Cai               Long An               Nam Dinh             
+[40] Nghe An               Ninh Binh             Ninh Thuan           
+[43] Phu Tho               Phu Yen               Quang Binh           
+[46] Quang Nam             Quang Ngai            Quang Ninh           
+[49] Quang Tri             Soc Trang             Son La               
+[52] Tay Ninh              Thai Binh             Thai Nguyen          
+[55] Thanh Hoa             Thanh pho Ho Chi Minh Thua Thien Hue       
+[58] Tien Giang            Tra Vinh              Tuyen Quang          
+[61] Vinh Long             Vinh Phuc             Yen Bai              
+district :
+ [1] A Luoi       An Bien      An Duong     An Lao       An Minh     
+ [6] An Phu       An Thi       Anh Son      Ba Be        Ba Che      
+[11] Ba Dinh      Ba Thuoc     Ba To        Ba Tri       Ba Vi       
+[16] Bac Ai       Bac Binh     Bac Ha       Bac Me       Bac Quang   
+[21] + 685 others
+commune :
+ [1] 01            02            03            04            05           
+ [6] 06            07            08            09            1            
+[11] 10            11            12            13            14           
+[16] 15            16            17            18            19           
+[21] + 6866 others
+sex : F M 
+vacname2 : Measle Measle_Mumps_Rubella Measle_Rubella 
+start :  9 18 
+shot : 1 2 3 4 5 6 7 8 9 10 11 12 
+vyear : 2017 2018 2019 2020 2021 
+year : 2017 2018 2019 2020 
+vsyear : 2017 2018 2019 2020 2021 2022 
+type : both public private 
+type2 : private public 
+vdelay_outcome : 0 1 
+age : 1 2 3 4 
+vacdate_f : Before After </code></pre>
+<pre><code>                Wald Statistics          Response: vdelay_outcome 
+
+ Factor     Chi-Square d.f. P     
+ age        24010.19   1    &lt;.0001
+ TOTAL      24010.19   1    &lt;.0001</code></pre>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>                Wald Statistics          Response: vdelay_outcome 
+
+ Factor     Chi-Square d.f. P    
+ sex        1.54       1    0.214
+ TOTAL      1.54       1    0.214</code></pre>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>                Wald Statistics          Response: vdelay_outcome 
+
+ Factor     Chi-Square d.f. P     
+ province   57867.39   62   &lt;.0001
+ TOTAL      57867.39   62   &lt;.0001</code></pre>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>                Wald Statistics          Response: vdelay_outcome 
+
+ Factor     Chi-Square d.f. P     
+ vacdate_f  15657.64   1    &lt;.0001
+ TOTAL      15657.64   1    &lt;.0001</code></pre>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>                Wald Statistics          Response: vdelay_outcome 
+
+ Factor     Chi-Square d.f. P     
+ type       4373.19    2    &lt;.0001
+ TOTAL      4373.19    2    &lt;.0001</code></pre>
+<p><img src="figure/04_merge_measle.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre><code>R version 4.0.5 (2021-03-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.5 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+
+locale:
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] rms_6.2-0         SparseM_1.81      Hmisc_4.5-0       Formula_1.2-4    
+ [5] survival_3.2-10   lattice_0.20-41   ggridges_0.5.3    gtsummary_1.3.7  
+ [9] gt_0.2.2          lubridate_1.7.10  forcats_0.5.1     stringr_1.4.0    
+[13] dplyr_1.0.5       purrr_0.3.4       readr_1.4.0       tidyr_1.1.3      
+[17] tibble_3.1.0      ggplot2_3.3.3     tidyverse_1.3.0   data.table_1.14.0
+[21] workflowr_1.6.2  
+
+loaded via a namespace (and not attached):
+ [1] nlme_3.1-152        matrixStats_0.58.0  fs_1.5.0           
+ [4] usethis_2.0.1       RColorBrewer_1.1-2  httr_1.4.2         
+ [7] rprojroot_2.0.2     tools_4.0.5         backports_1.2.1    
+[10] utf8_1.2.1          R6_2.5.0            rpart_4.1-15       
+[13] DBI_1.1.1           mgcv_1.8-33         colorspace_2.0-0   
+[16] nnet_7.3-15         withr_2.4.1         gridExtra_2.3      
+[19] tidyselect_1.1.0    compiler_4.0.5      git2r_0.28.0       
+[22] quantreg_5.85       cli_2.4.0           rvest_1.0.0        
+[25] htmlTable_2.1.0     xml2_1.3.2          sandwich_3.0-0     
+[28] labeling_0.4.2      sass_0.3.1          scales_1.1.1       
+[31] checkmate_2.0.0     mvtnorm_1.1-1       polspline_1.1.19   
+[34] commonmark_1.7      digest_0.6.27       foreign_0.8-81     
+[37] rmarkdown_2.7       base64enc_0.1-3     jpeg_0.1-8.1       
+[40] pkgconfig_2.0.3     htmltools_0.5.1.1   dbplyr_2.1.0       
+[43] highr_0.8           htmlwidgets_1.5.3   rlang_0.4.10       
+[46] readxl_1.3.1        rstudioapi_0.13     farver_2.1.0       
+[49] generics_0.1.0      zoo_1.8-9           jsonlite_1.7.2     
+[52] magrittr_2.0.1      Matrix_1.3-2        Rcpp_1.0.6         
+[55] munsell_0.5.0       fansi_0.4.2         lifecycle_1.0.0    
+[58] multcomp_1.4-17     stringi_1.5.3       yaml_2.2.1         
+[61] MASS_7.3-53.1       plyr_1.8.6          grid_4.0.5         
+[64] promises_1.2.0.1    crayon_1.4.1        haven_2.3.1        
+[67] splines_4.0.5       hms_1.0.0           knitr_1.31         
+[70] pillar_1.5.1        codetools_0.2-18    reprex_2.0.0       
+[73] glue_1.4.2          evaluate_0.14       latticeExtra_0.6-29
+[76] broom.helpers_1.2.1 modelr_0.1.8        vctrs_0.3.7        
+[79] png_0.1-7           httpuv_1.5.5        MatrixModels_0.5-0 
+[82] cellranger_1.1.0    gtable_0.3.0        assertthat_0.2.1   
+[85] xfun_0.22           broom_0.7.6         later_1.1.0.1      
+[88] conquer_1.0.2       cluster_2.1.1       TH.data_1.0-10     
+[91] ellipsis_0.3.1     </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
