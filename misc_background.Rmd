@@ -1,0 +1,112 @@
+---
+title: "Prepare background data"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(stringi)
+library(raster)
+library(sp)
+```
+
+
+## Population data (DHS 2019)
+
+* total population at province & district levels
+* population of age group 0-4 at province level
+
+```{r}
+## total population 
+pop <- readRDS(file = file.path("..", "..", "DECIDELab", "research", "data", "202105_VNMData", "DHS", "DTNOTQ2019_table_01.rds")) %>%
+  filter(data == "detailed") %>%
+  select(province, district2, district_type, place, gender, n) %>%
+  rename(district = district2) %>%
+  pivot_wider(id_cols = c(province, district, district_type),
+              names_from = c(place, gender),
+              values_from = n,
+              names_prefix = "n_")
+
+## children population
+pop_age <- readRDS(file = file.path("..", "..", "DECIDELab", "research", "data", "202105_VNMData", "DHS", "DTNOTQ2019_table_05.rds")) %>%
+  filter(!province %in% c("ENTIRE COUNTRY", "Northern Midlands and Mountains", "Red River Delta", "North and South Central Coast", "Central Highlands", "Southeast", "Mekong River Delta") &
+           agegroup %in% c("all", "0-4")) %>%
+  select(province, agegroup, gender, place, n) %>%
+  mutate(agegroup = ifelse(agegroup == "0-4", "0_4", agegroup)) %>%
+  pivot_wider(names_from = c(place, gender, agegroup),
+              values_from = n,
+              names_prefix = "n_province_")
+
+pop_all <- merge(pop, pop_age, by = "province", all.x = TRUE) %>%
+  mutate(province2 = stringi::stri_trans_general(str = province, id = "Latin-ASCII"))
+
+## other info
+library(readxl)
+info <- read_excel(path = file.path("data", "province2.xlsx"), sheet = "data") %>%
+  rename(province2 = province)
+save(pop_all, info, file = file.path("data", "pop_info.Rdata"))
+```
+
+## Spatial data (GADM)
+
+```{r}
+## get map (level 3, commune)
+# vnm3 <- raster::getData(name = "GADM", country = "VNM", level = 3, path = file.path("data"))
+vnm3 <- readRDS(file.path("data", "gadm36_VNM_3_sp.rds"))
+
+## get info of Vietnam
+vnm3_info <- data.frame(gid = vnm3$GID_3, 
+                       province = vnm3$NAME_1, 
+                       district = vnm3$NAME_2, 
+                       commune = vnm3$NAME_3, 
+                       commune2 = vnm3$VARNAME_3, 
+                       comnune_type = vnm3$ENGTYPE_3,
+                       ID = sapply(slot(vnm3, "polygons"), function(x) slot(x, "ID")))
+
+save(vnm3, vnm3_info, file = file.path("data", "vnm3_map.Rdata"))
+
+## get map (level 2, district)
+# vnm2 <- raster::getData(name = "GADM", country = "VNM", level = 2, path = file.path("data"))
+vnm2 <- readRDS(file.path("data", "gadm36_VNM_2_sp.rds"))
+
+## get info of Vietnam
+vnm2_info <- data.frame(gid = vnm2$GID_2, 
+                       province = vnm2$NAME_1, 
+                       district = vnm2$NAME_2, 
+                       district2 = vnm2$VARNAME_2, 
+                       district_type2 = vnm2$ENGTYPE_2,
+                       ID = sapply(slot(vnm2, "polygons"), function(x) slot(x, "ID")))
+
+## Bắc Kạn: Thành Phố Bắc Kạn --> TP Bắc Kạn
+vnm2_info$district[vnm2_info$district == "Thành Phố Bắc Kạn" & vnm2_info$province == "Bắc Kạn"] <- "TP Bắc Kạn"
+### Bà Rịa - Vũng Tàu: Tân Thành --> Phú Mỹ
+vnm2_info$district[vnm2_info$district == "Tân Thành" & vnm2_info$province == "Bà Rịa - Vũng Tàu"] <- "Phú Mỹ"
+### Bình Định: Qui Nhơn --> Quy Nhơn
+vnm2_info$district[vnm2_info$district == "Qui Nhơn" & vnm2_info$province == "Bình Định"] <- "Quy Nhơn"
+## Đắk Lắk: Thị Xã Buôn Hồ --> Buôn Hồ
+vnm2_info$district[vnm2_info$district == "Thị Xã Buôn Hồ" & vnm2_info$province == "Đắk Lắk"] <- "Buôn Hồ"
+## Điện Biên: Thị Xã Mường Lay --> Mường Lay
+vnm2_info$district[vnm2_info$district == "Thị Xã Mường Lay" & vnm2_info$province == "Điện Biên"] <- "Mường Lay"
+## Đồng Tháp: Cao Lãnh (Thành phố) --> TP Cao Lãnh
+vnm2_info$district[vnm2_info$district == "Cao Lãnh (Thành phố)" & vnm2_info$province == "Đồng Tháp"] <- "TP Cao Lãnh"
+## Đồng Tháp: Hồng Ngự (Thị xã) --> TX Hồng Ngự
+vnm2_info$district[vnm2_info$district == "Hồng Ngự (Thị xã)" & vnm2_info$province == "Đồng Tháp"] <- "TX Hồng Ngự"
+## Hà Tĩnh: Kỳ Anh (Thị xã) --> TX Kỳ Anh
+vnm2_info$district[vnm2_info$district == "Kỳ Anh (Thị xã)" & vnm2_info$province == "Hà Tĩnh"] <- "TX Kỳ Anh"
+## Hậu Giang: Long Mỹ (Thị xã) --> TX Long Mỹ
+vnm2_info$district[vnm2_info$district == "Long Mỹ (Thị xã)" & vnm2_info$province == "Hậu Giang"] <- "TX Long Mỹ"
+# Quảng Bình: Thành Phố Đồng Hới --> Đồng Hới
+vnm2_info$district[vnm2_info$district == "Thành Phố Đồng Hới" & vnm2_info$province == "Quảng Bình"] <- "Đồng Hới"
+# Tiền Giang: Cai Lậy (Thị xã) --> TX Cai Lậy
+vnm2_info$district[vnm2_info$district == "Cai Lậy (Thị xã)" & vnm2_info$province == "Tiền Giang"] <- "TX Cai Lậy"
+# Trà Vinh: Duyên Hải (Thị xã) --> TX Duyên Hải
+vnm2_info$district[vnm2_info$district == "Duyên Hải (Thị xã)" & vnm2_info$province == "Trà Vinh"] <- "TX Duyên Hải"
+
+vnm2_info_all <- merge(pop_all, vnm2_info, by = c("province", "district"), all.y = TRUE)
+rownames(vnm2_info_all) <- vnm2_info_all$ID
+vnm2_add <- SpatialPolygonsDataFrame(vnm2, vnm2_info_all, match.ID = TRUE)
+
+save(vnm2_add, vnm2_info_all, file = file.path("data", "vnm2_map.Rdata"))
+```
+
