@@ -240,12 +240,30 @@ head(measle_all)
 
 measle_all <- measle_all %>% select(-2)
 
+mea_all_overall <- measle_all[, .N, by = .(vyear, vmonth)]
+
 mea_all <- measle_all[, .N, by = .(vyear, vmonth, type)]
 mea_all2 <- measle_all[, .N, by = .(vyear, vmonth, type2)]
 mea_all_delay <- measle_all[, .N, by = .(vyear, vmonth, vdelayd, vacname2)]
 ```
 
 #### Overall
+
+```{r}
+ggplot(data = mea_all_overall[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = vyear), size = 1.5) +
+  scale_x_discrete(name = "Month") +
+  geom_smooth() +
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5) +
+  scale_y_continuous(name = "Number of shots (x 10^3)", breaks = seq(from = 0, to = 200, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  #facet_wrap(~ type) +
+  ggtitle("Total number of Measle vaccination shots by month and year")
+#ggsave(filename = file.path("..", "figures", "measle_all_overall_month_year.png"), width = 7, height = 5)
+```
 
 ```{r}
 ggplot(data = mea_all[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
@@ -280,7 +298,7 @@ ggplot(data = mea_all2[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), y
 ```
 
 ```{r}
-ggplot(mea_all2[vyear >= 2017 & vyear <= 2020], aes(vmonth, N/1000, color = factor(vyear))) +
+ggplot(mea_all_overall[vyear >= 2017 & vyear <= 2020], aes(vmonth, N/1000, color = factor(vyear))) +
   geom_point(size=3) +
   geom_line(aes(group=vyear)) +
   geom_smooth () + 
@@ -333,7 +351,7 @@ t1 <- measle_all_delay %>% select(age, sex, province, vacname2, shot, vacdate_f,
   #missing = "no" # don't list missing data separately
   ) %>%
   add_n() %>% # add column with total number of non-missing observations
-  #add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
+  add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
   modify_header(label = "**Variable**") %>% # update the column header
   bold_labels() 
 t1
