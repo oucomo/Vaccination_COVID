@@ -88,3 +88,4 @@ fwrite(x = individual, file = file.path("..", "tuann349_vad", "individual_privat
 
 saveRDS(vaccine, file = file.path("..", "tuann349_vad", "vaccine_private.rds"))
 fwrite(x = vaccine, file = file.path("..", "tuann349_vad", "vaccine_private.csv"))
+
