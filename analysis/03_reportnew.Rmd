@@ -26,12 +26,99 @@ data_path <- file.path("..", "tuann349_vad")
 
 ```{r}
 # public dataset
-public <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds")) # 30020596 records
+public <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds")) # 30,020,596 records
 
 # private dataset
-private <- readRDS(file = file.path("..", "tuann349_vad", "private_clinic.rds")) # 38411554 records
+private <- readRDS(file = file.path("..", "tuann349_vad", "private_clinic.rds")) # 38,411,554 records
+
+# public summary
+public_sum <- public[order(pid, vacdate)][
+  , 
+  .(province = province[1],
+    district = district[1],
+    commune = commune[1],
+    sex = sex[1],
+    dob = dob[1],
+    date_start = vacdate[1],
+    date_stop = vacdate[.N]),
+  by = pid
+] ## 3,527,314 ids
+
+saveRDS(public_sum, file = file.path("..", "tuann349_vad", "public_sum.rds"))
+
+# private summary
+private_sum <- private[order(pid, vacdate)][
+  , 
+  .(province = province[1],
+    district = district[1],
+    commune = commune[1],
+    sex = sex[1],
+    dob = dob[1],
+    date_start = vacdate[1],
+    date_stop = vacdate[.N]),
+  by = pid
+] ## 9,941,527 ids
+
+saveRDS(private_sum, file = file.path("..", "tuann349_vad", "private_sum.rds"))
 ```
 
+```{r}
+create_Lexis_data <- function(y0, xentry, xexit, data) {
+  plotdat <- data %>%
+    mutate(y0 = {{ y0 }},
+            xentry = {{ xentry }},
+            xexit = {{ xexit }}) %>%
+    mutate(yentry = as.numeric((xentry - y0)/ddays(1))/365.25,
+           yexit  = as.numeric((xexit - y0)/ddays(1))/365.25)
+  
+  return(plotdat)
+}
+
+public_lexis_data <- create_Lexis_data(y0 = dob, xentry = date_start, xexit = date_stop, data = public_sum)
+private_lexis_data <- create_Lexis_data(y0 = dob, xentry = date_start, xexit = date_stop, data = private_sum)
+
+public_lexis_data2 <- public_lexis_data[yentry >= 0 & (xentry < "2021-01-01") & (xexit < "2021-01-01")]
+
+ggplot(data = public_lexis_data2) +
+  geom_segment(aes(x = xentry, xend = xexit, y = yentry, yend = yexit), colour = "grey90") +
+  #geom_segment(data = sms_period_Lexis, aes(x = xentry, xend = xexit, y = yentry, yend = yexit), colour = "grey70") +
+  #geom_point(data = routine_Lexis, aes(x = xentry, y = yentry), colour = "black") +
+  ylab("Age [years]") +
+  scale_x_date(name = "Calendar date", breaks = seq(as.Date("2017-01-01"), as.Date("2021-01-01"), by="6 months"), date_labels = "%b %y") +
+  theme_bw() + 
+  theme(legend.position = "top", 
+        axis.text = element_text(size = 15), 
+        axis.title = element_text(size = 15, face = "bold"), 
+        axis.text.x = element_text(angle = -90),
+        axis.title.x = element_text(margin = unit(c(t = 2, r = 0, b = 1, l = 0), "lines")),
+        axis.title.y = element_text(margin = unit(c(t = 0, r = 2, b = 0, l = 1), "lines")),
+        plot.margin = unit(c(t = 1, r = 1, b = 1, l = 1), "lines"))
+ggsave(filename = file.path("figures", "lexis_public.png"))
+
+private_lexis_data2 <- private_lexis_data[yentry >= 0 & (xentry < "2021-01-01") & (xexit < "2021-01-01")]
+ggplot(data = private_lexis_data2) +
+  geom_segment(aes(x = xentry, xend = xexit, y = yentry, yend = yexit), colour = "grey90") +
+  #geom_segment(data = sms_period_Lexis, aes(x = xentry, xend = xexit, y = yentry, yend = yexit), colour = "grey70") +
+  #geom_point(data = routine_Lexis, aes(x = xentry, y = yentry), colour = "black") +
+  ylab("Age [years]") +
+  scale_x_date(name = "Calendar date", breaks = seq(as.Date("2017-01-01"), as.Date("2021-01-01"), by="6 months"), date_labels = "%b %y") +
+  theme_bw() + 
+  theme(legend.position = "top", 
+        axis.text = element_text(size = 15), 
+        axis.title = element_text(size = 15, face = "bold"),
+        axis.text.x = element_text(angle = -90),
+        axis.title.x = element_text(margin = unit(c(t = 2, r = 0, b = 1, l = 0), "lines")),
+        axis.title.y = element_text(margin = unit(c(t = 0, r = 2, b = 0, l = 1), "lines")),
+        plot.margin = unit(c(t = 1, r = 1, b = 1, l = 1), "lines"))
+ggsave(filename = file.path("figures", "lexis_private.png"))
+```
+
+```{r}
+public_lexis_final <- public_lexis_data2[, yob := year(dob)]
+private_lexis_final <- private_lexis_data2[, yob := year(dob)][
+  yob %in% c(2017:2020)
+]
+```
 
 ## Methods
 
