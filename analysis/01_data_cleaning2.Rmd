@@ -40,7 +40,7 @@ dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
 
 ```{r}
 ## To increase the storage capacity
-#memory.limit(size=60000)
+memory.limit(size=60000)
 
 dupsID = dat %>%
   group_by(pid, vacdate, vacname) %>%
@@ -139,6 +139,8 @@ fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean.csv"))
 load(file.path("..", "tuann349_vad", "vacinfo.Rdata"))
 names(vacinfo) <- c("vacname2", "epi", "shot", "start")
 
+memory.limit(size=150000)
+
 tmp1 <- merge(dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2021-01-26")) & (vacdate >= dob) & (!vacname %in% c("BKT 0,1ml tu khoa (BCG)", "BKT 0.1ml (BCG)", "BKT 0.5 ml", "BKT 1 ml", "BKT 5 ml")), .(pid, province, district, commune, sex, dob, vacname, vacdate)],
               vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
 
@@ -155,6 +157,10 @@ tmp3 <- merge(tmp2, vacname3[, c("vacname", "tub", "heb", "dip", "per", "tes", "
 
 
 tmp1 <- merge(tmp3, vacinfo, by = c("vacname2", "shot"), all.x = TRUE, sort = FALSE)
+
+rm(list = c("tmp2", "tmp3"))
+
+gc()
 
 library(data.table)
 setDT(tmp1)
