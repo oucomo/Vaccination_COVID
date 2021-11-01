@@ -3,8 +3,9 @@ title: "Vaccination and delays in vaccination due to COVID-19"
 author: "Duc Du"
 date: ' 2020-01-29 (update: `r Sys.Date()`)'
 output:
-  word_document:
-    toc: yes
+  workflowr::wflow_html:
+    toc: true
+    theme: cosmo
   pdf_document:
     toc: yes
   html_document:
@@ -12,6 +13,8 @@ output:
     toc: yes
     toc_float: yes
     keep_md: yes
+  word_document:
+    toc: yes
 editor_options:
   chunk_output_type: inline
 ---

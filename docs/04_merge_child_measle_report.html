@@ -17,7 +17,7 @@
 <script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -387,7 +387,7 @@ div.tocify {
 <strong>Last updated:</strong> 2021-11-01
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
 </p>
 <p>
 <strong>Knit directory:</strong> <code>Vaccination_COVID/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -403,12 +403,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -499,16 +499,16 @@ relative
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree16f66c30c2e6650108cb885eb93497b64a2f0396targetblank16f66c3a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/16f66c30c2e6650108cb885eb93497b64a2f0396" target="_blank">16f66c3</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreee7ecdaec6637f07ac367d98486869a2919c124cctargetblanke7ecdaea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/e7ecdaec6637f07ac367d98486869a2919c124cc" target="_blank">e7ecdae</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree16f66c30c2e6650108cb885eb93497b64a2f0396targetblank16f66c3a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreee7ecdaec6637f07ac367d98486869a2919c124cctargetblanke7ecdaea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/16f66c30c2e6650108cb885eb93497b64a2f0396" target="_blank">16f66c3</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/e7ecdaec6637f07ac367d98486869a2919c124cc" target="_blank">e7ecdae</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -519,6 +519,25 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    analysis/04_merge_measle_cache/
+
+Untracked files:
+    Untracked:  data/child_all.Rdata
+
+Unstaged changes:
+    Modified:   analysis/04_merge_child_measle_report.Rmd
+    Modified:   figures/child_all_month_year.png
+    Modified:   figures/child_all_month_year2.png
+    Modified:   figures/child_all_province_year.png
+    Modified:   figures/child_week_year.png
+    Modified:   figures/child_week_year2.png
+    Modified:   figures/measle_all_delay_age.png
+    Modified:   figures/measle_all_delay_period.png
+    Modified:   figures/measle_all_delay_province.png
+    Modified:   figures/measle_all_delay_type.png
+    Modified:   figures/measle_all_delay_year.png
+    Modified:   figures/measle_all_month_year.png
+    Modified:   figures/measle_all_overall_month_year.png
+    Modified:   figures/measle_month_year.png
 
 </code></pre>
 <p>
@@ -562,13 +581,13 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/213edc2b68b04a00b260d6c17c5167e7a553b8c7/analysis/04_merge_child_measle_report.Rmd" target="_blank">213edc2</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/analysis/04_merge_child_measle_report.Rmd" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-31
+2021-11-01
 </td>
 <td>
 Update
@@ -579,81 +598,13 @@ Update
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/213edc2b68b04a00b260d6c17c5167e7a553b8c7/docs/04_merge_child_measle_report.html" target="_blank">213edc2</a>
+<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/04_merge_child_measle_report.html" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-31
-</td>
-<td>
-Update
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/e78e86e401d1700823455e9810f67eb5daadcbf4/analysis/04_merge_child_measle_report.Rmd" target="_blank">e78e86e</a>
-</td>
-<td>
-Duc Du
-</td>
-<td>
-2021-10-29
-</td>
-<td>
-Update
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/e78e86e401d1700823455e9810f67eb5daadcbf4/docs/04_merge_child_measle_report.html" target="_blank">e78e86e</a>
-</td>
-<td>
-Duc Du
-</td>
-<td>
-2021-10-29
-</td>
-<td>
-Update
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/analysis/04_merge_child_measle_report.Rmd" target="_blank">dd00a0a</a>
-</td>
-<td>
-Duc Du
-</td>
-<td>
-2021-10-29
-</td>
-<td>
-Update
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/04_merge_child_measle_report.html" target="_blank">dd00a0a</a>
-</td>
-<td>
-Duc Du
-</td>
-<td>
-2021-10-29
+2021-11-01
 </td>
 <td>
 Update
@@ -703,9 +654,8 @@ Attaching package: &#39;lubridate&#39;</code></pre>
     date, intersect, setdiff, union</code></pre>
 <pre class="r"><code>library(ggplot2)
 library(gt)
-library(gtsummary)</code></pre>
-<pre><code>#BlackLivesMatter</code></pre>
-<pre class="r"><code>library(ggridges)
+library(gtsummary)
+library(ggridges)
 
 select &lt;- dplyr::select</code></pre>
 <div id="introduction" class="section level1">
@@ -725,7 +675,7 @@ select &lt;- dplyr::select</code></pre>
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#fkxjiozhwd .gt_table {
+#ttkvpcdylf .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -750,7 +700,7 @@ select &lt;- dplyr::select</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#fkxjiozhwd .gt_heading {
+#ttkvpcdylf .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -762,7 +712,7 @@ select &lt;- dplyr::select</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#fkxjiozhwd .gt_title {
+#ttkvpcdylf .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -772,7 +722,7 @@ select &lt;- dplyr::select</code></pre>
   border-bottom-width: 0;
 }
 
-#fkxjiozhwd .gt_subtitle {
+#ttkvpcdylf .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -782,13 +732,13 @@ select &lt;- dplyr::select</code></pre>
   border-top-width: 0;
 }
 
-#fkxjiozhwd .gt_bottom_border {
+#ttkvpcdylf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#fkxjiozhwd .gt_col_headings {
+#ttkvpcdylf .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -803,7 +753,7 @@ select &lt;- dplyr::select</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#fkxjiozhwd .gt_col_heading {
+#ttkvpcdylf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -823,7 +773,7 @@ select &lt;- dplyr::select</code></pre>
   overflow-x: hidden;
 }
 
-#fkxjiozhwd .gt_column_spanner_outer {
+#ttkvpcdylf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -835,15 +785,15 @@ select &lt;- dplyr::select</code></pre>
   padding-right: 4px;
 }
 
-#fkxjiozhwd .gt_column_spanner_outer:first-child {
+#ttkvpcdylf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#fkxjiozhwd .gt_column_spanner_outer:last-child {
+#ttkvpcdylf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#fkxjiozhwd .gt_column_spanner {
+#ttkvpcdylf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -855,7 +805,7 @@ select &lt;- dplyr::select</code></pre>
   width: 100%;
 }
 
-#fkxjiozhwd .gt_group_heading {
+#ttkvpcdylf .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -877,7 +827,7 @@ select &lt;- dplyr::select</code></pre>
   vertical-align: middle;
 }
 
-#fkxjiozhwd .gt_empty_group_heading {
+#ttkvpcdylf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -892,15 +842,15 @@ select &lt;- dplyr::select</code></pre>
   vertical-align: middle;
 }
 
-#fkxjiozhwd .gt_from_md > :first-child {
+#ttkvpcdylf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#fkxjiozhwd .gt_from_md > :last-child {
+#ttkvpcdylf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#fkxjiozhwd .gt_row {
+#ttkvpcdylf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -919,7 +869,7 @@ select &lt;- dplyr::select</code></pre>
   overflow-x: hidden;
 }
 
-#fkxjiozhwd .gt_stub {
+#ttkvpcdylf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -931,7 +881,7 @@ select &lt;- dplyr::select</code></pre>
   padding-left: 12px;
 }
 
-#fkxjiozhwd .gt_summary_row {
+#ttkvpcdylf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -941,7 +891,7 @@ select &lt;- dplyr::select</code></pre>
   padding-right: 5px;
 }
 
-#fkxjiozhwd .gt_first_summary_row {
+#ttkvpcdylf .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -951,7 +901,7 @@ select &lt;- dplyr::select</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#fkxjiozhwd .gt_grand_summary_row {
+#ttkvpcdylf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -961,7 +911,7 @@ select &lt;- dplyr::select</code></pre>
   padding-right: 5px;
 }
 
-#fkxjiozhwd .gt_first_grand_summary_row {
+#ttkvpcdylf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -971,11 +921,11 @@ select &lt;- dplyr::select</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#fkxjiozhwd .gt_striped {
+#ttkvpcdylf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#fkxjiozhwd .gt_table_body {
+#ttkvpcdylf .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -984,7 +934,7 @@ select &lt;- dplyr::select</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#fkxjiozhwd .gt_footnotes {
+#ttkvpcdylf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -998,13 +948,13 @@ select &lt;- dplyr::select</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#fkxjiozhwd .gt_footnote {
+#ttkvpcdylf .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#fkxjiozhwd .gt_sourcenotes {
+#ttkvpcdylf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1018,46 +968,46 @@ select &lt;- dplyr::select</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#fkxjiozhwd .gt_sourcenote {
+#ttkvpcdylf .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#fkxjiozhwd .gt_left {
+#ttkvpcdylf .gt_left {
   text-align: left;
 }
 
-#fkxjiozhwd .gt_center {
+#ttkvpcdylf .gt_center {
   text-align: center;
 }
 
-#fkxjiozhwd .gt_right {
+#ttkvpcdylf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#fkxjiozhwd .gt_font_normal {
+#ttkvpcdylf .gt_font_normal {
   font-weight: normal;
 }
 
-#fkxjiozhwd .gt_font_bold {
+#ttkvpcdylf .gt_font_bold {
   font-weight: bold;
 }
 
-#fkxjiozhwd .gt_font_italic {
+#ttkvpcdylf .gt_font_italic {
   font-style: italic;
 }
 
-#fkxjiozhwd .gt_super {
+#ttkvpcdylf .gt_super {
   font-size: 65%;
 }
 
-#fkxjiozhwd .gt_footnote_marks {
+#ttkvpcdylf .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="fkxjiozhwd" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="ttkvpcdylf" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
@@ -1423,7 +1373,7 @@ select &lt;- dplyr::select</code></pre>
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#xzmqmaekdx .gt_table {
+#hjwkytqpka .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1448,7 +1398,7 @@ select &lt;- dplyr::select</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#xzmqmaekdx .gt_heading {
+#hjwkytqpka .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1460,7 +1410,7 @@ select &lt;- dplyr::select</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xzmqmaekdx .gt_title {
+#hjwkytqpka .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1470,7 +1420,7 @@ select &lt;- dplyr::select</code></pre>
   border-bottom-width: 0;
 }
 
-#xzmqmaekdx .gt_subtitle {
+#hjwkytqpka .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1480,13 +1430,13 @@ select &lt;- dplyr::select</code></pre>
   border-top-width: 0;
 }
 
-#xzmqmaekdx .gt_bottom_border {
+#hjwkytqpka .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xzmqmaekdx .gt_col_headings {
+#hjwkytqpka .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1501,7 +1451,7 @@ select &lt;- dplyr::select</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xzmqmaekdx .gt_col_heading {
+#hjwkytqpka .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1521,7 +1471,7 @@ select &lt;- dplyr::select</code></pre>
   overflow-x: hidden;
 }
 
-#xzmqmaekdx .gt_column_spanner_outer {
+#hjwkytqpka .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1533,15 +1483,15 @@ select &lt;- dplyr::select</code></pre>
   padding-right: 4px;
 }
 
-#xzmqmaekdx .gt_column_spanner_outer:first-child {
+#hjwkytqpka .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xzmqmaekdx .gt_column_spanner_outer:last-child {
+#hjwkytqpka .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xzmqmaekdx .gt_column_spanner {
+#hjwkytqpka .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1553,7 +1503,7 @@ select &lt;- dplyr::select</code></pre>
   width: 100%;
 }
 
-#xzmqmaekdx .gt_group_heading {
+#hjwkytqpka .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1575,7 +1525,7 @@ select &lt;- dplyr::select</code></pre>
   vertical-align: middle;
 }
 
-#xzmqmaekdx .gt_empty_group_heading {
+#hjwkytqpka .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1590,15 +1540,15 @@ select &lt;- dplyr::select</code></pre>
   vertical-align: middle;
 }
 
-#xzmqmaekdx .gt_from_md > :first-child {
+#hjwkytqpka .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xzmqmaekdx .gt_from_md > :last-child {
+#hjwkytqpka .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xzmqmaekdx .gt_row {
+#hjwkytqpka .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1617,7 +1567,7 @@ select &lt;- dplyr::select</code></pre>
   overflow-x: hidden;
 }
 
-#xzmqmaekdx .gt_stub {
+#hjwkytqpka .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1629,7 +1579,7 @@ select &lt;- dplyr::select</code></pre>
   padding-left: 12px;
 }
 
-#xzmqmaekdx .gt_summary_row {
+#hjwkytqpka .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1639,7 +1589,7 @@ select &lt;- dplyr::select</code></pre>
   padding-right: 5px;
 }
 
-#xzmqmaekdx .gt_first_summary_row {
+#hjwkytqpka .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1649,7 +1599,7 @@ select &lt;- dplyr::select</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#xzmqmaekdx .gt_grand_summary_row {
+#hjwkytqpka .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1659,7 +1609,7 @@ select &lt;- dplyr::select</code></pre>
   padding-right: 5px;
 }
 
-#xzmqmaekdx .gt_first_grand_summary_row {
+#hjwkytqpka .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1669,11 +1619,11 @@ select &lt;- dplyr::select</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#xzmqmaekdx .gt_striped {
+#hjwkytqpka .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xzmqmaekdx .gt_table_body {
+#hjwkytqpka .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1682,7 +1632,7 @@ select &lt;- dplyr::select</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#xzmqmaekdx .gt_footnotes {
+#hjwkytqpka .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1696,13 +1646,13 @@ select &lt;- dplyr::select</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xzmqmaekdx .gt_footnote {
+#hjwkytqpka .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#xzmqmaekdx .gt_sourcenotes {
+#hjwkytqpka .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1716,46 +1666,46 @@ select &lt;- dplyr::select</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xzmqmaekdx .gt_sourcenote {
+#hjwkytqpka .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#xzmqmaekdx .gt_left {
+#hjwkytqpka .gt_left {
   text-align: left;
 }
 
-#xzmqmaekdx .gt_center {
+#hjwkytqpka .gt_center {
   text-align: center;
 }
 
-#xzmqmaekdx .gt_right {
+#hjwkytqpka .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xzmqmaekdx .gt_font_normal {
+#hjwkytqpka .gt_font_normal {
   font-weight: normal;
 }
 
-#xzmqmaekdx .gt_font_bold {
+#hjwkytqpka .gt_font_bold {
   font-weight: bold;
 }
 
-#xzmqmaekdx .gt_font_italic {
+#hjwkytqpka .gt_font_italic {
   font-style: italic;
 }
 
-#xzmqmaekdx .gt_super {
+#hjwkytqpka .gt_super {
   font-size: 65%;
 }
 
-#xzmqmaekdx .gt_footnote_marks {
+#hjwkytqpka .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="xzmqmaekdx" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="hjwkytqpka" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
@@ -2376,13 +2326,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-7-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-7-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -2415,13 +2365,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-8-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-8-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -2457,13 +2407,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-9-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-9-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -2504,13 +2454,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-11-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-11-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -2546,13 +2496,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-12-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-12-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -2585,13 +2535,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-13-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-13-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -2627,13 +2577,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-14-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-14-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -2648,7 +2598,7 @@ Duc Du
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#ngerygxjhu .gt_table {
+#kxedhjfwme .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2673,7 +2623,7 @@ Duc Du
   border-left-color: #D3D3D3;
 }
 
-#ngerygxjhu .gt_heading {
+#kxedhjfwme .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2685,7 +2635,7 @@ Duc Du
   border-right-color: #D3D3D3;
 }
 
-#ngerygxjhu .gt_title {
+#kxedhjfwme .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2695,7 +2645,7 @@ Duc Du
   border-bottom-width: 0;
 }
 
-#ngerygxjhu .gt_subtitle {
+#kxedhjfwme .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2705,13 +2655,13 @@ Duc Du
   border-top-width: 0;
 }
 
-#ngerygxjhu .gt_bottom_border {
+#kxedhjfwme .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ngerygxjhu .gt_col_headings {
+#kxedhjfwme .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2726,7 +2676,7 @@ Duc Du
   border-right-color: #D3D3D3;
 }
 
-#ngerygxjhu .gt_col_heading {
+#kxedhjfwme .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2746,7 +2696,7 @@ Duc Du
   overflow-x: hidden;
 }
 
-#ngerygxjhu .gt_column_spanner_outer {
+#kxedhjfwme .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2758,15 +2708,15 @@ Duc Du
   padding-right: 4px;
 }
 
-#ngerygxjhu .gt_column_spanner_outer:first-child {
+#kxedhjfwme .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ngerygxjhu .gt_column_spanner_outer:last-child {
+#kxedhjfwme .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ngerygxjhu .gt_column_spanner {
+#kxedhjfwme .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2778,7 +2728,7 @@ Duc Du
   width: 100%;
 }
 
-#ngerygxjhu .gt_group_heading {
+#kxedhjfwme .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2800,7 +2750,7 @@ Duc Du
   vertical-align: middle;
 }
 
-#ngerygxjhu .gt_empty_group_heading {
+#kxedhjfwme .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2815,15 +2765,15 @@ Duc Du
   vertical-align: middle;
 }
 
-#ngerygxjhu .gt_from_md > :first-child {
+#kxedhjfwme .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ngerygxjhu .gt_from_md > :last-child {
+#kxedhjfwme .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ngerygxjhu .gt_row {
+#kxedhjfwme .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2842,7 +2792,7 @@ Duc Du
   overflow-x: hidden;
 }
 
-#ngerygxjhu .gt_stub {
+#kxedhjfwme .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2854,7 +2804,7 @@ Duc Du
   padding-left: 12px;
 }
 
-#ngerygxjhu .gt_summary_row {
+#kxedhjfwme .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2864,7 +2814,7 @@ Duc Du
   padding-right: 5px;
 }
 
-#ngerygxjhu .gt_first_summary_row {
+#kxedhjfwme .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2874,7 +2824,7 @@ Duc Du
   border-top-color: #D3D3D3;
 }
 
-#ngerygxjhu .gt_grand_summary_row {
+#kxedhjfwme .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2884,7 +2834,7 @@ Duc Du
   padding-right: 5px;
 }
 
-#ngerygxjhu .gt_first_grand_summary_row {
+#kxedhjfwme .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2894,11 +2844,11 @@ Duc Du
   border-top-color: #D3D3D3;
 }
 
-#ngerygxjhu .gt_striped {
+#kxedhjfwme .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ngerygxjhu .gt_table_body {
+#kxedhjfwme .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2907,7 +2857,7 @@ Duc Du
   border-bottom-color: #D3D3D3;
 }
 
-#ngerygxjhu .gt_footnotes {
+#kxedhjfwme .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2921,13 +2871,13 @@ Duc Du
   border-right-color: #D3D3D3;
 }
 
-#ngerygxjhu .gt_footnote {
+#kxedhjfwme .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#ngerygxjhu .gt_sourcenotes {
+#kxedhjfwme .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2941,46 +2891,46 @@ Duc Du
   border-right-color: #D3D3D3;
 }
 
-#ngerygxjhu .gt_sourcenote {
+#kxedhjfwme .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#ngerygxjhu .gt_left {
+#kxedhjfwme .gt_left {
   text-align: left;
 }
 
-#ngerygxjhu .gt_center {
+#kxedhjfwme .gt_center {
   text-align: center;
 }
 
-#ngerygxjhu .gt_right {
+#kxedhjfwme .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ngerygxjhu .gt_font_normal {
+#kxedhjfwme .gt_font_normal {
   font-weight: normal;
 }
 
-#ngerygxjhu .gt_font_bold {
+#kxedhjfwme .gt_font_bold {
   font-weight: bold;
 }
 
-#ngerygxjhu .gt_font_italic {
+#kxedhjfwme .gt_font_italic {
   font-style: italic;
 }
 
-#ngerygxjhu .gt_super {
+#kxedhjfwme .gt_super {
   font-size: 65%;
 }
 
-#ngerygxjhu .gt_footnote_marks {
+#kxedhjfwme .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="ngerygxjhu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="kxedhjfwme" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
@@ -3276,13 +3226,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-18-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-18-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -3319,13 +3269,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-19-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-19-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -3362,13 +3312,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-20-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-20-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -3405,13 +3355,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-21-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-21-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
@@ -3448,13 +3398,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/dd00a0a9f6b6fa974ca1ae618ad467feec18aa83/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-22-1.png" target="_blank">dd00a0a</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/e7ecdaec6637f07ac367d98486869a2919c124cc/docs/figure/04_merge_child_measle_report.Rmd/unnamed-chunk-22-1.png" target="_blank">e7ecdae</a>
 </td>
 <td>
 Duc Du
 </td>
 <td>
-2021-10-29
+2021-11-01
 </td>
 </tr>
 </tbody>
