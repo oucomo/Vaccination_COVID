@@ -1,0 +1,338 @@
+---
+title: "Vaccination and delays in vaccination due to COVID-19"
+author: "Duc Du"
+date: ' 2020-01-29 (update: `r Sys.Date()`)'
+output:
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    keep_md: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+rm(list = ls(all.names = TRUE))
+directory <- ("/home/ducdu/Vaccination_COVID")
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache.lazy = FALSE,
+                      tidy.opts=list(width.cutoff=60),
+                      tidy=TRUE,
+                      root.dir = rprojroot::find_rstudio_root_file())
+
+library(workflowr)
+library(data.table)
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(gt)
+library(gtsummary)
+library(ggridges)
+
+select <- dplyr::select
+```
+
+```{r}
+error_datetime <- read.csv(file.path("..", "tuann349_vad", "error_datetime.csv")) %>% as.data.frame()
+error_duplicate <- read.csv(file.path("..", "tuann349_vad", "error_duplicate.csv")) %>% as.data.frame()
+```
+
+# Introduction
+
+COVID-19 creates negative impacts on other diseases and health conditions, one of them is vaccine preventable diseases (VPD). Lock-down periods may translate into delays in vaccination and delays in vaccination may result in increased risk of outbreaks of VPD. We quantified these delays in vaccination and related factors for measles and other VPD. We propose to translate these delays into outbreak risks for measles and other VPD with an epidemiological model.
+
+# Methods
+
+We used data from the Vietnam Vaccine Registry collected at the commune, district and provincial levels among vaccination children who undertook their vaccine shots at either public clinics (across 25 provinces in the Northern areas) under the Expanded Program on Immunization or private clinics (across 63 provinces in the whole country) over the period from 01-01-2017 to 31-12-2020. 
+
+# Results & Discussions
+
+```{r}
+load(file.path("..", "tuann349_vad", "child_all.Rdata"))
+load(file.path("..", "tuann349_vad", "tab_child_all.Rdata"))
+```
+
+## Characteristics of vaccination children
+
+Table 1 describes the characteristics of vaccination children born from 1/1/2017 to 31/12/2020. Of total 6,367,991 children (53% female) vaccinated from 2017 to 2020, 2,600,539 (41%) were vaccinated at both public and private clinics, whereas 2,210,096 (35%) got immunized at public clinics only and 1,557,356 (24%) got immunized at private clinics only. There was an increase in the total number of children vaccinated at both public clinics and private clinics over 4 years. Similar trend was observed for those vaccinated at private clinics only from 2017 to 2019 then a bit drop in 2020 while the total number of children vaccinated at public clinics only decreased over years (Table 1).
+
+```{r}
+t1 <- child_all %>% select(age, sex, province, type, type2, year) %>% 
+  tbl_summary(
+  by=type, # split table by group
+  percent = "column",
+  #missing = "no" # don't list missing data separately
+  ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  #add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
+  modify_header(label = "**Variable**") %>% # update the column header
+  bold_labels()
+
+t2 <- child_all2 %>% select(age, sex, province, type, type2, year) %>% 
+  tbl_summary(
+  by=type, # split table by group
+  percent = "column",
+  #missing = "no" # don't list missing data separately
+  ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  #add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
+  modify_header(label = "**Variable**") %>% # update the column header
+  bold_labels() 
+```
+
+```{r}
+tab_child_all_sum2
+```
+
+```{r}
+t2
+```
+
+## Child overall
+
+## Children born by month and year
+
+Overall trend of vaccination children born from 2017 to 2020 was shown in Figure 1. There was a steady increase in the total number of children born from February (around Tet holiday) to October, reach a peak in between September and October, then drop in the next month, annually. Similar trend was observed for each year (Figure 1). 
+
+```{r}
+ggplot(data = child_all_overall[year >= 2017 & year <= 2020], aes(x = factor(month), y = N/1000, color = factor(year))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = year), size = 1.5) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of children born (x 10^3)", breaks = seq(from = 0, to = 300, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of vaccination children born by month and year")
+#ggsave(filename = file.path("..", "figures", "child_all_month_year.png"), width = 15, height = 10)
+```
+
+There was an increase in the total number of children born from 2017 to 2019. The number of children born then decreased in 2020 (Figure 2).
+
+```{r}
+ggplot(child_all_overall[year >= 2017 & year <= 2020], aes(month, N/1000, color = factor(year))) +
+  geom_point(size=3) +
+  geom_line(aes(group=year)) +
+  geom_smooth () +
+  facet_wrap(~ year) + 
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of children born (x 10^3)", breaks = seq(from = 0, to = 300, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of vaccination children born by month and year")
+#ggsave(filename = file.path("..", "figures", "child_all_month_year2.png"), width = 15, height = 10)
+```
+## Children born by province
+
+Total number of vaccination children born in each province by month and year from 2017 to 2020 was shown in Figure 3. In general, similar trend was observed in most of provinces (Figure 3).
+
+```{r}
+ggplot(data = child_all_province[year >= 2017 & year <= 2020], aes(x = factor(month), y = N/1000, color = factor(year))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
+  geom_point() +
+  geom_line(aes(group = year)) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of children born (x 10^3)") +
+  scale_color_discrete(name = "Year") +
+  facet_wrap(~ province, scale = "free_y") +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  ggtitle("Number of vaccination children born in each province by month and year")
+#ggsave(filename = file.path("..", "figures", "child_all_province_year.png"), width = 15, height = 10)
+```
+
+### Measle merge
+
+```{r}
+load(file.path("..", "tuann349_vad", "measle_all.Rdata"))
+```
+
+## Measle vaccination
+
+### Measle vaccination shots by month and year
+
+Overall trend of Measle vaccination shots by month and year from 2017 to 2020 was shown in Figure 4. There was a steady increase in the total number of Measle vaccine shots from January to December, annually with a peak at different months in each year. There was a big reduction in total number of Measle vaccine shots in April, 2020 which was the first national lockdown period in Vietnam due to the COVID-19 pandemic (Figure 4). 
+
+```{r}
+ggplot(data = mea_all_overall[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = vyear), size = 1.5) +
+  scale_x_discrete(name = "Month") +
+  geom_smooth() +
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5) +
+  scale_y_continuous(name = "Number of shots (x 10^3)", breaks = seq(from = 0, to = 200, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  #facet_wrap(~ type) +
+  ggtitle("Total number of Measle vaccination shots by month and year")
+#ggsave(filename = file.path("..", "figures", "measle_all_overall_month_year.png"), width = 15, height = 10)
+```
+### Measle vaccination shots by type of clinics
+
+Similar trends of Measle vaccine shots were observed for shots taken at public clinics only, private clinics only and for those taken vaccines at both public and private clinics, separately. In general, the number of Measle vaccine shots taken in public clinics were higher than those taken in private clinics (Figure 5).
+
+```{r}
+ggplot(data = mea_all[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = vyear), size = 1.5) +
+  scale_x_discrete(name = "Month") +
+  geom_smooth() +
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5) +
+  scale_y_continuous(name = "Number of shots (x 10^3)", breaks = seq(from = 0, to = 200, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  facet_wrap(~ type) +
+  ggtitle("Total number of Measle vaccination shots by month and year")
+#ggsave(filename = file.path("..", "figures", "measle_all_month_year.png"), width = 15, height = 10)
+```
+There has been a steady increase in total number of Measle vaccination shots from 2017 to the middle of 2020, then level off and decline in the last half of 2020 (Figure 6).
+
+```{r}
+ggplot(mea_all_overall[vyear >= 2017 & vyear <= 2020], aes(vmonth, N/1000, color = factor(vyear))) +
+  geom_point(size=3) +
+  geom_line(aes(group=vyear)) +
+  geom_smooth () + 
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of shots (x 10^3)", breaks = seq(from = 0, to = 200, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of Measle vaccination shots by month and year") +
+  facet_wrap(~ vyear, scale = "free_y")
+#ggsave(filename = file.path("..", "figures", "measle_all_overall_month_year.png"), width = 15, height = 10)
+```
+
+### Delays in vaccination
+
+We quantifed the delays in Measle vaccination over years. The distribution of the delays in Measle vaccination (in months) for children born from 2017 to 2020 was shown in Figure 7. The earlier the children born, the longer in delays of Measle vaccination they could probably have. The longest delays of Measle vaccination can be up to more than 30 months for the Measle vaccine and 30 months for the Measle-Rubella vaccine compared to the schedule of those vaccines they supposed to take. According the recommended immunization schedule, the schedule of Measle and Measle-Rubella vaccines taken was 9 months and 18 months after the children were born, respectively. There was no data on the delays of Measle vaccination from the last haft of 2019 to the end of 2020 (Figure 7).
+
+```{r}
+ggplot(data = measle_all[year>= 2017 & year <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(month), color = factor(year))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~year, scale = "free_y") +
+  labs(y = "Birth months", x="Duration of delays in Measle vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in Measle vaccination (months) for children born 2017-2020")
+#ggsave(filename = file.path("..", "figures", "measle_all_delay_year.png"), width = 15, height = 10)
+```
+
+```{r}
+#load(file.path("..", "..", "tuann349_vad", "vacinfo.Rdata"))
+#load(file.path("..", "..", "tuann349_vad", "vacinfo_private.Rdata"))
+library(lubridate)
+measle_all_delay <- measle_all %>%
+  select(pid, province, district, commune, sex, dob, vacname2, start, shot, vacdate, vyear, vmonth, year, month, vagem, vagem2, vdelay, vsche, vsyear, vsmonth, vdelayd, type, type2) %>% filter(year>=2017 & year<=2021) %>%
+  mutate(vdelay_outcome=ifelse(vdelay>0,1,0),
+         age=2021-year,
+         sex=as.numeric(sex),
+         sex=recode(sex, "0"="0", "1"="1", "2"="1"),
+         sex=factor(sex, levels=c(0,1), labels=c("F","M")),
+         shot=factor(shot),
+         vacdate_f=ifelse(vacdate<"2020-04-01",0,1),
+         vacdate_f=factor(vacdate_f, levels = c(0,1), labels = c("Before", "After"))) %>% 
+  filter(province!="Tinh tap huan")
+```
+
+### Factors associated with delays in vaccination
+
+The probability of the delays in Measle vaccination (dichotomous outcome: delay versus no delay) was modeled to see if it depends on other related factors. The delays in Measle vaccination were shown to be dependent on age (p<0.001), province (p<0.001), type of vaccine (p<0.001), vaccination period (before and after COVID-19 pandemic) (p<0.001).
+
+```{r}
+t3 <- measle_all_delay %>% select(age, sex, vacname2, vacdate_f, vdelay, vdelay_outcome, type) %>% 
+  tbl_summary(
+  by=vdelay_outcome, # split table by group
+  percent = "row",
+  #missing = "no" # don't list missing data separately
+  ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
+  modify_header(label = "**Variable**") %>% # update the column header
+  bold_labels()
+```
+
+```{r}
+t3
+```
+
+```{r}
+#install.packages("rms")
+library("rms")
+theme_set(theme_bw())
+dd <- datadist(measle_all_delay)
+options(datadist="dd")
+dd
+
+fit1 <- lrm(vdelay_outcome~age, data=measle_all_delay, maxit=1000)
+anova(fit1)
+pred <- Predict(fit1, age=1:4, fun=plogis)
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)")), ylim=c(0,1)) +
+  #scale_x_discrete(name = "Age") + 
+  theme(text = element_text(size=15), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14), legend.text=element_text(size=14)) +
+  geom_line(size=1.25) + 
+  geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
+  xlab("Age") +
+  annotate("text", x=3.5, y=0.8, label=paste0("p-value<0.001"), parse = TRUE)
+#ggsave(filename = file.path("..", "figures", "measle_all_delay_age.png"), width = 15, height = 10)
+```
+
+```{r}
+fit2 <- lrm(vdelay_outcome~sex, data=measle_all_delay, maxit=1000)
+anova(fit2)
+pred <- Predict(fit2, sex=NA, fun=plogis)
+
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)"))) +
+  theme(text = element_text(size=15), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14), legend.text=element_text(size=14)) +
+  geom_line(size=1.25) + 
+  geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
+  xlab("Sex") +
+  annotate("text", x=0.9447, y=0.5, label=round(anova(fit2)[5],3), parse = TRUE)
+```
+
+```{r}
+fit3 <- lrm(vdelay_outcome~province, data=measle_all_delay, maxit=1000)
+anova(fit3)
+pred <- Predict(fit3, province=NA, fun=plogis)
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)"))) +
+  theme(text = element_text(size=10), axis.text.x = element_text(size=10), axis.text.y = element_text(size=6), legend.text=element_text(size=10)) +
+  geom_line(size=1.25) + 
+  geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
+  xlab("Province") +
+  annotate("text", x=60, y=0.87, label=paste0("p-value<0.001"), parse = TRUE)
+#ggsave(filename = file.path("..", "figures", "measle_all_delay_province.png"), width = 15, height = 10)
+```
+
+```{r}
+fit4 <- lrm(vdelay_outcome~vacdate_f, data=measle_all_delay, maxit=1000)
+anova(fit4)
+pred <- Predict(fit4, vacdate_f=NA, fun=plogis)
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)"))) +
+  theme(text = element_text(size=10), axis.text.x = element_text(size=10), axis.text.y = element_text(size=10), legend.text=element_text(size=10)) +
+  geom_line(size=1.25) + 
+  geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
+  xlab("Vaccination Period") +
+  annotate("text", x=2, y=0.95, label=paste0("p-value<0.001"), parse = TRUE)
+#ggsave(filename = file.path("..", "figures", "measle_all_delay_period.png"), width = 15, height = 10)
+```
+
+```{r}
+fit5 <- lrm(vdelay_outcome~type, data=measle_all_delay, maxit=1000)
+anova(fit5)
+pred <- Predict(fit5, fun=plogis)
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)"))) +
+  theme(text = element_text(size=10), axis.text.x = element_text(size=10), axis.text.y = element_text(size=10), legend.text=element_text(size=10)) +
+  geom_line(size=1.25) + 
+  geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
+  xlab("Type of vaccination") +
+  annotate("text", x=2, y=0.935, label=paste0("p-value<0.001"), parse = TRUE)
+#ggsave(filename = file.path("..", "figures", "measle_all_delay_type.png"), width = 15, height = 10)
+```

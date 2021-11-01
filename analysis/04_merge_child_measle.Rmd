@@ -1,0 +1,439 @@
+---
+title: "Data Exploration"
+date: ' 2020-01-29 (update: `r Sys.Date()`)'
+output:
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    keep_md: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache.lazy = FALSE,
+                      tidy.opts=list(width.cutoff=60),
+                      tidy=TRUE)
+
+library(workflowr)
+library(data.table)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(gt)
+library(gtsummary)
+library(ggridges)
+```
+
+```{r}
+error_datetime <- read.csv(file.path("..", "..", "tuann349_vad", "error_datetime.csv")) %>% as.data.frame()
+error_duplicate <- read.csv(file.path("..", "..", "tuann349_vad", "error_duplicate.csv")) %>% as.data.frame()
+```
+
+### Children
+
+```{r}
+child <- readRDS(file = file.path("..", "..", "tuann349_vad", "child.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+
+individual_private <- readRDS(file = file.path("..", "..", "tuann349_vad", "individual_private.rds")) %>% mutate(year=year(dob), month=month(dob), week=week(dob))
+
+child_private <- individual_private %>% filter(year <= 2020 & year >= 2017)
+
+child_merge <- merge(child, child_private, by="pid", all=TRUE) %>%
+  mutate(type=ifelse((!is.na(dob.x) & !is.na(dob.y)),2, ifelse(!is.na(dob.x),0,1)),
+         type=factor(type,levels = c(2,0,1),labels = c("both","public","private")))
+
+child_public <- child_merge %>% filter(type=="public") %>% 
+    select(pid, province.x, district.x, commune.x, sex.x, dob.x, type) %>% 
+    rename(province=province.x, district=district.x, commune=commune.x, sex=sex.x, dob=dob.x)
+
+child_private <- child_merge %>% filter(type=="private") %>% 
+    select(pid, province.y, district.y, commune.y, sex.y, dob.y, type) %>% 
+    rename(province=province.y, district=district.y, commune=commune.y, sex=sex.y, dob=dob.y)
+
+child_both_public <- child_merge %>% filter(type=="both") %>%
+  select(pid, province.x, district.x, commune.x, sex.x, dob.x, type) %>%
+    rename(province=province.x, district=district.x, commune=commune.x, sex=sex.x, dob=dob.x) %>% mutate(type2="public")
+
+child_both_private <- child_merge %>% filter(type=="both") %>%
+  select(pid, province.y, district.y, commune.y, sex.y, dob.y, type) %>%
+    rename(province=province.y, district=district.y, commune=commune.y, sex=sex.y, dob=dob.y) %>% mutate(type2="private")
+
+child_both <- rbind(child_both_public, child_both_private)
+
+child_all <- rbind(child_public, child_private, child_both, fill=TRUE) %>%
+  mutate(type2=ifelse(type=="public", "public", ifelse(type=="private", "private", type2)), type2=factor(type2)) %>%
+  mutate(year=year(dob), 
+         month=month(dob), 
+         week=week(dob), 
+         age=2021-year, 
+         sex=as.numeric(sex),
+         sex=recode(sex, "0"="0", "1"="1", "2"="1"),
+         sex=factor(sex, levels=c(0,1), labels=c("F","M"))) %>% filter(province!="Tinh tap huan")
+
+child_all_overall <- child_all[, .N, by = .(year, month)]
+child_all_overall2 <- child_all[, .N, by = .(year, month, week)]
+child_all_province <- child_all[, .N, by = .(year, month, province)]
+child_all_province2 <- child_all[, .N, by = .(year, month, week, province)]
+child_all_sex <- child_all[, .N, by = .(year, month, sex)]
+child_all_sex2 <- child_all[, .N, by = .(year, month, week, sex)]
+child_all_province_sex <- child_all[, .N, by = .(year, month, province, sex)]
+child_all_province_sex2 <- child_all[, .N, by = .(year, month, week, province, sex)]
+
+child_all2 <- child_all %>%
+ group_by(pid, province, type, type2) %>%
+ mutate(group_id = cur_group_id()) %>% distinct(group_id, .keep_all = TRUE) %>% setDT()
+
+save(child, child_all, child_all2, child_all_overall, child_all_overall2, child_all_province, child_all_province2, child_all_sex, child_all_sex2, child_all_province_sex, child_all_province_sex2, file = file.path("..", "..", "tuann349_vad", "child_all.Rdata"))
+
+tab_child_all_sum <- tbl_summary(child_all[year >= 2017 & year <= 2020, .(province, sex, age, type, type2, factor(year))])
+tab_child_all_sum2 <- tbl_summary(child_all2[year >= 2017 & year <= 2020, .(province, sex, age, type, type2, factor(year))])
+
+save(tab_child_all_sum, tab_child_all_sum2, file = file.path("..", "..", "tuann349_vad", "tab_child_all.Rdata"))
+```
+
+```{r}
+load(file.path("..", "..", "tuann349_vad", "child_all.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "tab_child_all.Rdata"))
+```
+
+### Descriptive table
+
+```{r}
+tab_child_all_sum
+
+t1 <- child_all %>% select(age, sex, province, type, type2) %>% 
+  tbl_summary(
+  by=type, # split table by group
+  percent = "row",
+  #missing = "no" # don't list missing data separately
+  ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  #add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
+  modify_header(label = "**Variable**") %>% # update the column header
+  bold_labels() 
+t1
+```
+
+### Child overall
+
+### Overall
+
+```{r}
+ggplot(data = child_all_overall[year >= 2017 & year <= 2020], aes(x = factor(month), y = N/1000, color = factor(year))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = year), size = 1.5) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of children born (x 10^3)", breaks = seq(from = 0, to = 300, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of vaccination children born by month and year")
+ggsave(filename = file.path("..", "figures", "child_all_month_year.png"), width = 15, height = 10)
+```
+
+```{r}
+ggplot(child_all_overall[year >= 2017 & year <= 2020], aes(month, N/1000, color = factor(year))) +
+  geom_point(size=3) +
+  geom_line(aes(group=year)) +
+  geom_smooth () +
+  facet_wrap(~ year) + 
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of children born (x 10^3)", breaks = seq(from = 0, to = 300, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of vaccination children born by month and year")
+ggsave(filename = file.path("..", "figures", "child_all_month_year2.png"), width = 15, height = 10)
+```
+
+```{r}
+ggplot(data = child_all_overall2[year >= 2017 & year <= 2020], aes(x = factor(week), y = N/1000, color = factor(year))) +
+  #geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = year), size = 1.5) +
+  stat_smooth(method="loess", colour="blue", size=1.5) +
+  scale_x_discrete(name = "Week") +
+  scale_y_continuous(name = "Number of babies born (x 10^3)", breaks = seq(from = 0, to = 100, by = 10)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of babies born by week and year")
+ggsave(filename = file.path("..", "figures", "child_week_year.png"), width = 15, height = 10)
+```
+
+```{r}
+ggplot(child_all_overall2[year >= 2017 & year <= 2020], aes(week, N/1000, color = factor(year))) +
+  geom_point(size=3) +
+  geom_line(aes(group=year)) +
+  geom_smooth () + 
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1) +
+  scale_x_discrete(name = "Week") +
+  scale_y_continuous(name = "Number of babies born (x 10^3)", breaks = seq(from = 0, to = 100, by = 10)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of babies born by week and year") +
+  facet_wrap(~ year)
+ggsave(filename = file.path("..", "figures", "child_week_year2.png"), width = 15, height = 10)
+```
+
+```{r}
+ggplot(data = child_all_province[year >= 2017 & year <= 2020], aes(x = factor(month), y = N/1000, color = factor(year))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
+  geom_point() +
+  geom_line(aes(group = year)) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of children born (x 10^3)") +
+  scale_color_discrete(name = "Year") +
+  facet_wrap(~ province, scale = "free_y") +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  ggtitle("Number of vaccination children born in each province by month and year")
+ggsave(filename = file.path("..", "figures", "child_all_province_year.png"), width = 15, height = 10)
+```
+
+### Measle merge
+
+```{r}
+measle <- readRDS(file = file.path("..", "..", "tuann349_vad", "measle.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+
+mea <- measle[, .N, by = .(vyear, vmonth)]
+mea2 <- measle[, .N, by = .(vyear, vmonth, vweek)]
+mea_delay <- measle[, .N, by = .(vyear, vmonth, vdelayd, vacname2)]
+
+measle_private <- readRDS(file = file.path("..", "..", "tuann349_vad", "measle_private.rds"))
+
+mea_private <- measle_private[, .N, by = .(vyear, vmonth)]
+mea_private2 <- measle_private[, .N, by = .(vyear, vmonth, vweek)]
+
+measle_merge <- merge(measle, measle_private, by="pid", all=TRUE) %>%
+  mutate(type=ifelse((!is.na(dob.x) & !is.na(dob.y)),2, ifelse(!is.na(dob.x),0,1)),
+         type=factor(type,levels = c(2,0,1),labels = c("both","public","private")))
+
+measle_public <- measle_merge %>% filter(type=="public") %>% 
+    select(pid, province.x, district.x, commune.x, sex.x, dob.x, vacname2.x, vacdate.x, shot.x, start.x, vyear.x, vmonth.x,vweek.x,vagem.x, vagem2.x, vdelay.x, vsche.x, vsyear.x, vsmonth.x, vsweek.x, vdelayd.x, type) %>% 
+    arrange(pid, vacdate.x, vacname2.x) %>% 
+    rename(province=province.x, district=district.x, commune=commune.x, sex=sex.x, dob=dob.x, vacname2=vacname2.x, vacdate=vacdate.x, shot=shot.x, start=start.x, vyear=vyear.x, vmonth=vmonth.x, vweek=vweek.x, vagem=vagem.x, vagem2=vagem2.x, vdelay=vdelay.x, vsche=vsche.x, vsyear=vsyear.x, vsmonth=vsmonth.x, vsweek=vsweek.x, vdelayd=vdelayd.x)
+
+measle_private <- measle_merge %>% filter(type=="private") %>% 
+    select(pid, province.y, district.y, commune.y, sex.y, dob.y, vacname2.y, vacdate.y, shot.y, start.y, vyear.y, vmonth.y,vweek.y,vagem.y, vagem2.y, vdelay.y, vsche.y, vsyear.y, vsmonth.y, vsweek.y, vdelayd.y, type) %>% 
+    arrange(pid, vacdate.y, vacname2.y) %>%
+    rename(province=province.y, district=district.y, commune=commune.y, sex=sex.y, dob=dob.y, vacname2=vacname2.y, vacdate=vacdate.y, shot=shot.y, start=start.y, vyear=vyear.y, vmonth=vmonth.y, vweek=vweek.y, vagem=vagem.y, vagem2=vagem2.y, vdelay=vdelay.y, vsche=vsche.y, vsyear=vsyear.y, vsmonth=vsmonth.y, vsweek=vsweek.y, vdelayd=vdelayd.y)
+
+measle_both_public <- measle_merge %>% filter(type=="both") %>%
+  select(pid, province.x, district.x, commune.x, sex.x, dob.x, vacname2.x, vacdate.x, shot.x, start.x, vyear.x, vmonth.x,vweek.x,vagem.x, vagem2.x, vdelay.x, vsche.x, vsyear.x, vsmonth.x, vsweek.x, vdelayd.x, type) %>%
+    arrange(pid, vacdate.x, vacname2.x) %>%
+    rename(province=province.x, district=district.x, commune=commune.x, sex=sex.x, dob=dob.x, vacname2=vacname2.x, vacdate=vacdate.x, shot=shot.x, start=start.x, vyear=vyear.x, vmonth=vmonth.x, vweek=vweek.x, vagem=vagem.x, vagem2=vagem2.x, vdelay=vdelay.x, vsche=vsche.x, vsyear=vsyear.x, vsmonth=vsmonth.x, vsweek=vsweek.x, vdelayd=vdelayd.x) %>% mutate(type2="public")
+
+measle_both_private <- measle_merge %>% filter(type=="both") %>%
+  select(pid, province.y, district.y, commune.y, sex.y, dob.y, vacname2.y, vacdate.y, shot.y, start.y, vyear.y, vmonth.y,vweek.y,vagem.y, vagem2.y, vdelay.y, vsche.y, vsyear.y, vsmonth.y, vsweek.y, vdelayd.y, type) %>%
+    arrange(pid, vacdate.y, vacname2.y) %>%
+    rename(province=province.y, district=district.y, commune=commune.y, sex=sex.y, dob=dob.y, vacname2=vacname2.y, vacdate=vacdate.y, shot=shot.y, start=start.y, vyear=vyear.y, vmonth=vmonth.y, vweek=vweek.y, vagem=vagem.y, vagem2=vagem2.y, vdelay=vdelay.y, vsche=vsche.y, vsyear=vsyear.y, vsmonth=vsmonth.y, vsweek=vsweek.y, vdelayd=vdelayd.y) %>% mutate(type2="private")
+
+measle_both <- rbind(measle_both_public, measle_both_private) %>% arrange(pid, vacdate, vacname2)
+
+temp <- rbind(measle_public, measle_private, measle_both, fill=TRUE) %>%
+  mutate(type2=ifelse(type=="public", "public", ifelse(type=="private", "private", type2)), type2=factor(type2))
+
+measle_all <- temp[, .(province, district, commune, sex, dob, vacname2, vacdate, shot = order(vacdate), year = year(dob),
+                        month = month(dob), week = week(dob), start, vyear, vmonth, vweek, vagem, vagem2, vdelay, vsche, vsyear, vsmonth, vsweek, vdelayd, type, type2), by = .(pid, vacname2)][order(pid, vacname2, shot)]
+head(measle_all)  
+
+measle_all <- measle_all %>% select(-2)
+
+mea_all_overall <- measle_all[, .N, by = .(vyear, vmonth)]
+
+mea_all <- measle_all[, .N, by = .(vyear, vmonth, type)]
+mea_all2 <- measle_all[, .N, by = .(vyear, vmonth, type2)]
+mea_all_delay <- measle_all[, .N, by = .(vyear, vmonth, vdelayd, vacname2)]
+
+#save(measle, measle_all, mea_all_overall, mea_all, mea_all2, mea_all_delay, file = file.path("..", "..", "tuann349_vad", "measle_all.Rdata"))
+```
+
+```{r}
+load(file.path("..", "..", "tuann349_vad", "measle_all.Rdata"))
+```
+
+#### Overall
+
+```{r}
+ggplot(data = mea_all_overall[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = vyear), size = 1.5) +
+  scale_x_discrete(name = "Month") +
+  geom_smooth() +
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5) +
+  scale_y_continuous(name = "Number of shots (x 10^3)", breaks = seq(from = 0, to = 200, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  #facet_wrap(~ type) +
+  ggtitle("Total number of Measle vaccination shots by month and year")
+ggsave(filename = file.path("..", "figures", "measle_all_overall_month_year.png"), width = 15, height = 10)
+```
+
+```{r}
+ggplot(data = mea_all[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = vyear), size = 1.5) +
+  scale_x_discrete(name = "Month") +
+  geom_smooth() +
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5) +
+  scale_y_continuous(name = "Number of shots (x 10^3)", breaks = seq(from = 0, to = 200, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  facet_wrap(~ type) +
+  ggtitle("Total number of Measle vaccination shots by month and year")
+ggsave(filename = file.path("..", "figures", "measle_all_month_year.png"), width = 15, height = 10)
+```
+
+```{r}
+ggplot(data = mea_all2[vyear >= 2017 & vyear <= 2020], aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = vyear), size = 1.5) +
+  scale_x_discrete(name = "Month") +
+  geom_smooth() +
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1.5) +
+  scale_y_continuous(name = "Number of shots (x 10^3)", breaks = seq(from = 0, to = 200, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  facet_wrap(~ type2) +
+  ggtitle("Total number of Measle vaccination shots by month and year")
+ggsave(filename = file.path("..", "figures", "measle_month_year.png"), width = 15, height = 10)
+```
+
+```{r}
+ggplot(mea_all_overall[vyear >= 2017 & vyear <= 2020], aes(vmonth, N/1000, color = factor(vyear))) +
+  geom_point(size=3) +
+  geom_line(aes(group=vyear)) +
+  geom_smooth () + 
+  stat_smooth(method="loess", formula = y ~ x, colour="blue", size=1) +
+  scale_x_discrete(name = "Month") +
+  scale_y_continuous(name = "Number of shots (x 10^3)", breaks = seq(from = 0, to = 200, by = 50)) +
+  scale_color_discrete(name = "Year") +
+  theme_bw() +
+  ggtitle("Total number of Measle vaccination shots by month and year") +
+  facet_wrap(~ vyear, scale = "free_y")
+ggsave(filename = file.path("..", "figures", "measle_all_overall_month_year.png"), width = 15, height = 10)
+```
+
+#### Delays in vaccination (months)
+
+```{r}
+ggplot(data = measle_all[year>= 2017 & year <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(month), color = factor(year))) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  facet_grid(vacname2~year, scale = "free_y") +
+  labs(y = "Birth months", x="Duration of delays in Measle vaccination (months)") +
+  scale_color_discrete(name = "Year") +
+  ggtitle("Delays in Measle vaccination (months) for children born 2017-2020")
+ggsave(filename = file.path("..", "figures", "measle_all_delay_year.png"), width = 15, height = 10)
+```
+
+```{r}
+#load(file.path("..", "..", "tuann349_vad", "vacinfo.Rdata"))
+#load(file.path("..", "..", "tuann349_vad", "vacinfo_private.Rdata"))
+library(lubridate)
+measle_all_delay <- measle_all %>%
+  select(pid, province, district, commune, sex, dob, vacname2, start, shot, vacdate, vyear, vmonth, year, month, vagem, vagem2, vdelay, vsche, vsyear, vsmonth, vdelayd, type, type2) %>% filter(year>=2017 & year<=2021) %>%
+  mutate(vdelay_outcome=ifelse(vdelay>0,1,0),
+         age=2021-year,
+         sex=as.numeric(sex),
+         sex=recode(sex, "0"="0", "1"="1", "2"="1"),
+         sex=factor(sex, levels=c(0,1), labels=c("F","M")),
+         shot=factor(shot),
+         vacdate_f=ifelse(vacdate<"2020-04-01",0,1),
+         vacdate_f=factor(vacdate_f, levels = c(0,1), labels = c("Before", "After"))) %>% 
+  filter(province!="Tinh tap huan")
+```
+
+```{r}
+t1 <- measle_all_delay %>% select(age, sex, province, vacname2, shot, vacdate_f, vdelay, vdelay_outcome, type, type2) %>% 
+  tbl_summary(
+  by=vdelay_outcome, # split table by group
+  percent = "row",
+  #missing = "no" # don't list missing data separately
+  ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
+  modify_header(label = "**Variable**") %>% # update the column header
+  bold_labels() 
+t1
+```
+
+```{r}
+#install.packages("rms")
+library("rms")
+theme_set(theme_bw())
+dd <- datadist(measle_all_delay)
+options(datadist="dd")
+dd
+
+fit1 <- lrm(vdelay_outcome~age, data=measle_all_delay, maxit=1000)
+anova(fit1)
+pred <- Predict(fit1, age=1:4, fun=plogis)
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)")), ylim=c(0,1)) +
+  #scale_x_discrete(name = "Age") + 
+  theme(text = element_text(size=15), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14), legend.text=element_text(size=14)) +
+  geom_line(size=1.25) + 
+  geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
+  xlab("Age") +
+  annotate("text", x=3.5, y=0.8, label=paste0("p-value<0.001"), parse = TRUE)
+ggsave(filename = file.path("..", "figures", "measle_all_delay_age.png"), width = 15, height = 10)
+```
+
+```{r}
+fit2 <- lrm(vdelay_outcome~sex, data=measle_all_delay, maxit=1000)
+anova(fit2)
+pred <- Predict(fit2, sex=NA, fun=plogis)
+
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)"))) +
+  theme(text = element_text(size=15), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14), legend.text=element_text(size=14)) +
+  geom_line(size=1.25) + 
+  geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
+  xlab("Sex") +
+  annotate("text", x=0.9447, y=0.5, label=round(anova(fit2)[5],3), parse = TRUE)
+```
+
+```{r}
+fit3 <- lrm(vdelay_outcome~province, data=measle_all_delay, maxit=1000)
+anova(fit3)
+pred <- Predict(fit3, province=NA, fun=plogis)
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)"))) +
+  theme(text = element_text(size=10), axis.text.x = element_text(size=10), axis.text.y = element_text(size=6), legend.text=element_text(size=10)) +
+  geom_line(size=1.25) + 
+  geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
+  xlab("Province")
+ggsave(filename = file.path("..", "figures", "measle_all_delay_province.png"), width = 15, height = 10)
+```
+
+```{r}
+fit4 <- lrm(vdelay_outcome~vacdate_f, data=measle_all_delay, maxit=1000)
+anova(fit4)
+pred <- Predict(fit4, vacdate_f=NA, fun=plogis)
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)"))) +
+  theme(text = element_text(size=10), axis.text.x = element_text(size=10), axis.text.y = element_text(size=10), legend.text=element_text(size=10)) +
+  geom_line(size=1.25) + 
+  geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
+  xlab("Vaccination Period")
+ggsave(filename = file.path("..", "figures", "measle_all_delay_period.png"), width = 15, height = 10)
+```
+
+```{r}
+fit5 <- lrm(vdelay_outcome~type, data=measle_all_delay, maxit=1000)
+anova(fit5)
+pred <- Predict(fit5, fun=plogis)
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)"))) +
+  theme(text = element_text(size=10), axis.text.x = element_text(size=10), axis.text.y = element_text(size=10), legend.text=element_text(size=10)) +
+  geom_line(size=1.25) + 
+  geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
+  xlab("Type of vaccination")
+ggsave(filename = file.path("..", "figures", "measle_all_delay_type.png"), width = 15, height = 10)
+```
