@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Thinh Ong" />
+
+
+<title>Calculate number of births with GSO data</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Vaccination_COVID</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/oucomo/Vaccination_COVID">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Calculate number of births with GSO data</h1>
+<h4 class="author">Thinh Ong</h4>
+<h4 class="date">2/22/2022</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-02-22
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Vaccination_COVID/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version 1.7.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210126code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210126)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210126code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210126)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongabsolute"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>File paths:</strong> absolute </a>
+</p>
+</div>
+<div id="strongFilepathsstrongabsolute" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Using absolute paths to the files within your workflowr project makes it difficult for you and others to run your code on a different machine. Change the absolute path(s) below to the suggested relative path(s) to make your code more reproducible.
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+absolute
+</th>
+<th style="text-align:left;">
+relative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+/home/thinh/Dropbox/oucru/projects/Vaccination_COVID
+</td>
+<td style="text-align:left;">
+.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree88b31c3c6ecb7fbb111c72a588e9b3678ce1dfb7targetblank88b31c3a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/88b31c3c6ecb7fbb111c72a588e9b3678ce1dfb7" target="_blank">88b31c3</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree88b31c3c6ecb7fbb111c72a588e9b3678ce1dfb7targetblank88b31c3a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/88b31c3c6ecb7fbb111c72a588e9b3678ce1dfb7" target="_blank">88b31c3</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/05_calc_births_gso.Rmd
+    Untracked:  data/VN_birth_death_year.csv
+    Untracked:  data/VN_popsize_year_2.csv
+
+Unstaged changes:
+    Modified:   Vaccination_COVID.Rproj
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<p>Read and clean data</p>
+<pre class="r"><code>pj &lt;- &quot;/home/thinh/Dropbox/oucru/projects/Vaccination_COVID&quot;
+birthDeath &lt;- read.table(file.path(pj, &quot;data&quot;, &quot;VN_birth_death_year.csv&quot;),
+                         header = T, sep = &quot;;&quot;)
+pop &lt;- read.table(file.path(pj, &quot;data&quot;, &quot;VN_popsize_year_2.csv&quot;),
+                   header = T, sep = &quot;;&quot;, skipNul = TRUE)
+
+# Birth data
+birth &lt;- birthDeath[,c(1, grep(&quot;birth&quot;, colnames(birthDeath)))]
+colnames(birth) &lt;- c(&quot;province&quot;, &quot;birthRate17&quot;, &quot;birthRate18&quot;, &quot;birthRate19&quot;, &quot;birthRate20&quot;)
+birth[,-1] &lt;- sapply(birth[,-1], as.numeric)
+
+# Death data
+death &lt;- birthDeath[,c(1, grep(&quot;death&quot;, colnames(birthDeath)))]
+colnames(death) &lt;- c(&quot;province&quot;, &quot;deathRate17&quot;, &quot;deathRate18&quot;, &quot;deathRate19&quot;, &quot;deathRate20&quot;)
+death[,-1] &lt;- sapply(death[,-1], as.numeric)
+
+# Population data
+colnames(pop) &lt;- c(&quot;province&quot;, &quot;pop17&quot;, &quot;pop18&quot;, &quot;pop19&quot;, &quot;pop20&quot;)
+pop[,-1] &lt;- sapply(pop[,-1], as.numeric)</code></pre>
+<div id="population-data" class="section level1">
+<h1>Population data</h1>
+<pre class="r"><code>head(pop, 8)</code></pre>
+<pre><code>         province   pop17   pop18   pop19    pop20
+1   WHOLE COUNTRY 94286.0 95385.2 96484.0 97582.69
+2 Red River Delta 21968.6 22290.7 22620.2 22920.18
+3          Ha Noi  7742.2  7914.5  8093.9  8246.54
+4          Ha Tay      NA      NA      NA       NA
+5       Vinh Phuc  1123.1  1138.4  1154.8  1171.23
+6        Bac Ninh  1297.8  1337.3  1378.6  1419.13
+7      Quang Ninh  1285.2  1303.9  1324.8  1337.61
+8       Hai Duong  1850.6  1877.7  1896.9  1916.77</code></pre>
+</div>
+<div id="birth-rate-data" class="section level1">
+<h1>Birth rate data</h1>
+<pre class="r"><code>head(birth, 8)</code></pre>
+<pre><code>         province birthRate17 birthRate18 birthRate19 birthRate20
+1   WHOLE COUNTRY        14.9        14.6        16.3       16.30
+2 Red River Delta        14.7        14.9        17.9       17.20
+3          Ha Noi        15.1        14.7        19.1       17.90
+4          Ha Tay          NA          NA          NA          NA
+5       Vinh Phuc        17.5        17.5        17.2       17.46
+6        Bac Ninh        20.4        19.8        24.8       23.03
+7      Quang Ninh        15.5        15.2        16.2       15.91
+8       Hai Duong        13.1        16.9        17.4       18.80</code></pre>
+<p>Quickly see how many births per year among the whole country</p>
+<pre class="r"><code>whole &lt;- pop[1,-1] * birth[1,-1]
+colnames(whole) &lt;- gsub(&quot;pop&quot;, &quot;birth&quot;, colnames(whole))
+whole</code></pre>
+<pre><code>  birth17 birth18 birth19 birth20
+1 1404861 1392624 1572689 1590598</code></pre>
+<p>Only keep provinces data and merge data</p>
+<pre class="r"><code>exRow &lt;- &quot;WHOLE|Delta|area|Ha Tay|South|Central Highlands&quot;
+birth &lt;- birth[!grepl(exRow, birth$province),]
+death &lt;- death[!grepl(exRow, death$province),]
+pop &lt;- pop[!grepl(exRow, pop$province),]
+df &lt;- merge(birth, death, by = &quot;province&quot;)
+df &lt;- merge(df, pop, by = &quot;province&quot;)</code></pre>
+</div>
+<div id="calculate-number-of-birth-death" class="section level1">
+<h1>Calculate number of birth, death</h1>
+<pre class="r"><code>birthRates &lt;- grep(&quot;birth&quot;, colnames(df), value = T)
+deathRates &lt;- grep(&quot;death&quot;, colnames(df), value = T)
+births &lt;- gsub(&quot;Rate&quot;, &quot;&quot;, birthRates)
+deaths &lt;- gsub(&quot;Rate&quot;, &quot;&quot;, deathRates)
+pops &lt;- grep(&quot;pop&quot;, colnames(df), value = T)
+errs &lt;- gsub(&quot;pop&quot;, &quot;err&quot;, pops)
+# CBR = 1000 * Birth / Pop =&gt; Birth = Pop * CBR / 1000
+# CDR = 1000 * Death / Pop =&gt; Death = Pop * CDR / 1000
+for (i in 1:length(birthRates)) {
+  df[,births[i]] &lt;- df[,pops[i]] * df[,birthRates[i]]
+  df[,deaths[i]] &lt;- df[,pops[i]] * df[,deathRates[i]]
+  if (i &gt; 1) {
+    df[,errs[i - 1]] &lt;- df[,pops[i]] * 1000 - (df[,pops[i - 1]] * 1000 + df[,births[i]] - df[,deaths[i]])
+  }
+}
+df[,c(&quot;province&quot;, births)]</code></pre>
+<pre><code>            province   birth17   birth18   birth19    birth20
+1           An Giang  22668.72  22013.40  22698.06  23825.670
+2  Ba Ria - Vung Tau  11835.60  12521.30  17052.56  18395.055
+3          Bac Giang  34388.64  31639.50  31138.88  32596.674
+4            Bac Kan   5051.37   4680.00   4307.28   4648.797
+5           Bac Lieu  11131.48   9842.70  11624.96  11290.613
+6           Bac Ninh  26475.12  26478.54  34189.28  32682.564
+7            Ben Tre  14491.12  14146.00  15082.47  15482.952
+8        Binh  Duong  44989.44  35647.04  43230.88  47662.759
+9          Binh Dinh  19042.56  20680.42  21573.10  22467.290
+10        Binh Phuoc  15075.30  15068.97  17561.28  17683.789
+11        Binh Thuan  15500.35  16691.28  17991.58  14697.624
+12            Ca Mau  14244.30  14705.88  15406.47  15711.592
+13           Can Tho  15035.52  14609.63  16686.00  16489.302
+14          Cao Bang   8843.52   9410.86   8866.03   8614.734
+15           Da Nang  16686.56  13818.56  20197.47  22839.944
+16           Dak Lak  29789.83  31645.50  33894.06  34908.390
+17          Dak Nong   9617.91  12923.40  12516.00  12471.140
+18         Dien Bien  13615.90  12754.80  12635.70  13195.955
+19          Dong Nai  39063.70  45215.48  53244.27  55127.890
+20         Dong Thap  15318.75  15739.78  19025.72  20720.129
+21           Gia Lai  26733.98  26174.75  30099.96  30697.835
+22          Ha Giang  16090.41  17183.95  15703.23  17152.430
+23            Ha Nam  10245.56  12282.95  13757.45  14289.141
+24            Ha Noi 116907.22 116343.15 154593.49 147613.066
+25           Ha Tinh  24846.90  22920.95  23096.37  22055.506
+26         Hai Duong  24242.86  31733.13  33006.06  36035.276
+27         Hai Phong  28019.60  27221.40  32329.47  30371.117
+28         Hau Giang   7962.84   8083.90   9079.28   9509.033
+29  Ho Chi Minh city 104660.16 104349.76 127444.26 133615.648
+30          Hoa Binh  13182.00  13606.40  13093.74  13219.727
+31          Hung Yen  17080.32  18636.00  21474.18  22259.839
+32        Khanh  Hoa  15447.01  12979.70  16766.08  17973.976
+33       Kien  Giang  21582.54  22507.11  23959.43  24584.531
+34           Kon Tum  10089.94   8518.40  11900.46  12090.726
+35          Lai Chau   9912.35   9068.00   9807.12  10049.236
+36          Lam Dong  21269.58  18854.44  21698.31  21808.003
+37          Lang Son  12760.42  12259.22  11037.48  11988.392
+38           Lao Cai  12896.52  13695.20  13786.04  14442.066
+39           Long An  19615.14  20314.69  23561.89  24128.333
+40          Nam Dinh  24498.34  24978.80  29384.85  28378.460
+41           Nghe An  67206.69  65828.00  69413.76  67505.912
+42       Ninh  Thuan  10303.04   8715.72   9160.50   9314.212
+43         Ninh Binh  12936.36  14133.15  16638.05  16300.288
+44           Phu Tho  24032.40  24643.20  25222.08  25014.134
+45           Phu Yen  11832.00  12549.60  12137.48  12808.495
+46        Quang  Nam  22546.16  23405.56  24259.50  24366.598
+47       Quang  Ngai  14746.80  16734.80  18478.50  18439.330
+48        Quang Binh  14082.63  14257.60  15690.50  15477.977
+49        Quang Ninh  19920.60  19819.28  21461.76  21281.375
+50         Quang Tri  11132.12  10201.14   9944.38  10508.417
+51         Soc Trang  13523.13  13780.32  14154.10  14109.732
+52            Son La  26937.48  22565.73  23049.68  24102.523
+53          Tay Ninh  14618.97  12187.35  13591.72  14846.958
+54      Thai  Nguyen  20097.60  17830.40  22719.84  20690.503
+55         Thai Binh  22153.20  21136.74  28305.44  25846.717
+56         Thanh Hoa  59821.42  63547.75  65624.40  62084.084
+57    Thua Thien-Hue  18536.10  15643.06  20105.10  19533.823
+58        Tien Giang  23824.48  19877.83  22255.38  23220.274
+59          Tra Vinh  15726.36  13013.52  13524.62  13987.669
+60       Tuyen Quang  14331.30  12686.29  12816.69  13574.448
+61         Vinh Long  11146.34  11249.70  11862.16  11999.438
+62         Vinh Phuc  19654.25  19922.00  19862.56  20449.676
+63           Yen Bai  15823.08  15884.70  15472.40  16132.846</code></pre>
+</div>
+<div id="compare-to-whole-country-data" class="section level1">
+<h1>Compare to whole country data</h1>
+<p>Compare sum of all births from provinces and the number calculated by whole country data</p>
+<pre class="r"><code>allBirths &lt;- data.frame(t(colSums(df[,births])))
+whole &lt;- rbind(whole, allBirths)
+rownames(whole) &lt;- c(&quot;whole&quot;, &quot;sumProvinces&quot;)
+whole</code></pre>
+<pre><code>             birth17 birth18 birth19 birth20
+whole        1404861 1392624 1572689 1590598
+sumProvinces 1405842 1391558 1570252 1585371</code></pre>
+</div>
+<div id="plot-the-difference" class="section level1">
+<h1>Plot the difference</h1>
+<p>Calculated by <code>err17 = pop18 - (pop17 + birth18 - death18)</code></p>
+<pre class="r"><code>p &lt;- plot_ly(df, x = ~province, y = ~err17, type = &quot;bar&quot;, name = &quot;2018&quot;, 
+             hovertext = paste0(&quot;&lt;b&gt;Province:&lt;/b&gt; &quot;, df$province, &quot;&lt;br&gt;&quot;,
+                                &quot;&lt;b&gt;Error:&lt;/b&gt; &quot;, df$err17, &quot;&lt;br&gt;&quot;,
+                                &quot;&lt;b&gt;Population 2017:&lt;/b&gt; &quot;, df$pop17 * 1000, &quot;&lt;br&gt;&quot;,
+                                &quot;&lt;b&gt;Birth 2018:&lt;/b&gt; &quot;, df$birth18, &quot;&lt;br&gt;&quot;,
+                                &quot;&lt;b&gt;Death 2018:&lt;/b&gt; &quot;, df$death18, &quot;&lt;br&gt;&quot;,
+                                &quot;&lt;b&gt;Population 2018:&lt;/b&gt; &quot;, df$pop18 * 1000), hoverinfo = &quot;text&quot;) %&gt;% 
+  add_trace(y = ~err18, name = &quot;2019&quot;,
+            hovertext = paste0(&quot;&lt;b&gt;Province:&lt;/b&gt; &quot;, df$province, &quot;&lt;br&gt;&quot;,
+                               &quot;&lt;b&gt;Error:&lt;/b&gt; &quot;, df$err18, &quot;&lt;br&gt;&quot;,
+                               &quot;&lt;b&gt;Population 2018:&lt;/b&gt; &quot;, df$pop18 * 1000, &quot;&lt;br&gt;&quot;,
+                               &quot;&lt;b&gt;Birth 2019:&lt;/b&gt; &quot;, df$birth19, &quot;&lt;br&gt;&quot;,
+                               &quot;&lt;b&gt;Death 2019:&lt;/b&gt; &quot;, df$death19, &quot;&lt;br&gt;&quot;,
+                               &quot;&lt;b&gt;Population 2019:&lt;/b&gt; &quot;, df$pop19 * 1000), hoverinfo = &quot;text&quot;) %&gt;%
+  add_trace(y = ~err19, name = &quot;2020&quot;,
+            hovertext = paste0(&quot;&lt;b&gt;Province:&lt;/b&gt; &quot;, df$province, &quot;&lt;br&gt;&quot;,
+                               &quot;&lt;b&gt;Error:&lt;/b&gt; &quot;, df$err19, &quot;&lt;br&gt;&quot;,
+                               &quot;&lt;b&gt;Population 2019:&lt;/b&gt; &quot;, df$pop19 * 1000, &quot;&lt;br&gt;&quot;,
+                               &quot;&lt;b&gt;Birth 2020:&lt;/b&gt; &quot;, df$birth20, &quot;&lt;br&gt;&quot;,
+                               &quot;&lt;b&gt;Death 2020:&lt;/b&gt; &quot;, df$death20, &quot;&lt;br&gt;&quot;,
+                               &quot;&lt;b&gt;Population 2020:&lt;/b&gt; &quot;, df$pop20 * 1000), hoverinfo = &quot;text&quot;)
+p</code></pre>
+<div id="htmlwidget-908fdbcfe7322d6daad8" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-908fdbcfe7322d6daad8">{"x":{"visdat":{"490c241822cc":["function () ","plotlyVisDat"]},"cur_data":"490c241822cc","attrs":{"490c241822cc":{"x":{},"y":{},"hovertext":["<b>Province:<\/b> An Giang<br><b>Error:<\/b> -28606.7999999998<br><b>Population 2017:<\/b> 1954200<br><b>Birth 2018:<\/b> 22013.4<br><b>Death 2018:<\/b> 16606.6<br><b>Population 2018:<\/b> 1931000","<b>Province:<\/b> Ba Ria - Vung Tau<br><b>Error:<\/b> 4270.19999999995<br><b>Population 2017:<\/b> 1127200<br><b>Birth 2018:<\/b> 12521.3<br><b>Death 2018:<\/b> 5691.5<br><b>Population 2018:<\/b> 1138300","<b>Province:<\/b> Bac Giang<br><b>Error:<\/b> 18659<br><b>Population 2017:<\/b> 1736800<br><b>Birth 2018:<\/b> 31639.5<br><b>Death 2018:<\/b> 9598.5<br><b>Population 2018:<\/b> 1777500","<b>Province:<\/b> Bac Kan<br><b>Error:<\/b> -271.200000000012<br><b>Population 2017:<\/b> 309900<br><b>Birth 2018:<\/b> 4680<br><b>Death 2018:<\/b> 2308.8<br><b>Population 2018:<\/b> 312000","<b>Province:<\/b> Bac Lieu<br><b>Error:<\/b> -118<br><b>Population 2017:<\/b> 897700<br><b>Birth 2018:<\/b> 9842.7<br><b>Death 2018:<\/b> 4424.7<br><b>Population 2018:<\/b> 903000","<b>Province:<\/b> Bac Ninh<br><b>Error:<\/b> 23318.6699999999<br><b>Population 2017:<\/b> 1297800<br><b>Birth 2018:<\/b> 26478.54<br><b>Death 2018:<\/b> 10297.21<br><b>Population 2018:<\/b> 1337300","<b>Province:<\/b> Ben Tre<br><b>Error:<\/b> 2185.39999999991<br><b>Population 2017:<\/b> 1282400<br><b>Birth 2018:<\/b> 14146<br><b>Death 2018:<\/b> 12731.4<br><b>Population 2018:<\/b> 1286000","<b>Province:<\/b> Binh  Duong<br><b>Error:<\/b> 91264.7199999997<br><b>Population 2017:<\/b> 2227200<br><b>Birth 2018:<\/b> 35647.04<br><b>Death 2018:<\/b> 8911.76<br><b>Population 2018:<\/b> 2345200","<b>Province:<\/b> Binh Dinh<br><b>Error:<\/b> -8826.79999999981<br><b>Population 2017:<\/b> 1487700<br><b>Birth 2018:<\/b> 20680.42<br><b>Death 2018:<\/b> 11753.62<br><b>Population 2018:<\/b> 1487800","<b>Province:<\/b> Binh Phuoc<br><b>Error:<\/b> 2943.45000000007<br><b>Population 2017:<\/b> 972600<br><b>Birth 2018:<\/b> 15068.97<br><b>Death 2018:<\/b> 5712.42<br><b>Population 2018:<\/b> 984900","<b>Province:<\/b> Binh Thuan<br><b>Error:<\/b> -1545.64000000013<br><b>Population 2017:<\/b> 1220500<br><b>Birth 2018:<\/b> 16691.28<br><b>Death 2018:<\/b> 8345.64<br><b>Population 2018:<\/b> 1227300","<b>Province:<\/b> Ca Mau<br><b>Error:<\/b> -10127.8799999999<br><b>Population 2017:<\/b> 1197000<br><b>Birth 2018:<\/b> 14705.88<br><b>Death 2018:<\/b> 5978<br><b>Population 2018:<\/b> 1195600","<b>Province:<\/b> Can Tho<br><b>Error:<\/b> -1943.42999999993<br><b>Population 2017:<\/b> 1222400<br><b>Birth 2018:<\/b> 14609.63<br><b>Death 2018:<\/b> 7366.2<br><b>Population 2018:<\/b> 1227700","<b>Province:<\/b> Cao Bang<br><b>Error:<\/b> -1242.29000000004<br><b>Population 2017:<\/b> 526400<br><b>Birth 2018:<\/b> 9410.86<br><b>Death 2018:<\/b> 5868.57<br><b>Population 2018:<\/b> 528700","<b>Province:<\/b> Da Nang<br><b>Error:<\/b> 12030.96<br><b>Population 2017:<\/b> 1097800<br><b>Birth 2018:<\/b> 13818.56<br><b>Death 2018:<\/b> 9249.52<br><b>Population 2018:<\/b> 1114400","<b>Province:<\/b> Dak Lak<br><b>Error:<\/b> -6670.39999999991<br><b>Population 2017:<\/b> 1850300<br><b>Birth 2018:<\/b> 31645.5<br><b>Death 2018:<\/b> 13775.1<br><b>Population 2018:<\/b> 1861500","<b>Province:<\/b> Dak Nong<br><b>Error:<\/b> 1392.07999999996<br><b>Population 2017:<\/b> 604900<br><b>Birth 2018:<\/b> 12923.4<br><b>Death 2018:<\/b> 3815.48<br><b>Population 2018:<\/b> 615400","<b>Province:<\/b> Dien Bien<br><b>Error:<\/b> 943.399999999907<br><b>Population 2017:<\/b> 579400<br><b>Birth 2018:<\/b> 12754.8<br><b>Death 2018:<\/b> 2598.2<br><b>Population 2018:<\/b> 590500","<b>Province:<\/b> Dong Nai<br><b>Error:<\/b> 21787.5699999998<br><b>Population 2017:<\/b> 3004900<br><b>Birth 2018:<\/b> 45215.48<br><b>Death 2018:<\/b> 16803.05<br><b>Population 2018:<\/b> 3055100","<b>Province:<\/b> Dong Thap<br><b>Error:<\/b> -9772.81000000006<br><b>Population 2017:<\/b> 1612500<br><b>Birth 2018:<\/b> 15739.78<br><b>Death 2018:<\/b> 12366.97<br><b>Population 2018:<\/b> 1606100","<b>Province:<\/b> Gia Lai<br><b>Error:<\/b> 5710.62999999989<br><b>Population 2017:<\/b> 1468900<br><b>Birth 2018:<\/b> 26174.75<br><b>Death 2018:<\/b> 5085.38<br><b>Population 2018:<\/b> 1495700","<b>Province:<\/b> Ha Giang<br><b>Error:<\/b> 1710.85000000009<br><b>Population 2017:<\/b> 833700<br><b>Birth 2018:<\/b> 17183.95<br><b>Death 2018:<\/b> 6094.8<br><b>Population 2018:<\/b> 846500","<b>Province:<\/b> Ha Nam<br><b>Error:<\/b> 2640.95000000007<br><b>Population 2017:<\/b> 839800<br><b>Birth 2018:<\/b> 12282.95<br><b>Death 2018:<\/b> 7623.9<br><b>Population 2018:<\/b> 847100","<b>Province:<\/b> Ha Noi<br><b>Error:<\/b> 104235.3<br><b>Population 2017:<\/b> 7742200<br><b>Birth 2018:<\/b> 116343.15<br><b>Death 2018:<\/b> 48278.45<br><b>Population 2018:<\/b> 7914500","<b>Province:<\/b> Ha Tinh<br><b>Error:<\/b> -1126.89999999991<br><b>Population 2017:<\/b> 1274200<br><b>Birth 2018:<\/b> 22920.95<br><b>Death 2018:<\/b> 15494.05<br><b>Population 2018:<\/b> 1280500","<b>Province:<\/b> Hai Duong<br><b>Error:<\/b> 11890.6300000001<br><b>Population 2017:<\/b> 1850600<br><b>Birth 2018:<\/b> 31733.13<br><b>Death 2018:<\/b> 16523.76<br><b>Population 2018:<\/b> 1877700","<b>Province:<\/b> Hai Phong<br><b>Error:<\/b> 3103.23999999999<br><b>Population 2017:<\/b> 2001400<br><b>Birth 2018:<\/b> 27221.4<br><b>Death 2018:<\/b> 15324.64<br><b>Population 2018:<\/b> 2016400","<b>Province:<\/b> Hau Giang<br><b>Error:<\/b> -6294.96999999997<br><b>Population 2017:<\/b> 737300<br><b>Birth 2018:<\/b> 8083.9<br><b>Death 2018:<\/b> 4188.93<br><b>Population 2018:<\/b> 734900","<b>Province:<\/b> Ho Chi Minh city<br><b>Error:<\/b> 123738.720000001<br><b>Population 2017:<\/b> 8649600<br><b>Birth 2018:<\/b> 104349.76<br><b>Death 2018:<\/b> 34488.48<br><b>Population 2018:<\/b> 8843200","<b>Province:<\/b> Hoa Binh<br><b>Error:<\/b> -1658.32000000007<br><b>Population 2017:<\/b> 845000<br><b>Birth 2018:<\/b> 13606.4<br><b>Death 2018:<\/b> 6548.08<br><b>Population 2018:<\/b> 850400","<b>Province:<\/b> Hung Yen<br><b>Error:<\/b> 2542.6399999999<br><b>Population 2017:<\/b> 1228800<br><b>Birth 2018:<\/b> 18636<br><b>Death 2018:<\/b> 7578.64<br><b>Population 2018:<\/b> 1242400","<b>Province:<\/b> Khanh  Hoa<br><b>Error:<\/b> 1587.69999999995<br><b>Population 2017:<\/b> 1216300<br><b>Birth 2018:<\/b> 12979.7<br><b>Death 2018:<\/b> 6367.4<br><b>Population 2018:<\/b> 1224500","<b>Province:<\/b> Kien  Giang<br><b>Error:<\/b> -3046.88000000012<br><b>Population 2017:<\/b> 1712900<br><b>Birth 2018:<\/b> 22507.11<br><b>Death 2018:<\/b> 14260.23<br><b>Population 2018:<\/b> 1718100","<b>Province:<\/b> Kon Tum<br><b>Error:<\/b> 6017.67999999993<br><b>Population 2017:<\/b> 520100<br><b>Birth 2018:<\/b> 8518.4<br><b>Death 2018:<\/b> 2236.08<br><b>Population 2018:<\/b> 532400","<b>Province:<\/b> Lai Chau<br><b>Error:<\/b> 3368.52000000002<br><b>Population 2017:<\/b> 444500<br><b>Birth 2018:<\/b> 9068<br><b>Death 2018:<\/b> 3536.52<br><b>Population 2018:<\/b> 453400","<b>Province:<\/b> Lam Dong<br><b>Error:<\/b> -2684.85999999987<br><b>Population 2017:<\/b> 1281300<br><b>Birth 2018:<\/b> 18854.44<br><b>Death 2018:<\/b> 6069.58<br><b>Population 2018:<\/b> 1291400","<b>Province:<\/b> Lang Son<br><b>Error:<\/b> 1846.29000000004<br><b>Population 2017:<\/b> 768700<br><b>Birth 2018:<\/b> 12259.22<br><b>Death 2018:<\/b> 6905.51<br><b>Population 2018:<\/b> 775900","<b>Province:<\/b> Lao Cai<br><b>Error:<\/b> 2829.60000000009<br><b>Population 2017:<\/b> 708600<br><b>Birth 2018:<\/b> 13695.2<br><b>Death 2018:<\/b> 4324.8<br><b>Population 2018:<\/b> 720800","<b>Province:<\/b> Long An<br><b>Error:<\/b> 7366.05000000005<br><b>Population 2017:<\/b> 1662300<br><b>Birth 2018:<\/b> 20314.69<br><b>Death 2018:<\/b> 11080.74<br><b>Population 2018:<\/b> 1678900","<b>Province:<\/b> Nam Dinh<br><b>Error:<\/b> -13991.52<br><b>Population 2017:<\/b> 1788200<br><b>Birth 2018:<\/b> 24978.8<br><b>Death 2018:<\/b> 14987.28<br><b>Population 2018:<\/b> 1784200","<b>Province:<\/b> Nghe An<br><b>Error:<\/b> -1708.74000000022<br><b>Population 2017:<\/b> 3246700<br><b>Birth 2018:<\/b> 65828<br><b>Death 2018:<\/b> 19419.26<br><b>Population 2018:<\/b> 3291400","<b>Province:<\/b> Ninh  Thuan<br><b>Error:<\/b> -1800.09999999998<br><b>Population 2017:<\/b> 585400<br><b>Birth 2018:<\/b> 8715.72<br><b>Death 2018:<\/b> 3415.62<br><b>Population 2018:<\/b> 588900","<b>Province:<\/b> Ninh Binh<br><b>Error:<\/b> 4718.91000000003<br><b>Population 2017:<\/b> 965400<br><b>Birth 2018:<\/b> 14133.15<br><b>Death 2018:<\/b> 9552.06<br><b>Population 2018:<\/b> 974700","<b>Province:<\/b> Phu Tho<br><b>Error:<\/b> 3299.3600000001<br><b>Population 2017:<\/b> 1430500<br><b>Birth 2018:<\/b> 24643.2<br><b>Death 2018:<\/b> 8842.56<br><b>Population 2018:<\/b> 1449600","<b>Province:<\/b> Phu Yen<br><b>Error:<\/b> -3118.94999999995<br><b>Population 2017:<\/b> 870000<br><b>Birth 2018:<\/b> 12549.6<br><b>Death 2018:<\/b> 7930.65<br><b>Population 2018:<\/b> 871500","<b>Province:<\/b> Quang  Nam<br><b>Error:<\/b> 493.239999999991<br><b>Population 2017:<\/b> 1483300<br><b>Birth 2018:<\/b> 23405.56<br><b>Death 2018:<\/b> 16398.8<br><b>Population 2018:<\/b> 1490800","<b>Province:<\/b> Quang  Ngai<br><b>Error:<\/b> -8982.30000000005<br><b>Population 2017:<\/b> 1228900<br><b>Birth 2018:<\/b> 16734.8<br><b>Death 2018:<\/b> 6152.5<br><b>Population 2018:<\/b> 1230500","<b>Province:<\/b> Quang Binh<br><b>Error:<\/b> -926.809999999939<br><b>Population 2017:<\/b> 885700<br><b>Birth 2018:<\/b> 14257.6<br><b>Death 2018:<\/b> 7930.79<br><b>Population 2018:<\/b> 891100","<b>Province:<\/b> Quang Ninh<br><b>Error:<\/b> 7356.07000000007<br><b>Population 2017:<\/b> 1285200<br><b>Birth 2018:<\/b> 19819.28<br><b>Death 2018:<\/b> 8475.35<br><b>Population 2018:<\/b> 1303900","<b>Province:<\/b> Quang Tri<br><b>Error:<\/b> -422.75<br><b>Population 2017:<\/b> 625400<br><b>Birth 2018:<\/b> 10201.14<br><b>Death 2018:<\/b> 5478.39<br><b>Population 2018:<\/b> 629700","<b>Province:<\/b> Soc Trang<br><b>Error:<\/b> -16752.8<br><b>Population 2017:<\/b> 1218300<br><b>Birth 2018:<\/b> 13780.32<br><b>Death 2018:<\/b> 6527.52<br><b>Population 2018:<\/b> 1208800","<b>Province:<\/b> Son La<br><b>Error:<\/b> 5642.65999999992<br><b>Population 2017:<\/b> 1213400<br><b>Birth 2018:<\/b> 22565.73<br><b>Death 2018:<\/b> 8508.39<br><b>Population 2018:<\/b> 1233100","<b>Province:<\/b> Tay Ninh<br><b>Error:<\/b> 6001.82999999984<br><b>Population 2017:<\/b> 1151100<br><b>Birth 2018:<\/b> 12187.35<br><b>Death 2018:<\/b> 8589.18<br><b>Population 2018:<\/b> 1160700","<b>Province:<\/b> Thai  Nguyen<br><b>Error:<\/b> 7820.64000000013<br><b>Population 2017:<\/b> 1256100<br><b>Birth 2018:<\/b> 17830.4<br><b>Death 2018:<\/b> 8151.04<br><b>Population 2018:<\/b> 1273600","<b>Province:<\/b> Thai Binh<br><b>Error:<\/b> 583.600000000093<br><b>Population 2017:<\/b> 1846100<br><b>Birth 2018:<\/b> 21136.74<br><b>Death 2018:<\/b> 13720.34<br><b>Population 2018:<\/b> 1854100","<b>Province:<\/b> Thanh Hoa<br><b>Error:<\/b> -5081.70000000019<br><b>Population 2017:<\/b> 3603700<br><b>Birth 2018:<\/b> 63547.75<br><b>Death 2018:<\/b> 30866.05<br><b>Population 2018:<\/b> 3631300","<b>Province:<\/b> Thua Thien-Hue<br><b>Error:<\/b> -4302.23999999999<br><b>Population 2017:<\/b> 1123400<br><b>Birth 2018:<\/b> 15643.06<br><b>Death 2018:<\/b> 9340.82<br><b>Population 2018:<\/b> 1125400","<b>Province:<\/b> Tien Giang<br><b>Error:<\/b> 7124.08999999985<br><b>Population 2017:<\/b> 1751800<br><b>Birth 2018:<\/b> 19877.83<br><b>Death 2018:<\/b> 19701.92<br><b>Population 2018:<\/b> 1759100","<b>Province:<\/b> Tra Vinh<br><b>Error:<\/b> -5857.20000000007<br><b>Population 2017:<\/b> 1008100<br><b>Birth 2018:<\/b> 13013.52<br><b>Death 2018:<\/b> 6456.32<br><b>Population 2018:<\/b> 1008800","<b>Province:<\/b> Tuyen Quang<br><b>Error:<\/b> 1028.78999999992<br><b>Population 2017:<\/b> 770500<br><b>Birth 2018:<\/b> 12686.29<br><b>Death 2018:<\/b> 5915.08<br><b>Population 2018:<\/b> 778300","<b>Province:<\/b> Vinh Long<br><b>Error:<\/b> -2149.93999999994<br><b>Population 2017:<\/b> 1022600<br><b>Birth 2018:<\/b> 11249.7<br><b>Death 2018:<\/b> 8999.76<br><b>Population 2018:<\/b> 1022700","<b>Province:<\/b> Vinh Phuc<br><b>Error:<\/b> 5282.08000000007<br><b>Population 2017:<\/b> 1123100<br><b>Birth 2018:<\/b> 19922<br><b>Death 2018:<\/b> 9904.08<br><b>Population 2018:<\/b> 1138400","<b>Province:<\/b> Yen Bai<br><b>Error:<\/b> -1904.97999999998<br><b>Population 2017:<\/b> 807300<br><b>Birth 2018:<\/b> 15884.7<br><b>Death 2018:<\/b> 6679.72<br><b>Population 2018:<\/b> 814600"],"hoverinfo":"text","name":"2018","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"},"490c241822cc.1":{"x":{},"y":{},"hovertext":["<b>Province:<\/b> An Giang<br><b>Error:<\/b> -27796.28<br><b>Population 2018:<\/b> 1931000<br><b>Birth 2019:<\/b> 22698.06<br><b>Death 2019:<\/b> 18501.78<br><b>Population 2019:<\/b> 1907400","<b>Province:<\/b> Ba Ria - Vung Tau<br><b>Error:<\/b> 2608.43999999994<br><b>Population 2018:<\/b> 1138300<br><b>Birth 2019:<\/b> 17052.56<br><b>Death 2019:<\/b> 5761<br><b>Population 2019:<\/b> 1152200","<b>Province:<\/b> Bac Giang<br><b>Error:<\/b> 13166.6400000001<br><b>Population 2018:<\/b> 1777500<br><b>Birth 2019:<\/b> 31138.88<br><b>Death 2019:<\/b> 11405.52<br><b>Population 2019:<\/b> 1810400","<b>Province:<\/b> Bac Kan<br><b>Error:<\/b> 545.039999999979<br><b>Population 2018:<\/b> 312000<br><b>Birth 2019:<\/b> 4307.28<br><b>Death 2019:<\/b> 2452.32<br><b>Population 2019:<\/b> 314400","<b>Province:<\/b> Bac Lieu<br><b>Error:<\/b> -794.119999999995<br><b>Population 2018:<\/b> 903000<br><b>Birth 2019:<\/b> 11624.96<br><b>Death 2019:<\/b> 5630.84<br><b>Population 2019:<\/b> 908200","<b>Province:<\/b> Bac Ninh<br><b>Error:<\/b> 14830.8799999999<br><b>Population 2018:<\/b> 1337300<br><b>Birth 2019:<\/b> 34189.28<br><b>Death 2019:<\/b> 7720.16<br><b>Population 2019:<\/b> 1378600","<b>Province:<\/b> Ben Tre<br><b>Error:<\/b> -1411.84999999986<br><b>Population 2018:<\/b> 1286000<br><b>Birth 2019:<\/b> 15082.47<br><b>Death 2019:<\/b> 10570.62<br><b>Population 2019:<\/b> 1289100","<b>Province:<\/b> Binh  Duong<br><b>Error:<\/b> 76220.54<br><b>Population 2018:<\/b> 2345200<br><b>Birth 2019:<\/b> 43230.88<br><b>Death 2019:<\/b> 8351.42<br><b>Population 2019:<\/b> 2456300","<b>Province:<\/b> Binh Dinh<br><b>Error:<\/b> -11009.7200000002<br><b>Population 2018:<\/b> 1487800<br><b>Birth 2019:<\/b> 21573.1<br><b>Death 2019:<\/b> 10563.38<br><b>Population 2019:<\/b> 1487800","<b>Province:<\/b> Binh Phuoc<br><b>Error:<\/b> 28.3800000000047<br><b>Population 2018:<\/b> 984900<br><b>Birth 2019:<\/b> 17561.28<br><b>Death 2019:<\/b> 4689.66<br><b>Population 2019:<\/b> 997800","<b>Province:<\/b> Binh Thuan<br><b>Error:<\/b> -5844.23999999999<br><b>Population 2018:<\/b> 1227300<br><b>Birth 2019:<\/b> 17991.58<br><b>Death 2019:<\/b> 7147.34<br><b>Population 2019:<\/b> 1232300","<b>Province:<\/b> Ca Mau<br><b>Error:<\/b> -10257.25<br><b>Population 2018:<\/b> 1195600<br><b>Birth 2019:<\/b> 15406.47<br><b>Death 2019:<\/b> 6449.22<br><b>Population 2019:<\/b> 1194300","<b>Province:<\/b> Can Tho<br><b>Error:<\/b> -1093.60000000009<br><b>Population 2018:<\/b> 1227700<br><b>Birth 2019:<\/b> 16686<br><b>Death 2019:<\/b> 7292.4<br><b>Population 2019:<\/b> 1236000","<b>Province:<\/b> Cao Bang<br><b>Error:<\/b> -985.400000000023<br><b>Population 2018:<\/b> 528700<br><b>Birth 2019:<\/b> 8866.03<br><b>Death 2019:<\/b> 5680.63<br><b>Population 2019:<\/b> 530900","<b>Province:<\/b> Da Nang<br><b>Error:<\/b> 12208.03<br><b>Population 2018:<\/b> 1114400<br><b>Birth 2019:<\/b> 20197.47<br><b>Death 2019:<\/b> 5705.5<br><b>Population 2019:<\/b> 1141100","<b>Province:<\/b> Dak Lak<br><b>Error:<\/b> -13243.8<br><b>Population 2018:<\/b> 1861500<br><b>Birth 2019:<\/b> 33894.06<br><b>Death 2019:<\/b> 9550.26<br><b>Population 2019:<\/b> 1872600","<b>Province:<\/b> Dak Nong<br><b>Error:<\/b> 950.420000000042<br><b>Population 2018:<\/b> 615400<br><b>Birth 2019:<\/b> 12516<br><b>Death 2019:<\/b> 3066.42<br><b>Population 2019:<\/b> 625800","<b>Province:<\/b> Dien Bien<br><b>Error:<\/b> 2776.20000000007<br><b>Population 2018:<\/b> 590500<br><b>Birth 2019:<\/b> 12635.7<br><b>Death 2019:<\/b> 4211.9<br><b>Population 2019:<\/b> 601700","<b>Province:<\/b> Dong Nai<br><b>Error:<\/b> 20301.4899999998<br><b>Population 2018:<\/b> 3055100<br><b>Birth 2019:<\/b> 53244.27<br><b>Death 2019:<\/b> 14945.76<br><b>Population 2019:<\/b> 3113700","<b>Province:<\/b> Dong Thap<br><b>Error:<\/b> -15294<br><b>Population 2018:<\/b> 1606100<br><b>Birth 2019:<\/b> 19025.72<br><b>Death 2019:<\/b> 11031.72<br><b>Population 2019:<\/b> 1598800","<b>Province:<\/b> Gia Lai<br><b>Error:<\/b> 2761.14000000013<br><b>Population 2018:<\/b> 1495700<br><b>Birth 2019:<\/b> 30099.96<br><b>Death 2019:<\/b> 8361.1<br><b>Population 2019:<\/b> 1520200","<b>Province:<\/b> Ha Giang<br><b>Error:<\/b> 2675.76000000001<br><b>Population 2018:<\/b> 846500<br><b>Birth 2019:<\/b> 15703.23<br><b>Death 2019:<\/b> 6778.99<br><b>Population 2019:<\/b> 858100","<b>Province:<\/b> Ha Nam<br><b>Error:<\/b> -546.849999999977<br><b>Population 2018:<\/b> 847100<br><b>Birth 2019:<\/b> 13757.45<br><b>Death 2019:<\/b> 5810.6<br><b>Population 2019:<\/b> 854500","<b>Province:<\/b> Ha Noi<br><b>Error:<\/b> 70941.7400000002<br><b>Population 2018:<\/b> 7914500<br><b>Birth 2019:<\/b> 154593.49<br><b>Death 2019:<\/b> 46135.23<br><b>Population 2019:<\/b> 8093900","<b>Province:<\/b> Ha Tinh<br><b>Error:<\/b> -3361.06000000006<br><b>Population 2018:<\/b> 1280500<br><b>Birth 2019:<\/b> 23096.37<br><b>Death 2019:<\/b> 9935.31<br><b>Population 2019:<\/b> 1290300","<b>Province:<\/b> Hai Duong<br><b>Error:<\/b> -1286.52000000002<br><b>Population 2018:<\/b> 1877700<br><b>Birth 2019:<\/b> 33006.06<br><b>Death 2019:<\/b> 12519.54<br><b>Population 2019:<\/b> 1896900","<b>Province:<\/b> Hai Phong<br><b>Error:<\/b> -586.379999999888<br><b>Population 2018:<\/b> 2016400<br><b>Birth 2019:<\/b> 32329.47<br><b>Death 2019:<\/b> 14843.09<br><b>Population 2019:<\/b> 2033300","<b>Province:<\/b> Hau Giang<br><b>Error:<\/b> -7312.85999999999<br><b>Population 2018:<\/b> 734900<br><b>Birth 2019:<\/b> 9079.28<br><b>Death 2019:<\/b> 4466.42<br><b>Population 2019:<\/b> 732200","<b>Province:<\/b> Ho Chi Minh city<br><b>Error:<\/b> 110437.16<br><b>Population 2018:<\/b> 8843200<br><b>Birth 2019:<\/b> 127444.26<br><b>Death 2019:<\/b> 42481.42<br><b>Population 2019:<\/b> 9038600","<b>Province:<\/b> Hoa Binh<br><b>Error:<\/b> -1018.5<br><b>Population 2018:<\/b> 850400<br><b>Birth 2019:<\/b> 13093.74<br><b>Death 2019:<\/b> 6675.24<br><b>Population 2019:<\/b> 855800","<b>Province:<\/b> Hung Yen<br><b>Error:<\/b> -162.639999999898<br><b>Population 2018:<\/b> 1242400<br><b>Birth 2019:<\/b> 21474.18<br><b>Death 2019:<\/b> 7911.54<br><b>Population 2019:<\/b> 1255800","<b>Province:<\/b> Khanh  Hoa<br><b>Error:<\/b> -1192.56000000006<br><b>Population 2018:<\/b> 1224500<br><b>Birth 2019:<\/b> 16766.08<br><b>Death 2019:<\/b> 7273.52<br><b>Population 2019:<\/b> 1232800","<b>Province:<\/b> Kien  Giang<br><b>Error:<\/b> -6810.6399999999<br><b>Population 2018:<\/b> 1718100<br><b>Birth 2019:<\/b> 23959.43<br><b>Death 2019:<\/b> 11548.79<br><b>Population 2019:<\/b> 1723700","<b>Province:<\/b> Kon Tum<br><b>Error:<\/b> 2088.23999999999<br><b>Population 2018:<\/b> 532400<br><b>Birth 2019:<\/b> 11900.46<br><b>Death 2019:<\/b> 2988.7<br><b>Population 2019:<\/b> 543400","<b>Province:<\/b> Lai Chau<br><b>Error:<\/b> 2723.59999999998<br><b>Population 2018:<\/b> 453400<br><b>Birth 2019:<\/b> 9807.12<br><b>Death 2019:<\/b> 3330.72<br><b>Population 2019:<\/b> 462600","<b>Province:<\/b> Lam Dong<br><b>Error:<\/b> -7171.88000000012<br><b>Population 2018:<\/b> 1291400<br><b>Birth 2019:<\/b> 21698.31<br><b>Death 2019:<\/b> 6626.43<br><b>Population 2019:<\/b> 1299300","<b>Province:<\/b> Lang Son<br><b>Error:<\/b> 2829.44000000006<br><b>Population 2018:<\/b> 775900<br><b>Birth 2019:<\/b> 11037.48<br><b>Death 2019:<\/b> 6966.92<br><b>Population 2019:<\/b> 782800","<b>Province:<\/b> Lao Cai<br><b>Error:<\/b> 2673.77999999991<br><b>Population 2018:<\/b> 720800<br><b>Birth 2019:<\/b> 13786.04<br><b>Death 2019:<\/b> 3959.82<br><b>Population 2019:<\/b> 733300","<b>Province:<\/b> Long An<br><b>Error:<\/b> 2639.20000000019<br><b>Population 2018:<\/b> 1678900<br><b>Birth 2019:<\/b> 23561.89<br><b>Death 2019:<\/b> 10001.09<br><b>Population 2019:<\/b> 1695100","<b>Province:<\/b> Nam Dinh<br><b>Error:<\/b> -18793.8300000001<br><b>Population 2018:<\/b> 1784200<br><b>Birth 2019:<\/b> 29384.85<br><b>Death 2019:<\/b> 13891.02<br><b>Population 2019:<\/b> 1780900","<b>Province:<\/b> Nghe An<br><b>Error:<\/b> -253.35999999987<br><b>Population 2018:<\/b> 3291400<br><b>Birth 2019:<\/b> 69413.76<br><b>Death 2019:<\/b> 23360.4<br><b>Population 2019:<\/b> 3337200","<b>Province:<\/b> Ninh  Thuan<br><b>Error:<\/b> -3278.09999999998<br><b>Population 2018:<\/b> 588900<br><b>Birth 2019:<\/b> 9160.5<br><b>Death 2019:<\/b> 3782.4<br><b>Population 2019:<\/b> 591000","<b>Province:<\/b> Ninh Binh<br><b>Error:<\/b> 151.899999999907<br><b>Population 2018:<\/b> 974700<br><b>Birth 2019:<\/b> 16638.05<br><b>Death 2019:<\/b> 6989.95<br><b>Population 2019:<\/b> 984500","<b>Province:<\/b> Phu Tho<br><b>Error:<\/b> 2429.28000000003<br><b>Population 2018:<\/b> 1449600<br><b>Birth 2019:<\/b> 25222.08<br><b>Death 2019:<\/b> 10851.36<br><b>Population 2019:<\/b> 1466400","<b>Province:<\/b> Phu Yen<br><b>Error:<\/b> -4761.67999999993<br><b>Population 2018:<\/b> 871500<br><b>Birth 2019:<\/b> 12137.48<br><b>Death 2019:<\/b> 5675.8<br><b>Population 2019:<\/b> 873200","<b>Province:<\/b> Quang  Nam<br><b>Error:<\/b> -6927.25<br><b>Population 2018:<\/b> 1490800<br><b>Birth 2019:<\/b> 24259.5<br><b>Death 2019:<\/b> 10632.25<br><b>Population 2019:<\/b> 1497500","<b>Province:<\/b> Quang  Ngai<br><b>Error:<\/b> -9194.34000000008<br><b>Population 2018:<\/b> 1230500<br><b>Birth 2019:<\/b> 18478.5<br><b>Death 2019:<\/b> 7884.16<br><b>Population 2019:<\/b> 1231900","<b>Province:<\/b> Quang Binh<br><b>Error:<\/b> -4362.59999999998<br><b>Population 2018:<\/b> 891100<br><b>Birth 2019:<\/b> 15690.5<br><b>Death 2019:<\/b> 5827.9<br><b>Population 2019:<\/b> 896600","<b>Province:<\/b> Quang Ninh<br><b>Error:<\/b> 6724.6399999999<br><b>Population 2018:<\/b> 1303900<br><b>Birth 2019:<\/b> 21461.76<br><b>Death 2019:<\/b> 7286.4<br><b>Population 2019:<\/b> 1324800","<b>Province:<\/b> Quang Tri<br><b>Error:<\/b> -1683.90000000002<br><b>Population 2018:<\/b> 629700<br><b>Birth 2019:<\/b> 9944.38<br><b>Death 2019:<\/b> 4560.48<br><b>Population 2019:<\/b> 633400","<b>Province:<\/b> Soc Trang<br><b>Error:<\/b> -16257.1000000001<br><b>Population 2018:<\/b> 1208800<br><b>Birth 2019:<\/b> 14154.1<br><b>Death 2019:<\/b> 7197<br><b>Population 2019:<\/b> 1199500","<b>Province:<\/b> Son La<br><b>Error:<\/b> 4943.41000000015<br><b>Population 2018:<\/b> 1233100<br><b>Birth 2019:<\/b> 23049.68<br><b>Death 2019:<\/b> 8393.09<br><b>Population 2019:<\/b> 1252700","<b>Province:<\/b> Tay Ninh<br><b>Error:<\/b> 6078.8600000001<br><b>Population 2018:<\/b> 1160700<br><b>Birth 2019:<\/b> 13591.72<br><b>Death 2019:<\/b> 8670.58<br><b>Population 2019:<\/b> 1171700","<b>Province:<\/b> Thai  Nguyen<br><b>Error:<\/b> 3487.36999999988<br><b>Population 2018:<\/b> 1273600<br><b>Birth 2019:<\/b> 22719.84<br><b>Death 2019:<\/b> 8907.21<br><b>Population 2019:<\/b> 1290900","<b>Province:<\/b> Thai Binh<br><b>Error:<\/b> -6238.93999999994<br><b>Population 2018:<\/b> 1854100<br><b>Birth 2019:<\/b> 28305.44<br><b>Death 2019:<\/b> 13966.5<br><b>Population 2019:<\/b> 1862200","<b>Province:<\/b> Thanh Hoa<br><b>Error:<\/b> -22687.1599999997<br><b>Population 2018:<\/b> 3631300<br><b>Birth 2019:<\/b> 65624.4<br><b>Death 2019:<\/b> 28437.24<br><b>Population 2019:<\/b> 3645800","<b>Province:<\/b> Thua Thien-Hue<br><b>Error:<\/b> -8437.45000000019<br><b>Population 2018:<\/b> 1125400<br><b>Birth 2019:<\/b> 20105.1<br><b>Death 2019:<\/b> 7567.65<br><b>Population 2019:<\/b> 1129500","<b>Province:<\/b> Tien Giang<br><b>Error:<\/b> -1278.23999999999<br><b>Population 2018:<\/b> 1759100<br><b>Birth 2019:<\/b> 22255.38<br><b>Death 2019:<\/b> 13777.14<br><b>Population 2019:<\/b> 1766300","<b>Province:<\/b> Tra Vinh<br><b>Error:<\/b> -5555.80000000005<br><b>Population 2018:<\/b> 1008800<br><b>Birth 2019:<\/b> 13524.62<br><b>Death 2019:<\/b> 7468.82<br><b>Population 2019:<\/b> 1009300","<b>Province:<\/b> Tuyen Quang<br><b>Error:<\/b> 766.040000000037<br><b>Population 2018:<\/b> 778300<br><b>Birth 2019:<\/b> 12816.69<br><b>Death 2019:<\/b> 5582.73<br><b>Population 2019:<\/b> 786300","<b>Province:<\/b> Vinh Long<br><b>Error:<\/b> -4394.92000000004<br><b>Population 2018:<\/b> 1022700<br><b>Birth 2019:<\/b> 11862.16<br><b>Death 2019:<\/b> 7567.24<br><b>Population 2019:<\/b> 1022600","<b>Province:<\/b> Vinh Phuc<br><b>Error:<\/b> 3350.76000000001<br><b>Population 2018:<\/b> 1138400<br><b>Birth 2019:<\/b> 19862.56<br><b>Death 2019:<\/b> 6813.32<br><b>Population 2019:<\/b> 1154800","<b>Province:<\/b> Yen Bai<br><b>Error:<\/b> -1311.40000000002<br><b>Population 2018:<\/b> 814600<br><b>Birth 2019:<\/b> 15472.4<br><b>Death 2019:<\/b> 5761<br><b>Population 2019:<\/b> 823000"],"hoverinfo":"text","name":"2019","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar","inherit":true},"490c241822cc.2":{"x":{},"y":{},"hovertext":["<b>Province:<\/b> An Giang<br><b>Error:<\/b> -9040.6771999998<br><b>Population 2019:<\/b> 1907400<br><b>Birth 2020:<\/b> 23825.6703<br><b>Death 2020:<\/b> 17654.9931<br><b>Population 2020:<\/b> 1904530","<b>Province:<\/b> Ba Ria - Vung Tau<br><b>Error:<\/b> 2916.01879999996<br><b>Population 2019:<\/b> 1152200<br><b>Birth 2020:<\/b> 18395.055<br><b>Death 2020:<\/b> 5571.0738<br><b>Population 2020:<\/b> 1167940","<b>Province:<\/b> Bac Giang<br><b>Error:<\/b> 9728.29460000014<br><b>Population 2019:<\/b> 1810400<br><b>Birth 2020:<\/b> 32596.674<br><b>Death 2020:<\/b> 11104.9686<br><b>Population 2020:<\/b> 1841620","<b>Province:<\/b> Bac Kan<br><b>Error:<\/b> -234.334999999963<br><b>Population 2019:<\/b> 314400<br><b>Birth 2020:<\/b> 4648.7974<br><b>Death 2020:<\/b> 2354.4624<br><b>Population 2020:<\/b> 316460","<b>Province:<\/b> Bac Lieu<br><b>Error:<\/b> -538.867599999998<br><b>Population 2019:<\/b> 908200<br><b>Birth 2020:<\/b> 11290.6128<br><b>Death 2020:<\/b> 5471.7452<br><b>Population 2020:<\/b> 913480","<b>Province:<\/b> Bac Ninh<br><b>Error:<\/b> 15482.3555000001<br><b>Population 2019:<\/b> 1378600<br><b>Birth 2020:<\/b> 32682.5639<br><b>Death 2020:<\/b> 7634.9194<br><b>Population 2020:<\/b> 1419130","<b>Province:<\/b> Ben Tre<br><b>Error:<\/b> -2024.68800000008<br><b>Population 2019:<\/b> 1289100<br><b>Birth 2020:<\/b> 15482.952<br><b>Death 2020:<\/b> 10158.264<br><b>Population 2020:<\/b> 1292400","<b>Province:<\/b> Binh  Duong<br><b>Error:<\/b> 85103.0564999999<br><b>Population 2019:<\/b> 2456300<br><b>Birth 2020:<\/b> 47662.7585<br><b>Death 2020:<\/b> 8515.815<br><b>Population 2020:<\/b> 2580550","<b>Province:<\/b> Binh Dinh<br><b>Error:<\/b> -12264.449<br><b>Population 2019:<\/b> 1487800<br><b>Birth 2020:<\/b> 22467.29<br><b>Death 2020:<\/b> 10102.841<br><b>Population 2020:<\/b> 1487900","<b>Province:<\/b> Binh Phuoc<br><b>Error:<\/b> 125.849200000055<br><b>Population 2019:<\/b> 997800<br><b>Birth 2020:<\/b> 17683.7892<br><b>Death 2020:<\/b> 4529.6384<br><b>Population 2020:<\/b> 1011080","<b>Province:<\/b> Binh Thuan<br><b>Error:<\/b> -810.160200000042<br><b>Population 2019:<\/b> 1232300<br><b>Birth 2020:<\/b> 14697.6236<br><b>Death 2020:<\/b> 6927.4634<br><b>Population 2020:<\/b> 1239260","<b>Province:<\/b> Ca Mau<br><b>Error:<\/b> -9901.4254999999<br><b>Population 2019:<\/b> 1194300<br><b>Birth 2020:<\/b> 15711.5924<br><b>Death 2020:<\/b> 6220.1669<br><b>Population 2020:<\/b> 1193890","<b>Province:<\/b> Can Tho<br><b>Error:<\/b> -4687.14069999987<br><b>Population 2019:<\/b> 1236000<br><b>Birth 2020:<\/b> 16489.3017<br><b>Death 2020:<\/b> 7072.161<br><b>Population 2020:<\/b> 1240730","<b>Province:<\/b> Cao Bang<br><b>Error:<\/b> -928.576499999966<br><b>Population 2019:<\/b> 530900<br><b>Birth 2020:<\/b> 8614.7344<br><b>Death 2020:<\/b> 5496.1579<br><b>Population 2020:<\/b> 533090","<b>Province:<\/b> Da Nang<br><b>Error:<\/b> 11200.3388<br><b>Population 2019:<\/b> 1141100<br><b>Birth 2020:<\/b> 22839.9444<br><b>Death 2020:<\/b> 5660.2832<br><b>Population 2020:<\/b> 1169480","<b>Province:<\/b> Dak Lak<br><b>Error:<\/b> -11360.1228<br><b>Population 2019:<\/b> 1872600<br><b>Birth 2020:<\/b> 34908.39<br><b>Death 2020:<\/b> 9208.2672<br><b>Population 2020:<\/b> 1886940","<b>Province:<\/b> Dak Nong<br><b>Error:<\/b> 2643.41560000007<br><b>Population 2019:<\/b> 625800<br><b>Birth 2020:<\/b> 12471.1405<br><b>Death 2020:<\/b> 3004.5561<br><b>Population 2020:<\/b> 637910","<b>Province:<\/b> Dien Bien<br><b>Error:<\/b> 2731.17000000004<br><b>Population 2019:<\/b> 601700<br><b>Birth 2020:<\/b> 13195.9548<br><b>Death 2020:<\/b> 4147.1248<br><b>Population 2020:<\/b> 613480","<b>Province:<\/b> Dong Nai<br><b>Error:<\/b> 23378.7939999998<br><b>Population 2019:<\/b> 3113700<br><b>Birth 2020:<\/b> 55127.89<br><b>Death 2020:<\/b> 14806.684<br><b>Population 2020:<\/b> 3177400","<b>Province:<\/b> Dong Thap<br><b>Error:<\/b> -8854.06290000002<br><b>Population 2019:<\/b> 1598800<br><b>Birth 2020:<\/b> 20720.1295<br><b>Death 2020:<\/b> 10656.0666<br><b>Population 2020:<\/b> 1600010","<b>Province:<\/b> Gia Lai<br><b>Error:<\/b> -896.136299999896<br><b>Population 2019:<\/b> 1520200<br><b>Birth 2020:<\/b> 30697.8353<br><b>Death 2020:<\/b> 8171.699<br><b>Population 2020:<\/b> 1541830","<b>Province:<\/b> Ha Giang<br><b>Error:<\/b> 1601.39360000007<br><b>Population 2019:<\/b> 858100<br><b>Birth 2020:<\/b> 17152.4304<br><b>Death 2020:<\/b> 6613.824<br><b>Population 2020:<\/b> 870240","<b>Province:<\/b> Ha Nam<br><b>Error:<\/b> -1340.0098<br><b>Population 2019:<\/b> 854500<br><b>Birth 2020:<\/b> 14289.1414<br><b>Death 2020:<\/b> 5619.1316<br><b>Population 2020:<\/b> 861830","<b>Province:<\/b> Ha Noi<br><b>Error:<\/b> 49805.6462000012<br><b>Population 2019:<\/b> 8093900<br><b>Birth 2020:<\/b> 147613.066<br><b>Death 2020:<\/b> 44778.7122<br><b>Population 2020:<\/b> 8246540","<b>Province:<\/b> Ha Tinh<br><b>Error:<\/b> -6166.45059999987<br><b>Population 2019:<\/b> 1290300<br><b>Birth 2020:<\/b> 22055.5062<br><b>Death 2020:<\/b> 9569.0556<br><b>Population 2020:<\/b> 1296620","<b>Province:<\/b> Hai Duong<br><b>Error:<\/b> -3917.11569999997<br><b>Population 2019:<\/b> 1896900<br><b>Birth 2020:<\/b> 36035.276<br><b>Death 2020:<\/b> 12248.1603<br><b>Population 2020:<\/b> 1916770","<b>Province:<\/b> Hai Phong<br><b>Error:<\/b> 4295.98739999975<br><b>Population 2019:<\/b> 2033300<br><b>Birth 2020:<\/b> 30371.1171<br><b>Death 2020:<\/b> 14477.1045<br><b>Population 2020:<\/b> 2053490","<b>Province:<\/b> Hau Giang<br><b>Error:<\/b> -7674.41599999997<br><b>Population 2019:<\/b> 732200<br><b>Birth 2020:<\/b> 9509.0334<br><b>Death 2020:<\/b> 4254.6174<br><b>Population 2020:<\/b> 729780","<b>Province:<\/b> Ho Chi Minh city<br><b>Error:<\/b> 96724<br><b>Population 2019:<\/b> 9038600<br><b>Birth 2020:<\/b> 133615.648<br><b>Death 2020:<\/b> 41339.648<br><b>Population 2020:<\/b> 9227600","<b>Province:<\/b> Hoa Binh<br><b>Error:<\/b> -1331.96479999996<br><b>Population 2019:<\/b> 855800<br><b>Birth 2020:<\/b> 13219.727<br><b>Death 2020:<\/b> 6467.7622<br><b>Population 2020:<\/b> 861220","<b>Province:<\/b> Hung Yen<br><b>Error:<\/b> -1317.22589999996<br><b>Population 2019:<\/b> 1255800<br><b>Birth 2020:<\/b> 22259.8386<br><b>Death 2020:<\/b> 7652.6127<br><b>Population 2020:<\/b> 1269090","<b>Province:<\/b> Khanh  Hoa<br><b>Error:<\/b> -3251.06319999998<br><b>Population 2019:<\/b> 1232800<br><b>Birth 2020:<\/b> 17973.9756<br><b>Death 2020:<\/b> 7082.9124<br><b>Population 2020:<\/b> 1240440","<b>Province:<\/b> Kien  Giang<br><b>Error:<\/b> -8349.76340000005<br><b>Population 2019:<\/b> 1723700<br><b>Birth 2020:<\/b> 24584.5314<br><b>Death 2020:<\/b> 11064.768<br><b>Population 2020:<\/b> 1728870","<b>Province:<\/b> Kon Tum<br><b>Error:<\/b> 3088.60919999995<br><b>Population 2019:<\/b> 543400<br><b>Birth 2020:<\/b> 12090.7264<br><b>Death 2020:<\/b> 2939.3356<br><b>Population 2020:<\/b> 555640","<b>Province:<\/b> Lai Chau<br><b>Error:<\/b> 425.943600000057<br><b>Population 2019:<\/b> 462600<br><b>Birth 2020:<\/b> 10049.2359<br><b>Death 2020:<\/b> 3265.1795<br><b>Population 2020:<\/b> 469810","<b>Province:<\/b> Lam Dong<br><b>Error:<\/b> -4860.73880000017<br><b>Population 2019:<\/b> 1299300<br><b>Birth 2020:<\/b> 21808.0035<br><b>Death 2020:<\/b> 6457.2647<br><b>Population 2020:<\/b> 1309790","<b>Province:<\/b> Lang Son<br><b>Error:<\/b> 633.530099999974<br><b>Population 2019:<\/b> 782800<br><b>Birth 2020:<\/b> 11988.392<br><b>Death 2020:<\/b> 6711.9221<br><b>Population 2020:<\/b> 788710","<b>Province:<\/b> Lao Cai<br><b>Error:<\/b> 2484.07880000002<br><b>Population 2019:<\/b> 733300<br><b>Birth 2020:<\/b> 14442.066<br><b>Death 2020:<\/b> 3866.1448<br><b>Population 2020:<\/b> 746360","<b>Province:<\/b> Long An<br><b>Error:<\/b> 4216.66580000008<br><b>Population 2019:<\/b> 1695100<br><b>Birth 2020:<\/b> 24128.3328<br><b>Death 2020:<\/b> 9784.9986<br><b>Population 2020:<\/b> 1713660","<b>Province:<\/b> Nam Dinh<br><b>Error:<\/b> -15595.9852<br><b>Population 2019:<\/b> 1780900<br><b>Birth 2020:<\/b> 28378.4602<br><b>Death 2020:<\/b> 13352.475<br><b>Population 2020:<\/b> 1780330","<b>Province:<\/b> Nghe An<br><b>Error:<\/b> -16925.4199999999<br><b>Population 2019:<\/b> 3337200<br><b>Birth 2020:<\/b> 67505.912<br><b>Death 2020:<\/b> 22580.492<br><b>Population 2020:<\/b> 3365200","<b>Province:<\/b> Ninh  Thuan<br><b>Error:<\/b> -3023.32559999998<br><b>Population 2019:<\/b> 591000<br><b>Birth 2020:<\/b> 9314.2116<br><b>Death 2020:<\/b> 3650.886<br><b>Population 2020:<\/b> 593640","<b>Province:<\/b> Ninh Binh<br><b>Error:<\/b> -101.753599999938<br><b>Population 2019:<\/b> 984500<br><b>Birth 2020:<\/b> 16300.288<br><b>Death 2020:<\/b> 6778.5344<br><b>Population 2020:<\/b> 993920","<b>Province:<\/b> Phu Tho<br><b>Error:<\/b> 1002.03239999991<br><b>Population 2019:<\/b> 1466400<br><b>Birth 2020:<\/b> 25014.1344<br><b>Death 2020:<\/b> 10536.1668<br><b>Population 2020:<\/b> 1481880","<b>Province:<\/b> Phu Yen<br><b>Error:<\/b> -6209.14800000004<br><b>Population 2019:<\/b> 873200<br><b>Birth 2020:<\/b> 12808.495<br><b>Death 2020:<\/b> 5499.347<br><b>Population 2020:<\/b> 874300","<b>Province:<\/b> Quang  Nam<br><b>Error:<\/b> -6547.1743999999<br><b>Population 2019:<\/b> 1497500<br><b>Birth 2020:<\/b> 24366.5976<br><b>Death 2020:<\/b> 10279.4232<br><b>Population 2020:<\/b> 1505040","<b>Province:<\/b> Quang  Ngai<br><b>Error:<\/b> -9390.92200000002<br><b>Population 2019:<\/b> 1231900<br><b>Birth 2020:<\/b> 18439.33<br><b>Death 2020:<\/b> 7548.408<br><b>Population 2020:<\/b> 1233400","<b>Province:<\/b> Quang Binh<br><b>Error:<\/b> -4433.54239999992<br><b>Population 2019:<\/b> 896600<br><b>Birth 2020:<\/b> 15477.9768<br><b>Death 2020:<\/b> 5664.4344<br><b>Population 2020:<\/b> 901980","<b>Province:<\/b> Quang Ninh<br><b>Error:<\/b> -1422.17040000018<br><b>Population 2019:<\/b> 1324800<br><b>Birth 2020:<\/b> 21281.3751<br><b>Death 2020:<\/b> 7049.2047<br><b>Population 2020:<\/b> 1337610","<b>Province:<\/b> Quang Tri<br><b>Error:<\/b> -2225.83299999998<br><b>Population 2019:<\/b> 633400<br><b>Birth 2020:<\/b> 10508.4174<br><b>Death 2020:<\/b> 4422.5844<br><b>Population 2020:<\/b> 637260","<b>Province:<\/b> Soc Trang<br><b>Error:<\/b> -10946.3974000001<br><b>Population 2019:<\/b> 1199500<br><b>Birth 2020:<\/b> 14109.732<br><b>Death 2020:<\/b> 6923.3346<br><b>Population 2020:<\/b> 1195740","<b>Province:<\/b> Son La<br><b>Error:<\/b> 1952.58880000003<br><b>Population 2019:<\/b> 1252700<br><b>Birth 2020:<\/b> 24102.5232<br><b>Death 2020:<\/b> 8195.112<br><b>Population 2020:<\/b> 1270560","<b>Province:<\/b> Tay Ninh<br><b>Error:<\/b> 102.051800000016<br><b>Population 2019:<\/b> 1171700<br><b>Birth 2020:<\/b> 14846.958<br><b>Death 2020:<\/b> 8319.0098<br><b>Population 2020:<\/b> 1178330","<b>Province:<\/b> Thai  Nguyen<br><b>Error:<\/b> 4885.28119999985<br><b>Population 2019:<\/b> 1290900<br><b>Birth 2020:<\/b> 20690.5034<br><b>Death 2020:<\/b> 8605.7846<br><b>Population 2020:<\/b> 1307870","<b>Province:<\/b> Thai Binh<br><b>Error:<\/b> -4266.17920000013<br><b>Population 2019:<\/b> 1862200<br><b>Birth 2020:<\/b> 25846.7168<br><b>Death 2020:<\/b> 13540.5376<br><b>Population 2020:<\/b> 1870240","<b>Province:<\/b> Thanh Hoa<br><b>Error:<\/b> -15640.2806000002<br><b>Population 2019:<\/b> 3645800<br><b>Birth 2020:<\/b> 62084.0836<br><b>Death 2020:<\/b> 27303.803<br><b>Population 2020:<\/b> 3664940","<b>Province:<\/b> Thua Thien-Hue<br><b>Error:<\/b> -8056.74219999998<br><b>Population 2019:<\/b> 1129500<br><b>Birth 2020:<\/b> 19533.8233<br><b>Death 2020:<\/b> 7267.0811<br><b>Population 2020:<\/b> 1133710","<b>Province:<\/b> Tien Giang<br><b>Error:<\/b> -3668.49860000005<br><b>Population 2019:<\/b> 1766300<br><b>Birth 2020:<\/b> 23220.274<br><b>Death 2020:<\/b> 13311.7754<br><b>Population 2020:<\/b> 1772540","<b>Province:<\/b> Tra Vinh<br><b>Error:<\/b> -6166.99560000002<br><b>Population 2019:<\/b> 1009300<br><b>Birth 2020:<\/b> 13987.669<br><b>Death 2020:<\/b> 7180.6734<br><b>Population 2020:<\/b> 1009940","<b>Province:<\/b> Tuyen Quang<br><b>Error:<\/b> -1574.799<br><b>Population 2019:<\/b> 786300<br><b>Birth 2020:<\/b> 13574.448<br><b>Death 2020:<\/b> 5399.649<br><b>Population 2020:<\/b> 792900","<b>Province:<\/b> Vinh Long<br><b>Error:<\/b> -4366.35110000009<br><b>Population 2019:<\/b> 1022600<br><b>Birth 2020:<\/b> 11999.4381<br><b>Death 2020:<\/b> 7263.087<br><b>Population 2020:<\/b> 1022970","<b>Province:<\/b> Vinh Phuc<br><b>Error:<\/b> 2632.91059999983<br><b>Population 2019:<\/b> 1154800<br><b>Birth 2020:<\/b> 20449.6758<br><b>Death 2020:<\/b> 6652.5864<br><b>Population 2020:<\/b> 1171230","<b>Province:<\/b> Yen Bai<br><b>Error:<\/b> -1971.19299999997<br><b>Population 2019:<\/b> 823000<br><b>Birth 2020:<\/b> 16132.846<br><b>Death 2020:<\/b> 5571.653<br><b>Population 2020:<\/b> 831590"],"hoverinfo":"text","name":"2020","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"province","type":"category","categoryorder":"array","categoryarray":["An Giang","Ba Ria - Vung Tau","Bac Giang","Bac Kan","Bac Lieu","Bac Ninh","Ben Tre","Binh  Duong","Binh Dinh","Binh Phuoc","Binh Thuan","Ca Mau","Can Tho","Cao Bang","Da Nang","Dak Lak","Dak Nong","Dien Bien","Dong Nai","Dong Thap","Gia Lai","Ha Giang","Ha Nam","Ha Noi","Ha Tinh","Hai Duong","Hai Phong","Hau Giang","Ho Chi Minh city","Hoa Binh","Hung Yen","Khanh  Hoa","Kien  Giang","Kon Tum","Lai Chau","Lam Dong","Lang Son","Lao Cai","Long An","Nam Dinh","Nghe An","Ninh  Thuan","Ninh Binh","Phu Tho","Phu Yen","Quang  Nam","Quang  Ngai","Quang Binh","Quang Ninh","Quang Tri","Soc Trang","Son La","Tay Ninh","Thai  Nguyen","Thai Binh","Thanh Hoa","Thua Thien-Hue","Tien Giang","Tra Vinh","Tuyen Quang","Vinh Long","Vinh Phuc","Yen Bai"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"err17"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["An Giang","Ba Ria - Vung Tau","Bac Giang","Bac Kan","Bac Lieu","Bac Ninh","Ben Tre","Binh  Duong","Binh Dinh","Binh Phuoc","Binh Thuan","Ca Mau","Can Tho","Cao Bang","Da Nang","Dak Lak","Dak Nong","Dien Bien","Dong Nai","Dong Thap","Gia Lai","Ha Giang","Ha Nam","Ha Noi","Ha Tinh","Hai Duong","Hai Phong","Hau Giang","Ho Chi Minh city","Hoa Binh","Hung Yen","Khanh  Hoa","Kien  Giang","Kon Tum","Lai Chau","Lam Dong","Lang Son","Lao Cai","Long An","Nam Dinh","Nghe An","Ninh  Thuan","Ninh Binh","Phu Tho","Phu Yen","Quang  Nam","Quang  Ngai","Quang Binh","Quang Ninh","Quang Tri","Soc Trang","Son La","Tay Ninh","Thai  Nguyen","Thai Binh","Thanh Hoa","Thua Thien-Hue","Tien Giang","Tra Vinh","Tuyen Quang","Vinh Long","Vinh Phuc","Yen Bai"],"y":[-28606.7999999998,4270.19999999995,18659,-271.200000000012,-118,23318.6699999999,2185.39999999991,91264.7199999997,-8826.79999999981,2943.45000000007,-1545.64000000013,-10127.8799999999,-1943.42999999993,-1242.29000000004,12030.96,-6670.39999999991,1392.07999999996,943.399999999907,21787.5699999998,-9772.81000000006,5710.62999999989,1710.85000000009,2640.95000000007,104235.3,-1126.89999999991,11890.6300000001,3103.23999999999,-6294.96999999997,123738.720000001,-1658.32000000007,2542.6399999999,1587.69999999995,-3046.88000000012,6017.67999999993,3368.52000000002,-2684.85999999987,1846.29000000004,2829.60000000009,7366.05000000005,-13991.52,-1708.74000000022,-1800.09999999998,4718.91000000003,3299.3600000001,-3118.94999999995,493.239999999991,-8982.30000000005,-926.809999999939,7356.07000000007,-422.75,-16752.8,5642.65999999992,6001.82999999984,7820.64000000013,583.600000000093,-5081.70000000019,-4302.23999999999,7124.08999999985,-5857.20000000007,1028.78999999992,-2149.93999999994,5282.08000000007,-1904.97999999998],"hovertext":["<b>Province:<\/b> An Giang<br><b>Error:<\/b> -28606.7999999998<br><b>Population 2017:<\/b> 1954200<br><b>Birth 2018:<\/b> 22013.4<br><b>Death 2018:<\/b> 16606.6<br><b>Population 2018:<\/b> 1931000","<b>Province:<\/b> Ba Ria - Vung Tau<br><b>Error:<\/b> 4270.19999999995<br><b>Population 2017:<\/b> 1127200<br><b>Birth 2018:<\/b> 12521.3<br><b>Death 2018:<\/b> 5691.5<br><b>Population 2018:<\/b> 1138300","<b>Province:<\/b> Bac Giang<br><b>Error:<\/b> 18659<br><b>Population 2017:<\/b> 1736800<br><b>Birth 2018:<\/b> 31639.5<br><b>Death 2018:<\/b> 9598.5<br><b>Population 2018:<\/b> 1777500","<b>Province:<\/b> Bac Kan<br><b>Error:<\/b> -271.200000000012<br><b>Population 2017:<\/b> 309900<br><b>Birth 2018:<\/b> 4680<br><b>Death 2018:<\/b> 2308.8<br><b>Population 2018:<\/b> 312000","<b>Province:<\/b> Bac Lieu<br><b>Error:<\/b> -118<br><b>Population 2017:<\/b> 897700<br><b>Birth 2018:<\/b> 9842.7<br><b>Death 2018:<\/b> 4424.7<br><b>Population 2018:<\/b> 903000","<b>Province:<\/b> Bac Ninh<br><b>Error:<\/b> 23318.6699999999<br><b>Population 2017:<\/b> 1297800<br><b>Birth 2018:<\/b> 26478.54<br><b>Death 2018:<\/b> 10297.21<br><b>Population 2018:<\/b> 1337300","<b>Province:<\/b> Ben Tre<br><b>Error:<\/b> 2185.39999999991<br><b>Population 2017:<\/b> 1282400<br><b>Birth 2018:<\/b> 14146<br><b>Death 2018:<\/b> 12731.4<br><b>Population 2018:<\/b> 1286000","<b>Province:<\/b> Binh  Duong<br><b>Error:<\/b> 91264.7199999997<br><b>Population 2017:<\/b> 2227200<br><b>Birth 2018:<\/b> 35647.04<br><b>Death 2018:<\/b> 8911.76<br><b>Population 2018:<\/b> 2345200","<b>Province:<\/b> Binh Dinh<br><b>Error:<\/b> -8826.79999999981<br><b>Population 2017:<\/b> 1487700<br><b>Birth 2018:<\/b> 20680.42<br><b>Death 2018:<\/b> 11753.62<br><b>Population 2018:<\/b> 1487800","<b>Province:<\/b> Binh Phuoc<br><b>Error:<\/b> 2943.45000000007<br><b>Population 2017:<\/b> 972600<br><b>Birth 2018:<\/b> 15068.97<br><b>Death 2018:<\/b> 5712.42<br><b>Population 2018:<\/b> 984900","<b>Province:<\/b> Binh Thuan<br><b>Error:<\/b> -1545.64000000013<br><b>Population 2017:<\/b> 1220500<br><b>Birth 2018:<\/b> 16691.28<br><b>Death 2018:<\/b> 8345.64<br><b>Population 2018:<\/b> 1227300","<b>Province:<\/b> Ca Mau<br><b>Error:<\/b> -10127.8799999999<br><b>Population 2017:<\/b> 1197000<br><b>Birth 2018:<\/b> 14705.88<br><b>Death 2018:<\/b> 5978<br><b>Population 2018:<\/b> 1195600","<b>Province:<\/b> Can Tho<br><b>Error:<\/b> -1943.42999999993<br><b>Population 2017:<\/b> 1222400<br><b>Birth 2018:<\/b> 14609.63<br><b>Death 2018:<\/b> 7366.2<br><b>Population 2018:<\/b> 1227700","<b>Province:<\/b> Cao Bang<br><b>Error:<\/b> -1242.29000000004<br><b>Population 2017:<\/b> 526400<br><b>Birth 2018:<\/b> 9410.86<br><b>Death 2018:<\/b> 5868.57<br><b>Population 2018:<\/b> 528700","<b>Province:<\/b> Da Nang<br><b>Error:<\/b> 12030.96<br><b>Population 2017:<\/b> 1097800<br><b>Birth 2018:<\/b> 13818.56<br><b>Death 2018:<\/b> 9249.52<br><b>Population 2018:<\/b> 1114400","<b>Province:<\/b> Dak Lak<br><b>Error:<\/b> -6670.39999999991<br><b>Population 2017:<\/b> 1850300<br><b>Birth 2018:<\/b> 31645.5<br><b>Death 2018:<\/b> 13775.1<br><b>Population 2018:<\/b> 1861500","<b>Province:<\/b> Dak Nong<br><b>Error:<\/b> 1392.07999999996<br><b>Population 2017:<\/b> 604900<br><b>Birth 2018:<\/b> 12923.4<br><b>Death 2018:<\/b> 3815.48<br><b>Population 2018:<\/b> 615400","<b>Province:<\/b> Dien Bien<br><b>Error:<\/b> 943.399999999907<br><b>Population 2017:<\/b> 579400<br><b>Birth 2018:<\/b> 12754.8<br><b>Death 2018:<\/b> 2598.2<br><b>Population 2018:<\/b> 590500","<b>Province:<\/b> Dong Nai<br><b>Error:<\/b> 21787.5699999998<br><b>Population 2017:<\/b> 3004900<br><b>Birth 2018:<\/b> 45215.48<br><b>Death 2018:<\/b> 16803.05<br><b>Population 2018:<\/b> 3055100","<b>Province:<\/b> Dong Thap<br><b>Error:<\/b> -9772.81000000006<br><b>Population 2017:<\/b> 1612500<br><b>Birth 2018:<\/b> 15739.78<br><b>Death 2018:<\/b> 12366.97<br><b>Population 2018:<\/b> 1606100","<b>Province:<\/b> Gia Lai<br><b>Error:<\/b> 5710.62999999989<br><b>Population 2017:<\/b> 1468900<br><b>Birth 2018:<\/b> 26174.75<br><b>Death 2018:<\/b> 5085.38<br><b>Population 2018:<\/b> 1495700","<b>Province:<\/b> Ha Giang<br><b>Error:<\/b> 1710.85000000009<br><b>Population 2017:<\/b> 833700<br><b>Birth 2018:<\/b> 17183.95<br><b>Death 2018:<\/b> 6094.8<br><b>Population 2018:<\/b> 846500","<b>Province:<\/b> Ha Nam<br><b>Error:<\/b> 2640.95000000007<br><b>Population 2017:<\/b> 839800<br><b>Birth 2018:<\/b> 12282.95<br><b>Death 2018:<\/b> 7623.9<br><b>Population 2018:<\/b> 847100","<b>Province:<\/b> Ha Noi<br><b>Error:<\/b> 104235.3<br><b>Population 2017:<\/b> 7742200<br><b>Birth 2018:<\/b> 116343.15<br><b>Death 2018:<\/b> 48278.45<br><b>Population 2018:<\/b> 7914500","<b>Province:<\/b> Ha Tinh<br><b>Error:<\/b> -1126.89999999991<br><b>Population 2017:<\/b> 1274200<br><b>Birth 2018:<\/b> 22920.95<br><b>Death 2018:<\/b> 15494.05<br><b>Population 2018:<\/b> 1280500","<b>Province:<\/b> Hai Duong<br><b>Error:<\/b> 11890.6300000001<br><b>Population 2017:<\/b> 1850600<br><b>Birth 2018:<\/b> 31733.13<br><b>Death 2018:<\/b> 16523.76<br><b>Population 2018:<\/b> 1877700","<b>Province:<\/b> Hai Phong<br><b>Error:<\/b> 3103.23999999999<br><b>Population 2017:<\/b> 2001400<br><b>Birth 2018:<\/b> 27221.4<br><b>Death 2018:<\/b> 15324.64<br><b>Population 2018:<\/b> 2016400","<b>Province:<\/b> Hau Giang<br><b>Error:<\/b> -6294.96999999997<br><b>Population 2017:<\/b> 737300<br><b>Birth 2018:<\/b> 8083.9<br><b>Death 2018:<\/b> 4188.93<br><b>Population 2018:<\/b> 734900","<b>Province:<\/b> Ho Chi Minh city<br><b>Error:<\/b> 123738.720000001<br><b>Population 2017:<\/b> 8649600<br><b>Birth 2018:<\/b> 104349.76<br><b>Death 2018:<\/b> 34488.48<br><b>Population 2018:<\/b> 8843200","<b>Province:<\/b> Hoa Binh<br><b>Error:<\/b> -1658.32000000007<br><b>Population 2017:<\/b> 845000<br><b>Birth 2018:<\/b> 13606.4<br><b>Death 2018:<\/b> 6548.08<br><b>Population 2018:<\/b> 850400","<b>Province:<\/b> Hung Yen<br><b>Error:<\/b> 2542.6399999999<br><b>Population 2017:<\/b> 1228800<br><b>Birth 2018:<\/b> 18636<br><b>Death 2018:<\/b> 7578.64<br><b>Population 2018:<\/b> 1242400","<b>Province:<\/b> Khanh  Hoa<br><b>Error:<\/b> 1587.69999999995<br><b>Population 2017:<\/b> 1216300<br><b>Birth 2018:<\/b> 12979.7<br><b>Death 2018:<\/b> 6367.4<br><b>Population 2018:<\/b> 1224500","<b>Province:<\/b> Kien  Giang<br><b>Error:<\/b> -3046.88000000012<br><b>Population 2017:<\/b> 1712900<br><b>Birth 2018:<\/b> 22507.11<br><b>Death 2018:<\/b> 14260.23<br><b>Population 2018:<\/b> 1718100","<b>Province:<\/b> Kon Tum<br><b>Error:<\/b> 6017.67999999993<br><b>Population 2017:<\/b> 520100<br><b>Birth 2018:<\/b> 8518.4<br><b>Death 2018:<\/b> 2236.08<br><b>Population 2018:<\/b> 532400","<b>Province:<\/b> Lai Chau<br><b>Error:<\/b> 3368.52000000002<br><b>Population 2017:<\/b> 444500<br><b>Birth 2018:<\/b> 9068<br><b>Death 2018:<\/b> 3536.52<br><b>Population 2018:<\/b> 453400","<b>Province:<\/b> Lam Dong<br><b>Error:<\/b> -2684.85999999987<br><b>Population 2017:<\/b> 1281300<br><b>Birth 2018:<\/b> 18854.44<br><b>Death 2018:<\/b> 6069.58<br><b>Population 2018:<\/b> 1291400","<b>Province:<\/b> Lang Son<br><b>Error:<\/b> 1846.29000000004<br><b>Population 2017:<\/b> 768700<br><b>Birth 2018:<\/b> 12259.22<br><b>Death 2018:<\/b> 6905.51<br><b>Population 2018:<\/b> 775900","<b>Province:<\/b> Lao Cai<br><b>Error:<\/b> 2829.60000000009<br><b>Population 2017:<\/b> 708600<br><b>Birth 2018:<\/b> 13695.2<br><b>Death 2018:<\/b> 4324.8<br><b>Population 2018:<\/b> 720800","<b>Province:<\/b> Long An<br><b>Error:<\/b> 7366.05000000005<br><b>Population 2017:<\/b> 1662300<br><b>Birth 2018:<\/b> 20314.69<br><b>Death 2018:<\/b> 11080.74<br><b>Population 2018:<\/b> 1678900","<b>Province:<\/b> Nam Dinh<br><b>Error:<\/b> -13991.52<br><b>Population 2017:<\/b> 1788200<br><b>Birth 2018:<\/b> 24978.8<br><b>Death 2018:<\/b> 14987.28<br><b>Population 2018:<\/b> 1784200","<b>Province:<\/b> Nghe An<br><b>Error:<\/b> -1708.74000000022<br><b>Population 2017:<\/b> 3246700<br><b>Birth 2018:<\/b> 65828<br><b>Death 2018:<\/b> 19419.26<br><b>Population 2018:<\/b> 3291400","<b>Province:<\/b> Ninh  Thuan<br><b>Error:<\/b> -1800.09999999998<br><b>Population 2017:<\/b> 585400<br><b>Birth 2018:<\/b> 8715.72<br><b>Death 2018:<\/b> 3415.62<br><b>Population 2018:<\/b> 588900","<b>Province:<\/b> Ninh Binh<br><b>Error:<\/b> 4718.91000000003<br><b>Population 2017:<\/b> 965400<br><b>Birth 2018:<\/b> 14133.15<br><b>Death 2018:<\/b> 9552.06<br><b>Population 2018:<\/b> 974700","<b>Province:<\/b> Phu Tho<br><b>Error:<\/b> 3299.3600000001<br><b>Population 2017:<\/b> 1430500<br><b>Birth 2018:<\/b> 24643.2<br><b>Death 2018:<\/b> 8842.56<br><b>Population 2018:<\/b> 1449600","<b>Province:<\/b> Phu Yen<br><b>Error:<\/b> -3118.94999999995<br><b>Population 2017:<\/b> 870000<br><b>Birth 2018:<\/b> 12549.6<br><b>Death 2018:<\/b> 7930.65<br><b>Population 2018:<\/b> 871500","<b>Province:<\/b> Quang  Nam<br><b>Error:<\/b> 493.239999999991<br><b>Population 2017:<\/b> 1483300<br><b>Birth 2018:<\/b> 23405.56<br><b>Death 2018:<\/b> 16398.8<br><b>Population 2018:<\/b> 1490800","<b>Province:<\/b> Quang  Ngai<br><b>Error:<\/b> -8982.30000000005<br><b>Population 2017:<\/b> 1228900<br><b>Birth 2018:<\/b> 16734.8<br><b>Death 2018:<\/b> 6152.5<br><b>Population 2018:<\/b> 1230500","<b>Province:<\/b> Quang Binh<br><b>Error:<\/b> -926.809999999939<br><b>Population 2017:<\/b> 885700<br><b>Birth 2018:<\/b> 14257.6<br><b>Death 2018:<\/b> 7930.79<br><b>Population 2018:<\/b> 891100","<b>Province:<\/b> Quang Ninh<br><b>Error:<\/b> 7356.07000000007<br><b>Population 2017:<\/b> 1285200<br><b>Birth 2018:<\/b> 19819.28<br><b>Death 2018:<\/b> 8475.35<br><b>Population 2018:<\/b> 1303900","<b>Province:<\/b> Quang Tri<br><b>Error:<\/b> -422.75<br><b>Population 2017:<\/b> 625400<br><b>Birth 2018:<\/b> 10201.14<br><b>Death 2018:<\/b> 5478.39<br><b>Population 2018:<\/b> 629700","<b>Province:<\/b> Soc Trang<br><b>Error:<\/b> -16752.8<br><b>Population 2017:<\/b> 1218300<br><b>Birth 2018:<\/b> 13780.32<br><b>Death 2018:<\/b> 6527.52<br><b>Population 2018:<\/b> 1208800","<b>Province:<\/b> Son La<br><b>Error:<\/b> 5642.65999999992<br><b>Population 2017:<\/b> 1213400<br><b>Birth 2018:<\/b> 22565.73<br><b>Death 2018:<\/b> 8508.39<br><b>Population 2018:<\/b> 1233100","<b>Province:<\/b> Tay Ninh<br><b>Error:<\/b> 6001.82999999984<br><b>Population 2017:<\/b> 1151100<br><b>Birth 2018:<\/b> 12187.35<br><b>Death 2018:<\/b> 8589.18<br><b>Population 2018:<\/b> 1160700","<b>Province:<\/b> Thai  Nguyen<br><b>Error:<\/b> 7820.64000000013<br><b>Population 2017:<\/b> 1256100<br><b>Birth 2018:<\/b> 17830.4<br><b>Death 2018:<\/b> 8151.04<br><b>Population 2018:<\/b> 1273600","<b>Province:<\/b> Thai Binh<br><b>Error:<\/b> 583.600000000093<br><b>Population 2017:<\/b> 1846100<br><b>Birth 2018:<\/b> 21136.74<br><b>Death 2018:<\/b> 13720.34<br><b>Population 2018:<\/b> 1854100","<b>Province:<\/b> Thanh Hoa<br><b>Error:<\/b> -5081.70000000019<br><b>Population 2017:<\/b> 3603700<br><b>Birth 2018:<\/b> 63547.75<br><b>Death 2018:<\/b> 30866.05<br><b>Population 2018:<\/b> 3631300","<b>Province:<\/b> Thua Thien-Hue<br><b>Error:<\/b> -4302.23999999999<br><b>Population 2017:<\/b> 1123400<br><b>Birth 2018:<\/b> 15643.06<br><b>Death 2018:<\/b> 9340.82<br><b>Population 2018:<\/b> 1125400","<b>Province:<\/b> Tien Giang<br><b>Error:<\/b> 7124.08999999985<br><b>Population 2017:<\/b> 1751800<br><b>Birth 2018:<\/b> 19877.83<br><b>Death 2018:<\/b> 19701.92<br><b>Population 2018:<\/b> 1759100","<b>Province:<\/b> Tra Vinh<br><b>Error:<\/b> -5857.20000000007<br><b>Population 2017:<\/b> 1008100<br><b>Birth 2018:<\/b> 13013.52<br><b>Death 2018:<\/b> 6456.32<br><b>Population 2018:<\/b> 1008800","<b>Province:<\/b> Tuyen Quang<br><b>Error:<\/b> 1028.78999999992<br><b>Population 2017:<\/b> 770500<br><b>Birth 2018:<\/b> 12686.29<br><b>Death 2018:<\/b> 5915.08<br><b>Population 2018:<\/b> 778300","<b>Province:<\/b> Vinh Long<br><b>Error:<\/b> -2149.93999999994<br><b>Population 2017:<\/b> 1022600<br><b>Birth 2018:<\/b> 11249.7<br><b>Death 2018:<\/b> 8999.76<br><b>Population 2018:<\/b> 1022700","<b>Province:<\/b> Vinh Phuc<br><b>Error:<\/b> 5282.08000000007<br><b>Population 2017:<\/b> 1123100<br><b>Birth 2018:<\/b> 19922<br><b>Death 2018:<\/b> 9904.08<br><b>Population 2018:<\/b> 1138400","<b>Province:<\/b> Yen Bai<br><b>Error:<\/b> -1904.97999999998<br><b>Population 2017:<\/b> 807300<br><b>Birth 2018:<\/b> 15884.7<br><b>Death 2018:<\/b> 6679.72<br><b>Population 2018:<\/b> 814600"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"name":"2018","type":"bar","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["An Giang","Ba Ria - Vung Tau","Bac Giang","Bac Kan","Bac Lieu","Bac Ninh","Ben Tre","Binh  Duong","Binh Dinh","Binh Phuoc","Binh Thuan","Ca Mau","Can Tho","Cao Bang","Da Nang","Dak Lak","Dak Nong","Dien Bien","Dong Nai","Dong Thap","Gia Lai","Ha Giang","Ha Nam","Ha Noi","Ha Tinh","Hai Duong","Hai Phong","Hau Giang","Ho Chi Minh city","Hoa Binh","Hung Yen","Khanh  Hoa","Kien  Giang","Kon Tum","Lai Chau","Lam Dong","Lang Son","Lao Cai","Long An","Nam Dinh","Nghe An","Ninh  Thuan","Ninh Binh","Phu Tho","Phu Yen","Quang  Nam","Quang  Ngai","Quang Binh","Quang Ninh","Quang Tri","Soc Trang","Son La","Tay Ninh","Thai  Nguyen","Thai Binh","Thanh Hoa","Thua Thien-Hue","Tien Giang","Tra Vinh","Tuyen Quang","Vinh Long","Vinh Phuc","Yen Bai"],"y":[-27796.28,2608.43999999994,13166.6400000001,545.039999999979,-794.119999999995,14830.8799999999,-1411.84999999986,76220.54,-11009.7200000002,28.3800000000047,-5844.23999999999,-10257.25,-1093.60000000009,-985.400000000023,12208.03,-13243.8,950.420000000042,2776.20000000007,20301.4899999998,-15294,2761.14000000013,2675.76000000001,-546.849999999977,70941.7400000002,-3361.06000000006,-1286.52000000002,-586.379999999888,-7312.85999999999,110437.16,-1018.5,-162.639999999898,-1192.56000000006,-6810.6399999999,2088.23999999999,2723.59999999998,-7171.88000000012,2829.44000000006,2673.77999999991,2639.20000000019,-18793.8300000001,-253.35999999987,-3278.09999999998,151.899999999907,2429.28000000003,-4761.67999999993,-6927.25,-9194.34000000008,-4362.59999999998,6724.6399999999,-1683.90000000002,-16257.1000000001,4943.41000000015,6078.8600000001,3487.36999999988,-6238.93999999994,-22687.1599999997,-8437.45000000019,-1278.23999999999,-5555.80000000005,766.040000000037,-4394.92000000004,3350.76000000001,-1311.40000000002],"hovertext":["<b>Province:<\/b> An Giang<br><b>Error:<\/b> -27796.28<br><b>Population 2018:<\/b> 1931000<br><b>Birth 2019:<\/b> 22698.06<br><b>Death 2019:<\/b> 18501.78<br><b>Population 2019:<\/b> 1907400","<b>Province:<\/b> Ba Ria - Vung Tau<br><b>Error:<\/b> 2608.43999999994<br><b>Population 2018:<\/b> 1138300<br><b>Birth 2019:<\/b> 17052.56<br><b>Death 2019:<\/b> 5761<br><b>Population 2019:<\/b> 1152200","<b>Province:<\/b> Bac Giang<br><b>Error:<\/b> 13166.6400000001<br><b>Population 2018:<\/b> 1777500<br><b>Birth 2019:<\/b> 31138.88<br><b>Death 2019:<\/b> 11405.52<br><b>Population 2019:<\/b> 1810400","<b>Province:<\/b> Bac Kan<br><b>Error:<\/b> 545.039999999979<br><b>Population 2018:<\/b> 312000<br><b>Birth 2019:<\/b> 4307.28<br><b>Death 2019:<\/b> 2452.32<br><b>Population 2019:<\/b> 314400","<b>Province:<\/b> Bac Lieu<br><b>Error:<\/b> -794.119999999995<br><b>Population 2018:<\/b> 903000<br><b>Birth 2019:<\/b> 11624.96<br><b>Death 2019:<\/b> 5630.84<br><b>Population 2019:<\/b> 908200","<b>Province:<\/b> Bac Ninh<br><b>Error:<\/b> 14830.8799999999<br><b>Population 2018:<\/b> 1337300<br><b>Birth 2019:<\/b> 34189.28<br><b>Death 2019:<\/b> 7720.16<br><b>Population 2019:<\/b> 1378600","<b>Province:<\/b> Ben Tre<br><b>Error:<\/b> -1411.84999999986<br><b>Population 2018:<\/b> 1286000<br><b>Birth 2019:<\/b> 15082.47<br><b>Death 2019:<\/b> 10570.62<br><b>Population 2019:<\/b> 1289100","<b>Province:<\/b> Binh  Duong<br><b>Error:<\/b> 76220.54<br><b>Population 2018:<\/b> 2345200<br><b>Birth 2019:<\/b> 43230.88<br><b>Death 2019:<\/b> 8351.42<br><b>Population 2019:<\/b> 2456300","<b>Province:<\/b> Binh Dinh<br><b>Error:<\/b> -11009.7200000002<br><b>Population 2018:<\/b> 1487800<br><b>Birth 2019:<\/b> 21573.1<br><b>Death 2019:<\/b> 10563.38<br><b>Population 2019:<\/b> 1487800","<b>Province:<\/b> Binh Phuoc<br><b>Error:<\/b> 28.3800000000047<br><b>Population 2018:<\/b> 984900<br><b>Birth 2019:<\/b> 17561.28<br><b>Death 2019:<\/b> 4689.66<br><b>Population 2019:<\/b> 997800","<b>Province:<\/b> Binh Thuan<br><b>Error:<\/b> -5844.23999999999<br><b>Population 2018:<\/b> 1227300<br><b>Birth 2019:<\/b> 17991.58<br><b>Death 2019:<\/b> 7147.34<br><b>Population 2019:<\/b> 1232300","<b>Province:<\/b> Ca Mau<br><b>Error:<\/b> -10257.25<br><b>Population 2018:<\/b> 1195600<br><b>Birth 2019:<\/b> 15406.47<br><b>Death 2019:<\/b> 6449.22<br><b>Population 2019:<\/b> 1194300","<b>Province:<\/b> Can Tho<br><b>Error:<\/b> -1093.60000000009<br><b>Population 2018:<\/b> 1227700<br><b>Birth 2019:<\/b> 16686<br><b>Death 2019:<\/b> 7292.4<br><b>Population 2019:<\/b> 1236000","<b>Province:<\/b> Cao Bang<br><b>Error:<\/b> -985.400000000023<br><b>Population 2018:<\/b> 528700<br><b>Birth 2019:<\/b> 8866.03<br><b>Death 2019:<\/b> 5680.63<br><b>Population 2019:<\/b> 530900","<b>Province:<\/b> Da Nang<br><b>Error:<\/b> 12208.03<br><b>Population 2018:<\/b> 1114400<br><b>Birth 2019:<\/b> 20197.47<br><b>Death 2019:<\/b> 5705.5<br><b>Population 2019:<\/b> 1141100","<b>Province:<\/b> Dak Lak<br><b>Error:<\/b> -13243.8<br><b>Population 2018:<\/b> 1861500<br><b>Birth 2019:<\/b> 33894.06<br><b>Death 2019:<\/b> 9550.26<br><b>Population 2019:<\/b> 1872600","<b>Province:<\/b> Dak Nong<br><b>Error:<\/b> 950.420000000042<br><b>Population 2018:<\/b> 615400<br><b>Birth 2019:<\/b> 12516<br><b>Death 2019:<\/b> 3066.42<br><b>Population 2019:<\/b> 625800","<b>Province:<\/b> Dien Bien<br><b>Error:<\/b> 2776.20000000007<br><b>Population 2018:<\/b> 590500<br><b>Birth 2019:<\/b> 12635.7<br><b>Death 2019:<\/b> 4211.9<br><b>Population 2019:<\/b> 601700","<b>Province:<\/b> Dong Nai<br><b>Error:<\/b> 20301.4899999998<br><b>Population 2018:<\/b> 3055100<br><b>Birth 2019:<\/b> 53244.27<br><b>Death 2019:<\/b> 14945.76<br><b>Population 2019:<\/b> 3113700","<b>Province:<\/b> Dong Thap<br><b>Error:<\/b> -15294<br><b>Population 2018:<\/b> 1606100<br><b>Birth 2019:<\/b> 19025.72<br><b>Death 2019:<\/b> 11031.72<br><b>Population 2019:<\/b> 1598800","<b>Province:<\/b> Gia Lai<br><b>Error:<\/b> 2761.14000000013<br><b>Population 2018:<\/b> 1495700<br><b>Birth 2019:<\/b> 30099.96<br><b>Death 2019:<\/b> 8361.1<br><b>Population 2019:<\/b> 1520200","<b>Province:<\/b> Ha Giang<br><b>Error:<\/b> 2675.76000000001<br><b>Population 2018:<\/b> 846500<br><b>Birth 2019:<\/b> 15703.23<br><b>Death 2019:<\/b> 6778.99<br><b>Population 2019:<\/b> 858100","<b>Province:<\/b> Ha Nam<br><b>Error:<\/b> -546.849999999977<br><b>Population 2018:<\/b> 847100<br><b>Birth 2019:<\/b> 13757.45<br><b>Death 2019:<\/b> 5810.6<br><b>Population 2019:<\/b> 854500","<b>Province:<\/b> Ha Noi<br><b>Error:<\/b> 70941.7400000002<br><b>Population 2018:<\/b> 7914500<br><b>Birth 2019:<\/b> 154593.49<br><b>Death 2019:<\/b> 46135.23<br><b>Population 2019:<\/b> 8093900","<b>Province:<\/b> Ha Tinh<br><b>Error:<\/b> -3361.06000000006<br><b>Population 2018:<\/b> 1280500<br><b>Birth 2019:<\/b> 23096.37<br><b>Death 2019:<\/b> 9935.31<br><b>Population 2019:<\/b> 1290300","<b>Province:<\/b> Hai Duong<br><b>Error:<\/b> -1286.52000000002<br><b>Population 2018:<\/b> 1877700<br><b>Birth 2019:<\/b> 33006.06<br><b>Death 2019:<\/b> 12519.54<br><b>Population 2019:<\/b> 1896900","<b>Province:<\/b> Hai Phong<br><b>Error:<\/b> -586.379999999888<br><b>Population 2018:<\/b> 2016400<br><b>Birth 2019:<\/b> 32329.47<br><b>Death 2019:<\/b> 14843.09<br><b>Population 2019:<\/b> 2033300","<b>Province:<\/b> Hau Giang<br><b>Error:<\/b> -7312.85999999999<br><b>Population 2018:<\/b> 734900<br><b>Birth 2019:<\/b> 9079.28<br><b>Death 2019:<\/b> 4466.42<br><b>Population 2019:<\/b> 732200","<b>Province:<\/b> Ho Chi Minh city<br><b>Error:<\/b> 110437.16<br><b>Population 2018:<\/b> 8843200<br><b>Birth 2019:<\/b> 127444.26<br><b>Death 2019:<\/b> 42481.42<br><b>Population 2019:<\/b> 9038600","<b>Province:<\/b> Hoa Binh<br><b>Error:<\/b> -1018.5<br><b>Population 2018:<\/b> 850400<br><b>Birth 2019:<\/b> 13093.74<br><b>Death 2019:<\/b> 6675.24<br><b>Population 2019:<\/b> 855800","<b>Province:<\/b> Hung Yen<br><b>Error:<\/b> -162.639999999898<br><b>Population 2018:<\/b> 1242400<br><b>Birth 2019:<\/b> 21474.18<br><b>Death 2019:<\/b> 7911.54<br><b>Population 2019:<\/b> 1255800","<b>Province:<\/b> Khanh  Hoa<br><b>Error:<\/b> -1192.56000000006<br><b>Population 2018:<\/b> 1224500<br><b>Birth 2019:<\/b> 16766.08<br><b>Death 2019:<\/b> 7273.52<br><b>Population 2019:<\/b> 1232800","<b>Province:<\/b> Kien  Giang<br><b>Error:<\/b> -6810.6399999999<br><b>Population 2018:<\/b> 1718100<br><b>Birth 2019:<\/b> 23959.43<br><b>Death 2019:<\/b> 11548.79<br><b>Population 2019:<\/b> 1723700","<b>Province:<\/b> Kon Tum<br><b>Error:<\/b> 2088.23999999999<br><b>Population 2018:<\/b> 532400<br><b>Birth 2019:<\/b> 11900.46<br><b>Death 2019:<\/b> 2988.7<br><b>Population 2019:<\/b> 543400","<b>Province:<\/b> Lai Chau<br><b>Error:<\/b> 2723.59999999998<br><b>Population 2018:<\/b> 453400<br><b>Birth 2019:<\/b> 9807.12<br><b>Death 2019:<\/b> 3330.72<br><b>Population 2019:<\/b> 462600","<b>Province:<\/b> Lam Dong<br><b>Error:<\/b> -7171.88000000012<br><b>Population 2018:<\/b> 1291400<br><b>Birth 2019:<\/b> 21698.31<br><b>Death 2019:<\/b> 6626.43<br><b>Population 2019:<\/b> 1299300","<b>Province:<\/b> Lang Son<br><b>Error:<\/b> 2829.44000000006<br><b>Population 2018:<\/b> 775900<br><b>Birth 2019:<\/b> 11037.48<br><b>Death 2019:<\/b> 6966.92<br><b>Population 2019:<\/b> 782800","<b>Province:<\/b> Lao Cai<br><b>Error:<\/b> 2673.77999999991<br><b>Population 2018:<\/b> 720800<br><b>Birth 2019:<\/b> 13786.04<br><b>Death 2019:<\/b> 3959.82<br><b>Population 2019:<\/b> 733300","<b>Province:<\/b> Long An<br><b>Error:<\/b> 2639.20000000019<br><b>Population 2018:<\/b> 1678900<br><b>Birth 2019:<\/b> 23561.89<br><b>Death 2019:<\/b> 10001.09<br><b>Population 2019:<\/b> 1695100","<b>Province:<\/b> Nam Dinh<br><b>Error:<\/b> -18793.8300000001<br><b>Population 2018:<\/b> 1784200<br><b>Birth 2019:<\/b> 29384.85<br><b>Death 2019:<\/b> 13891.02<br><b>Population 2019:<\/b> 1780900","<b>Province:<\/b> Nghe An<br><b>Error:<\/b> -253.35999999987<br><b>Population 2018:<\/b> 3291400<br><b>Birth 2019:<\/b> 69413.76<br><b>Death 2019:<\/b> 23360.4<br><b>Population 2019:<\/b> 3337200","<b>Province:<\/b> Ninh  Thuan<br><b>Error:<\/b> -3278.09999999998<br><b>Population 2018:<\/b> 588900<br><b>Birth 2019:<\/b> 9160.5<br><b>Death 2019:<\/b> 3782.4<br><b>Population 2019:<\/b> 591000","<b>Province:<\/b> Ninh Binh<br><b>Error:<\/b> 151.899999999907<br><b>Population 2018:<\/b> 974700<br><b>Birth 2019:<\/b> 16638.05<br><b>Death 2019:<\/b> 6989.95<br><b>Population 2019:<\/b> 984500","<b>Province:<\/b> Phu Tho<br><b>Error:<\/b> 2429.28000000003<br><b>Population 2018:<\/b> 1449600<br><b>Birth 2019:<\/b> 25222.08<br><b>Death 2019:<\/b> 10851.36<br><b>Population 2019:<\/b> 1466400","<b>Province:<\/b> Phu Yen<br><b>Error:<\/b> -4761.67999999993<br><b>Population 2018:<\/b> 871500<br><b>Birth 2019:<\/b> 12137.48<br><b>Death 2019:<\/b> 5675.8<br><b>Population 2019:<\/b> 873200","<b>Province:<\/b> Quang  Nam<br><b>Error:<\/b> -6927.25<br><b>Population 2018:<\/b> 1490800<br><b>Birth 2019:<\/b> 24259.5<br><b>Death 2019:<\/b> 10632.25<br><b>Population 2019:<\/b> 1497500","<b>Province:<\/b> Quang  Ngai<br><b>Error:<\/b> -9194.34000000008<br><b>Population 2018:<\/b> 1230500<br><b>Birth 2019:<\/b> 18478.5<br><b>Death 2019:<\/b> 7884.16<br><b>Population 2019:<\/b> 1231900","<b>Province:<\/b> Quang Binh<br><b>Error:<\/b> -4362.59999999998<br><b>Population 2018:<\/b> 891100<br><b>Birth 2019:<\/b> 15690.5<br><b>Death 2019:<\/b> 5827.9<br><b>Population 2019:<\/b> 896600","<b>Province:<\/b> Quang Ninh<br><b>Error:<\/b> 6724.6399999999<br><b>Population 2018:<\/b> 1303900<br><b>Birth 2019:<\/b> 21461.76<br><b>Death 2019:<\/b> 7286.4<br><b>Population 2019:<\/b> 1324800","<b>Province:<\/b> Quang Tri<br><b>Error:<\/b> -1683.90000000002<br><b>Population 2018:<\/b> 629700<br><b>Birth 2019:<\/b> 9944.38<br><b>Death 2019:<\/b> 4560.48<br><b>Population 2019:<\/b> 633400","<b>Province:<\/b> Soc Trang<br><b>Error:<\/b> -16257.1000000001<br><b>Population 2018:<\/b> 1208800<br><b>Birth 2019:<\/b> 14154.1<br><b>Death 2019:<\/b> 7197<br><b>Population 2019:<\/b> 1199500","<b>Province:<\/b> Son La<br><b>Error:<\/b> 4943.41000000015<br><b>Population 2018:<\/b> 1233100<br><b>Birth 2019:<\/b> 23049.68<br><b>Death 2019:<\/b> 8393.09<br><b>Population 2019:<\/b> 1252700","<b>Province:<\/b> Tay Ninh<br><b>Error:<\/b> 6078.8600000001<br><b>Population 2018:<\/b> 1160700<br><b>Birth 2019:<\/b> 13591.72<br><b>Death 2019:<\/b> 8670.58<br><b>Population 2019:<\/b> 1171700","<b>Province:<\/b> Thai  Nguyen<br><b>Error:<\/b> 3487.36999999988<br><b>Population 2018:<\/b> 1273600<br><b>Birth 2019:<\/b> 22719.84<br><b>Death 2019:<\/b> 8907.21<br><b>Population 2019:<\/b> 1290900","<b>Province:<\/b> Thai Binh<br><b>Error:<\/b> -6238.93999999994<br><b>Population 2018:<\/b> 1854100<br><b>Birth 2019:<\/b> 28305.44<br><b>Death 2019:<\/b> 13966.5<br><b>Population 2019:<\/b> 1862200","<b>Province:<\/b> Thanh Hoa<br><b>Error:<\/b> -22687.1599999997<br><b>Population 2018:<\/b> 3631300<br><b>Birth 2019:<\/b> 65624.4<br><b>Death 2019:<\/b> 28437.24<br><b>Population 2019:<\/b> 3645800","<b>Province:<\/b> Thua Thien-Hue<br><b>Error:<\/b> -8437.45000000019<br><b>Population 2018:<\/b> 1125400<br><b>Birth 2019:<\/b> 20105.1<br><b>Death 2019:<\/b> 7567.65<br><b>Population 2019:<\/b> 1129500","<b>Province:<\/b> Tien Giang<br><b>Error:<\/b> -1278.23999999999<br><b>Population 2018:<\/b> 1759100<br><b>Birth 2019:<\/b> 22255.38<br><b>Death 2019:<\/b> 13777.14<br><b>Population 2019:<\/b> 1766300","<b>Province:<\/b> Tra Vinh<br><b>Error:<\/b> -5555.80000000005<br><b>Population 2018:<\/b> 1008800<br><b>Birth 2019:<\/b> 13524.62<br><b>Death 2019:<\/b> 7468.82<br><b>Population 2019:<\/b> 1009300","<b>Province:<\/b> Tuyen Quang<br><b>Error:<\/b> 766.040000000037<br><b>Population 2018:<\/b> 778300<br><b>Birth 2019:<\/b> 12816.69<br><b>Death 2019:<\/b> 5582.73<br><b>Population 2019:<\/b> 786300","<b>Province:<\/b> Vinh Long<br><b>Error:<\/b> -4394.92000000004<br><b>Population 2018:<\/b> 1022700<br><b>Birth 2019:<\/b> 11862.16<br><b>Death 2019:<\/b> 7567.24<br><b>Population 2019:<\/b> 1022600","<b>Province:<\/b> Vinh Phuc<br><b>Error:<\/b> 3350.76000000001<br><b>Population 2018:<\/b> 1138400<br><b>Birth 2019:<\/b> 19862.56<br><b>Death 2019:<\/b> 6813.32<br><b>Population 2019:<\/b> 1154800","<b>Province:<\/b> Yen Bai<br><b>Error:<\/b> -1311.40000000002<br><b>Population 2018:<\/b> 814600<br><b>Birth 2019:<\/b> 15472.4<br><b>Death 2019:<\/b> 5761<br><b>Population 2019:<\/b> 823000"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"name":"2019","type":"bar","marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["An Giang","Ba Ria - Vung Tau","Bac Giang","Bac Kan","Bac Lieu","Bac Ninh","Ben Tre","Binh  Duong","Binh Dinh","Binh Phuoc","Binh Thuan","Ca Mau","Can Tho","Cao Bang","Da Nang","Dak Lak","Dak Nong","Dien Bien","Dong Nai","Dong Thap","Gia Lai","Ha Giang","Ha Nam","Ha Noi","Ha Tinh","Hai Duong","Hai Phong","Hau Giang","Ho Chi Minh city","Hoa Binh","Hung Yen","Khanh  Hoa","Kien  Giang","Kon Tum","Lai Chau","Lam Dong","Lang Son","Lao Cai","Long An","Nam Dinh","Nghe An","Ninh  Thuan","Ninh Binh","Phu Tho","Phu Yen","Quang  Nam","Quang  Ngai","Quang Binh","Quang Ninh","Quang Tri","Soc Trang","Son La","Tay Ninh","Thai  Nguyen","Thai Binh","Thanh Hoa","Thua Thien-Hue","Tien Giang","Tra Vinh","Tuyen Quang","Vinh Long","Vinh Phuc","Yen Bai"],"y":[-9040.6771999998,2916.01879999996,9728.29460000014,-234.334999999963,-538.867599999998,15482.3555000001,-2024.68800000008,85103.0564999999,-12264.449,125.849200000055,-810.160200000042,-9901.4254999999,-4687.14069999987,-928.576499999966,11200.3388,-11360.1228,2643.41560000007,2731.17000000004,23378.7939999998,-8854.06290000002,-896.136299999896,1601.39360000007,-1340.0098,49805.6462000012,-6166.45059999987,-3917.11569999997,4295.98739999975,-7674.41599999997,96724,-1331.96479999996,-1317.22589999996,-3251.06319999998,-8349.76340000005,3088.60919999995,425.943600000057,-4860.73880000017,633.530099999974,2484.07880000002,4216.66580000008,-15595.9852,-16925.4199999999,-3023.32559999998,-101.753599999938,1002.03239999991,-6209.14800000004,-6547.1743999999,-9390.92200000002,-4433.54239999992,-1422.17040000018,-2225.83299999998,-10946.3974000001,1952.58880000003,102.051800000016,4885.28119999985,-4266.17920000013,-15640.2806000002,-8056.74219999998,-3668.49860000005,-6166.99560000002,-1574.799,-4366.35110000009,2632.91059999983,-1971.19299999997],"hovertext":["<b>Province:<\/b> An Giang<br><b>Error:<\/b> -9040.6771999998<br><b>Population 2019:<\/b> 1907400<br><b>Birth 2020:<\/b> 23825.6703<br><b>Death 2020:<\/b> 17654.9931<br><b>Population 2020:<\/b> 1904530","<b>Province:<\/b> Ba Ria - Vung Tau<br><b>Error:<\/b> 2916.01879999996<br><b>Population 2019:<\/b> 1152200<br><b>Birth 2020:<\/b> 18395.055<br><b>Death 2020:<\/b> 5571.0738<br><b>Population 2020:<\/b> 1167940","<b>Province:<\/b> Bac Giang<br><b>Error:<\/b> 9728.29460000014<br><b>Population 2019:<\/b> 1810400<br><b>Birth 2020:<\/b> 32596.674<br><b>Death 2020:<\/b> 11104.9686<br><b>Population 2020:<\/b> 1841620","<b>Province:<\/b> Bac Kan<br><b>Error:<\/b> -234.334999999963<br><b>Population 2019:<\/b> 314400<br><b>Birth 2020:<\/b> 4648.7974<br><b>Death 2020:<\/b> 2354.4624<br><b>Population 2020:<\/b> 316460","<b>Province:<\/b> Bac Lieu<br><b>Error:<\/b> -538.867599999998<br><b>Population 2019:<\/b> 908200<br><b>Birth 2020:<\/b> 11290.6128<br><b>Death 2020:<\/b> 5471.7452<br><b>Population 2020:<\/b> 913480","<b>Province:<\/b> Bac Ninh<br><b>Error:<\/b> 15482.3555000001<br><b>Population 2019:<\/b> 1378600<br><b>Birth 2020:<\/b> 32682.5639<br><b>Death 2020:<\/b> 7634.9194<br><b>Population 2020:<\/b> 1419130","<b>Province:<\/b> Ben Tre<br><b>Error:<\/b> -2024.68800000008<br><b>Population 2019:<\/b> 1289100<br><b>Birth 2020:<\/b> 15482.952<br><b>Death 2020:<\/b> 10158.264<br><b>Population 2020:<\/b> 1292400","<b>Province:<\/b> Binh  Duong<br><b>Error:<\/b> 85103.0564999999<br><b>Population 2019:<\/b> 2456300<br><b>Birth 2020:<\/b> 47662.7585<br><b>Death 2020:<\/b> 8515.815<br><b>Population 2020:<\/b> 2580550","<b>Province:<\/b> Binh Dinh<br><b>Error:<\/b> -12264.449<br><b>Population 2019:<\/b> 1487800<br><b>Birth 2020:<\/b> 22467.29<br><b>Death 2020:<\/b> 10102.841<br><b>Population 2020:<\/b> 1487900","<b>Province:<\/b> Binh Phuoc<br><b>Error:<\/b> 125.849200000055<br><b>Population 2019:<\/b> 997800<br><b>Birth 2020:<\/b> 17683.7892<br><b>Death 2020:<\/b> 4529.6384<br><b>Population 2020:<\/b> 1011080","<b>Province:<\/b> Binh Thuan<br><b>Error:<\/b> -810.160200000042<br><b>Population 2019:<\/b> 1232300<br><b>Birth 2020:<\/b> 14697.6236<br><b>Death 2020:<\/b> 6927.4634<br><b>Population 2020:<\/b> 1239260","<b>Province:<\/b> Ca Mau<br><b>Error:<\/b> -9901.4254999999<br><b>Population 2019:<\/b> 1194300<br><b>Birth 2020:<\/b> 15711.5924<br><b>Death 2020:<\/b> 6220.1669<br><b>Population 2020:<\/b> 1193890","<b>Province:<\/b> Can Tho<br><b>Error:<\/b> -4687.14069999987<br><b>Population 2019:<\/b> 1236000<br><b>Birth 2020:<\/b> 16489.3017<br><b>Death 2020:<\/b> 7072.161<br><b>Population 2020:<\/b> 1240730","<b>Province:<\/b> Cao Bang<br><b>Error:<\/b> -928.576499999966<br><b>Population 2019:<\/b> 530900<br><b>Birth 2020:<\/b> 8614.7344<br><b>Death 2020:<\/b> 5496.1579<br><b>Population 2020:<\/b> 533090","<b>Province:<\/b> Da Nang<br><b>Error:<\/b> 11200.3388<br><b>Population 2019:<\/b> 1141100<br><b>Birth 2020:<\/b> 22839.9444<br><b>Death 2020:<\/b> 5660.2832<br><b>Population 2020:<\/b> 1169480","<b>Province:<\/b> Dak Lak<br><b>Error:<\/b> -11360.1228<br><b>Population 2019:<\/b> 1872600<br><b>Birth 2020:<\/b> 34908.39<br><b>Death 2020:<\/b> 9208.2672<br><b>Population 2020:<\/b> 1886940","<b>Province:<\/b> Dak Nong<br><b>Error:<\/b> 2643.41560000007<br><b>Population 2019:<\/b> 625800<br><b>Birth 2020:<\/b> 12471.1405<br><b>Death 2020:<\/b> 3004.5561<br><b>Population 2020:<\/b> 637910","<b>Province:<\/b> Dien Bien<br><b>Error:<\/b> 2731.17000000004<br><b>Population 2019:<\/b> 601700<br><b>Birth 2020:<\/b> 13195.9548<br><b>Death 2020:<\/b> 4147.1248<br><b>Population 2020:<\/b> 613480","<b>Province:<\/b> Dong Nai<br><b>Error:<\/b> 23378.7939999998<br><b>Population 2019:<\/b> 3113700<br><b>Birth 2020:<\/b> 55127.89<br><b>Death 2020:<\/b> 14806.684<br><b>Population 2020:<\/b> 3177400","<b>Province:<\/b> Dong Thap<br><b>Error:<\/b> -8854.06290000002<br><b>Population 2019:<\/b> 1598800<br><b>Birth 2020:<\/b> 20720.1295<br><b>Death 2020:<\/b> 10656.0666<br><b>Population 2020:<\/b> 1600010","<b>Province:<\/b> Gia Lai<br><b>Error:<\/b> -896.136299999896<br><b>Population 2019:<\/b> 1520200<br><b>Birth 2020:<\/b> 30697.8353<br><b>Death 2020:<\/b> 8171.699<br><b>Population 2020:<\/b> 1541830","<b>Province:<\/b> Ha Giang<br><b>Error:<\/b> 1601.39360000007<br><b>Population 2019:<\/b> 858100<br><b>Birth 2020:<\/b> 17152.4304<br><b>Death 2020:<\/b> 6613.824<br><b>Population 2020:<\/b> 870240","<b>Province:<\/b> Ha Nam<br><b>Error:<\/b> -1340.0098<br><b>Population 2019:<\/b> 854500<br><b>Birth 2020:<\/b> 14289.1414<br><b>Death 2020:<\/b> 5619.1316<br><b>Population 2020:<\/b> 861830","<b>Province:<\/b> Ha Noi<br><b>Error:<\/b> 49805.6462000012<br><b>Population 2019:<\/b> 8093900<br><b>Birth 2020:<\/b> 147613.066<br><b>Death 2020:<\/b> 44778.7122<br><b>Population 2020:<\/b> 8246540","<b>Province:<\/b> Ha Tinh<br><b>Error:<\/b> -6166.45059999987<br><b>Population 2019:<\/b> 1290300<br><b>Birth 2020:<\/b> 22055.5062<br><b>Death 2020:<\/b> 9569.0556<br><b>Population 2020:<\/b> 1296620","<b>Province:<\/b> Hai Duong<br><b>Error:<\/b> -3917.11569999997<br><b>Population 2019:<\/b> 1896900<br><b>Birth 2020:<\/b> 36035.276<br><b>Death 2020:<\/b> 12248.1603<br><b>Population 2020:<\/b> 1916770","<b>Province:<\/b> Hai Phong<br><b>Error:<\/b> 4295.98739999975<br><b>Population 2019:<\/b> 2033300<br><b>Birth 2020:<\/b> 30371.1171<br><b>Death 2020:<\/b> 14477.1045<br><b>Population 2020:<\/b> 2053490","<b>Province:<\/b> Hau Giang<br><b>Error:<\/b> -7674.41599999997<br><b>Population 2019:<\/b> 732200<br><b>Birth 2020:<\/b> 9509.0334<br><b>Death 2020:<\/b> 4254.6174<br><b>Population 2020:<\/b> 729780","<b>Province:<\/b> Ho Chi Minh city<br><b>Error:<\/b> 96724<br><b>Population 2019:<\/b> 9038600<br><b>Birth 2020:<\/b> 133615.648<br><b>Death 2020:<\/b> 41339.648<br><b>Population 2020:<\/b> 9227600","<b>Province:<\/b> Hoa Binh<br><b>Error:<\/b> -1331.96479999996<br><b>Population 2019:<\/b> 855800<br><b>Birth 2020:<\/b> 13219.727<br><b>Death 2020:<\/b> 6467.7622<br><b>Population 2020:<\/b> 861220","<b>Province:<\/b> Hung Yen<br><b>Error:<\/b> -1317.22589999996<br><b>Population 2019:<\/b> 1255800<br><b>Birth 2020:<\/b> 22259.8386<br><b>Death 2020:<\/b> 7652.6127<br><b>Population 2020:<\/b> 1269090","<b>Province:<\/b> Khanh  Hoa<br><b>Error:<\/b> -3251.06319999998<br><b>Population 2019:<\/b> 1232800<br><b>Birth 2020:<\/b> 17973.9756<br><b>Death 2020:<\/b> 7082.9124<br><b>Population 2020:<\/b> 1240440","<b>Province:<\/b> Kien  Giang<br><b>Error:<\/b> -8349.76340000005<br><b>Population 2019:<\/b> 1723700<br><b>Birth 2020:<\/b> 24584.5314<br><b>Death 2020:<\/b> 11064.768<br><b>Population 2020:<\/b> 1728870","<b>Province:<\/b> Kon Tum<br><b>Error:<\/b> 3088.60919999995<br><b>Population 2019:<\/b> 543400<br><b>Birth 2020:<\/b> 12090.7264<br><b>Death 2020:<\/b> 2939.3356<br><b>Population 2020:<\/b> 555640","<b>Province:<\/b> Lai Chau<br><b>Error:<\/b> 425.943600000057<br><b>Population 2019:<\/b> 462600<br><b>Birth 2020:<\/b> 10049.2359<br><b>Death 2020:<\/b> 3265.1795<br><b>Population 2020:<\/b> 469810","<b>Province:<\/b> Lam Dong<br><b>Error:<\/b> -4860.73880000017<br><b>Population 2019:<\/b> 1299300<br><b>Birth 2020:<\/b> 21808.0035<br><b>Death 2020:<\/b> 6457.2647<br><b>Population 2020:<\/b> 1309790","<b>Province:<\/b> Lang Son<br><b>Error:<\/b> 633.530099999974<br><b>Population 2019:<\/b> 782800<br><b>Birth 2020:<\/b> 11988.392<br><b>Death 2020:<\/b> 6711.9221<br><b>Population 2020:<\/b> 788710","<b>Province:<\/b> Lao Cai<br><b>Error:<\/b> 2484.07880000002<br><b>Population 2019:<\/b> 733300<br><b>Birth 2020:<\/b> 14442.066<br><b>Death 2020:<\/b> 3866.1448<br><b>Population 2020:<\/b> 746360","<b>Province:<\/b> Long An<br><b>Error:<\/b> 4216.66580000008<br><b>Population 2019:<\/b> 1695100<br><b>Birth 2020:<\/b> 24128.3328<br><b>Death 2020:<\/b> 9784.9986<br><b>Population 2020:<\/b> 1713660","<b>Province:<\/b> Nam Dinh<br><b>Error:<\/b> -15595.9852<br><b>Population 2019:<\/b> 1780900<br><b>Birth 2020:<\/b> 28378.4602<br><b>Death 2020:<\/b> 13352.475<br><b>Population 2020:<\/b> 1780330","<b>Province:<\/b> Nghe An<br><b>Error:<\/b> -16925.4199999999<br><b>Population 2019:<\/b> 3337200<br><b>Birth 2020:<\/b> 67505.912<br><b>Death 2020:<\/b> 22580.492<br><b>Population 2020:<\/b> 3365200","<b>Province:<\/b> Ninh  Thuan<br><b>Error:<\/b> -3023.32559999998<br><b>Population 2019:<\/b> 591000<br><b>Birth 2020:<\/b> 9314.2116<br><b>Death 2020:<\/b> 3650.886<br><b>Population 2020:<\/b> 593640","<b>Province:<\/b> Ninh Binh<br><b>Error:<\/b> -101.753599999938<br><b>Population 2019:<\/b> 984500<br><b>Birth 2020:<\/b> 16300.288<br><b>Death 2020:<\/b> 6778.5344<br><b>Population 2020:<\/b> 993920","<b>Province:<\/b> Phu Tho<br><b>Error:<\/b> 1002.03239999991<br><b>Population 2019:<\/b> 1466400<br><b>Birth 2020:<\/b> 25014.1344<br><b>Death 2020:<\/b> 10536.1668<br><b>Population 2020:<\/b> 1481880","<b>Province:<\/b> Phu Yen<br><b>Error:<\/b> -6209.14800000004<br><b>Population 2019:<\/b> 873200<br><b>Birth 2020:<\/b> 12808.495<br><b>Death 2020:<\/b> 5499.347<br><b>Population 2020:<\/b> 874300","<b>Province:<\/b> Quang  Nam<br><b>Error:<\/b> -6547.1743999999<br><b>Population 2019:<\/b> 1497500<br><b>Birth 2020:<\/b> 24366.5976<br><b>Death 2020:<\/b> 10279.4232<br><b>Population 2020:<\/b> 1505040","<b>Province:<\/b> Quang  Ngai<br><b>Error:<\/b> -9390.92200000002<br><b>Population 2019:<\/b> 1231900<br><b>Birth 2020:<\/b> 18439.33<br><b>Death 2020:<\/b> 7548.408<br><b>Population 2020:<\/b> 1233400","<b>Province:<\/b> Quang Binh<br><b>Error:<\/b> -4433.54239999992<br><b>Population 2019:<\/b> 896600<br><b>Birth 2020:<\/b> 15477.9768<br><b>Death 2020:<\/b> 5664.4344<br><b>Population 2020:<\/b> 901980","<b>Province:<\/b> Quang Ninh<br><b>Error:<\/b> -1422.17040000018<br><b>Population 2019:<\/b> 1324800<br><b>Birth 2020:<\/b> 21281.3751<br><b>Death 2020:<\/b> 7049.2047<br><b>Population 2020:<\/b> 1337610","<b>Province:<\/b> Quang Tri<br><b>Error:<\/b> -2225.83299999998<br><b>Population 2019:<\/b> 633400<br><b>Birth 2020:<\/b> 10508.4174<br><b>Death 2020:<\/b> 4422.5844<br><b>Population 2020:<\/b> 637260","<b>Province:<\/b> Soc Trang<br><b>Error:<\/b> -10946.3974000001<br><b>Population 2019:<\/b> 1199500<br><b>Birth 2020:<\/b> 14109.732<br><b>Death 2020:<\/b> 6923.3346<br><b>Population 2020:<\/b> 1195740","<b>Province:<\/b> Son La<br><b>Error:<\/b> 1952.58880000003<br><b>Population 2019:<\/b> 1252700<br><b>Birth 2020:<\/b> 24102.5232<br><b>Death 2020:<\/b> 8195.112<br><b>Population 2020:<\/b> 1270560","<b>Province:<\/b> Tay Ninh<br><b>Error:<\/b> 102.051800000016<br><b>Population 2019:<\/b> 1171700<br><b>Birth 2020:<\/b> 14846.958<br><b>Death 2020:<\/b> 8319.0098<br><b>Population 2020:<\/b> 1178330","<b>Province:<\/b> Thai  Nguyen<br><b>Error:<\/b> 4885.28119999985<br><b>Population 2019:<\/b> 1290900<br><b>Birth 2020:<\/b> 20690.5034<br><b>Death 2020:<\/b> 8605.7846<br><b>Population 2020:<\/b> 1307870","<b>Province:<\/b> Thai Binh<br><b>Error:<\/b> -4266.17920000013<br><b>Population 2019:<\/b> 1862200<br><b>Birth 2020:<\/b> 25846.7168<br><b>Death 2020:<\/b> 13540.5376<br><b>Population 2020:<\/b> 1870240","<b>Province:<\/b> Thanh Hoa<br><b>Error:<\/b> -15640.2806000002<br><b>Population 2019:<\/b> 3645800<br><b>Birth 2020:<\/b> 62084.0836<br><b>Death 2020:<\/b> 27303.803<br><b>Population 2020:<\/b> 3664940","<b>Province:<\/b> Thua Thien-Hue<br><b>Error:<\/b> -8056.74219999998<br><b>Population 2019:<\/b> 1129500<br><b>Birth 2020:<\/b> 19533.8233<br><b>Death 2020:<\/b> 7267.0811<br><b>Population 2020:<\/b> 1133710","<b>Province:<\/b> Tien Giang<br><b>Error:<\/b> -3668.49860000005<br><b>Population 2019:<\/b> 1766300<br><b>Birth 2020:<\/b> 23220.274<br><b>Death 2020:<\/b> 13311.7754<br><b>Population 2020:<\/b> 1772540","<b>Province:<\/b> Tra Vinh<br><b>Error:<\/b> -6166.99560000002<br><b>Population 2019:<\/b> 1009300<br><b>Birth 2020:<\/b> 13987.669<br><b>Death 2020:<\/b> 7180.6734<br><b>Population 2020:<\/b> 1009940","<b>Province:<\/b> Tuyen Quang<br><b>Error:<\/b> -1574.799<br><b>Population 2019:<\/b> 786300<br><b>Birth 2020:<\/b> 13574.448<br><b>Death 2020:<\/b> 5399.649<br><b>Population 2020:<\/b> 792900","<b>Province:<\/b> Vinh Long<br><b>Error:<\/b> -4366.35110000009<br><b>Population 2019:<\/b> 1022600<br><b>Birth 2020:<\/b> 11999.4381<br><b>Death 2020:<\/b> 7263.087<br><b>Population 2020:<\/b> 1022970","<b>Province:<\/b> Vinh Phuc<br><b>Error:<\/b> 2632.91059999983<br><b>Population 2019:<\/b> 1154800<br><b>Birth 2020:<\/b> 20449.6758<br><b>Death 2020:<\/b> 6652.5864<br><b>Population 2020:<\/b> 1171230","<b>Province:<\/b> Yen Bai<br><b>Error:<\/b> -1971.19299999997<br><b>Population 2019:<\/b> 823000<br><b>Birth 2020:<\/b> 16132.846<br><b>Death 2020:<\/b> 5571.653<br><b>Population 2020:<\/b> 831590"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"name":"2020","type":"bar","marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.2 (2021-11-01)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.04.4 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8    LC_NUMERIC=C            LC_TIME=vi_VN          
+ [4] LC_COLLATE=en_US.UTF-8  LC_MONETARY=vi_VN       LC_MESSAGES=en_US.UTF-8
+ [7] LC_PAPER=vi_VN          LC_NAME=C               LC_ADDRESS=C           
+[10] LC_TELEPHONE=C          LC_MEASUREMENT=vi_VN    LC_IDENTIFICATION=C    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] plotly_4.10.0 ggplot2_3.3.5
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.1.1  xfun_0.29         bslib_0.3.1       purrr_0.3.4      
+ [5] colorspace_2.0-2  vctrs_0.3.8       generics_0.1.2    viridisLite_0.4.0
+ [9] htmltools_0.5.2   yaml_2.3.4        utf8_1.2.2        rlang_1.0.1      
+[13] jquerylib_0.1.4   later_1.3.0       pillar_1.7.0      glue_1.6.1       
+[17] withr_2.4.3       DBI_1.1.2         lifecycle_1.0.1   stringr_1.4.0    
+[21] munsell_0.5.0     gtable_0.3.0      workflowr_1.7.0   htmlwidgets_1.5.4
+[25] evaluate_0.15     knitr_1.37        fastmap_1.1.0     crosstalk_1.2.0  
+[29] httpuv_1.6.5      fansi_1.0.2       highr_0.9         Rcpp_1.0.8       
+[33] promises_1.2.0.1  scales_1.1.1      jsonlite_1.7.3    fs_1.5.2         
+[37] digest_0.6.29     stringi_1.7.6     dplyr_1.0.8       grid_4.1.2       
+[41] rprojroot_2.0.2   cli_3.2.0         tools_4.1.2       magrittr_2.0.2   
+[45] sass_0.4.0        lazyeval_0.2.2    tibble_3.1.6      crayon_1.5.0     
+[49] tidyr_1.2.0       pkgconfig_2.0.3   ellipsis_0.3.2    data.table_1.14.2
+[53] assertthat_0.2.1  rmarkdown_2.11    httr_1.4.2        rstudioapi_0.13  
+[57] R6_2.5.1          git2r_0.29.0      compiler_4.1.2   </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
