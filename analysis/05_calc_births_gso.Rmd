@@ -1,0 +1,117 @@
+---
+title: "Calculate number of births with GSO data"
+author: "Thinh Ong"
+date: "2/22/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(plotly)
+```
+
+Read and clean data
+```{r warning=FALSE}
+pj <- "/home/thinh/Dropbox/oucru/projects/Vaccination_COVID"
+birthDeath <- read.table(file.path(pj, "data", "VN_birth_death_year.csv"),
+                         header = T, sep = ";")
+pop <- read.table(file.path(pj, "data", "VN_popsize_year_2.csv"),
+                   header = T, sep = ";", skipNul = TRUE)
+
+# Birth data
+birth <- birthDeath[,c(1, grep("birth", colnames(birthDeath)))]
+colnames(birth) <- c("province", "birthRate17", "birthRate18", "birthRate19", "birthRate20")
+birth[,-1] <- sapply(birth[,-1], as.numeric)
+
+# Death data
+death <- birthDeath[,c(1, grep("death", colnames(birthDeath)))]
+colnames(death) <- c("province", "deathRate17", "deathRate18", "deathRate19", "deathRate20")
+death[,-1] <- sapply(death[,-1], as.numeric)
+
+# Population data
+colnames(pop) <- c("province", "pop17", "pop18", "pop19", "pop20")
+pop[,-1] <- sapply(pop[,-1], as.numeric)
+```
+
+# Population data
+```{r}
+head(pop, 8)
+```
+
+# Birth rate data
+```{r}
+head(birth, 8)
+```
+
+Quickly see how many births per year among the whole country
+```{r}
+whole <- pop[1,-1] * birth[1,-1]
+colnames(whole) <- gsub("pop", "birth", colnames(whole))
+whole
+```
+
+Only keep provinces data and merge data
+```{r}
+exRow <- "WHOLE|Delta|area|Ha Tay|South|Central Highlands"
+birth <- birth[!grepl(exRow, birth$province),]
+death <- death[!grepl(exRow, death$province),]
+pop <- pop[!grepl(exRow, pop$province),]
+df <- merge(birth, death, by = "province")
+df <- merge(df, pop, by = "province")
+```
+
+# Calculate number of birth, death
+```{r}
+birthRates <- grep("birth", colnames(df), value = T)
+deathRates <- grep("death", colnames(df), value = T)
+births <- gsub("Rate", "", birthRates)
+deaths <- gsub("Rate", "", deathRates)
+pops <- grep("pop", colnames(df), value = T)
+errs <- gsub("pop", "err", pops)
+# CBR = 1000 * Birth / Pop => Birth = Pop * CBR / 1000
+# CDR = 1000 * Death / Pop => Death = Pop * CDR / 1000
+for (i in 1:length(birthRates)) {
+  df[,births[i]] <- df[,pops[i]] * df[,birthRates[i]]
+  df[,deaths[i]] <- df[,pops[i]] * df[,deathRates[i]]
+  if (i > 1) {
+    df[,errs[i - 1]] <- df[,pops[i]] * 1000 - (df[,pops[i - 1]] * 1000 + df[,births[i]] - df[,deaths[i]])
+  }
+}
+df[,c("province", births)]
+```
+
+# Compare to whole country data
+Compare sum of all births from provinces and the number calculated by whole country data
+```{r}
+allBirths <- data.frame(t(colSums(df[,births])))
+whole <- rbind(whole, allBirths)
+rownames(whole) <- c("whole", "sumProvinces")
+whole
+```
+
+# Plot the difference
+Calculated by `err17 = pop18 - (pop17 + birth18 - death18)`
+```{r}
+p <- plot_ly(df, x = ~province, y = ~err17, type = "bar", name = "2018", 
+             hovertext = paste0("<b>Province:</b> ", df$province, "<br>",
+                                "<b>Error:</b> ", df$err17, "<br>",
+                                "<b>Population 2017:</b> ", df$pop17 * 1000, "<br>",
+                                "<b>Birth 2018:</b> ", df$birth18, "<br>",
+                                "<b>Death 2018:</b> ", df$death18, "<br>",
+                                "<b>Population 2018:</b> ", df$pop18 * 1000), hoverinfo = "text") %>% 
+  add_trace(y = ~err18, name = "2019",
+            hovertext = paste0("<b>Province:</b> ", df$province, "<br>",
+                               "<b>Error:</b> ", df$err18, "<br>",
+                               "<b>Population 2018:</b> ", df$pop18 * 1000, "<br>",
+                               "<b>Birth 2019:</b> ", df$birth19, "<br>",
+                               "<b>Death 2019:</b> ", df$death19, "<br>",
+                               "<b>Population 2019:</b> ", df$pop19 * 1000), hoverinfo = "text") %>%
+  add_trace(y = ~err19, name = "2020",
+            hovertext = paste0("<b>Province:</b> ", df$province, "<br>",
+                               "<b>Error:</b> ", df$err19, "<br>",
+                               "<b>Population 2019:</b> ", df$pop19 * 1000, "<br>",
+                               "<b>Birth 2020:</b> ", df$birth20, "<br>",
+                               "<b>Death 2020:</b> ", df$death20, "<br>",
+                               "<b>Population 2020:</b> ", df$pop20 * 1000), hoverinfo = "text")
+p
+```
