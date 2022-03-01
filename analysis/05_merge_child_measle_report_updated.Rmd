@@ -89,7 +89,7 @@ t2 <- child_all2 %>% select(age, sex, province, type, type2, year) %>%
 ```
 
 ```{r}
-tab_child_all_sum2
+tab_child_all_sum2 %>% filter(province=list())
 ```
 
 ```{r}
