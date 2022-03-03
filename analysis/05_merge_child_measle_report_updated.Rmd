@@ -73,7 +73,7 @@ child_all_province <- child_all[child_all$province %in% publicProvinces, .N, by 
 
 ## Characteristics of vaccination children
 
-Table 1 describes the characteristics of vaccination children born from 1/1/2017 to 31/12/2020. Of total 6,367,991 children (53% female) vaccinated from 2017 to 2020, 2,600,539 (41%) were vaccinated at both public and private clinics, whereas 2,210,096 (35%) got immunized at public clinics only and 1,557,356 (24%) got immunized at private clinics only. There was an increase in the total number of children vaccinated at both public clinics and private clinics over 4 years. Similar trend was observed for those vaccinated at private clinics only from 2017 to 2019 then a bit drop in 2020 while the total number of children vaccinated at public clinics only decreased over years (Table 1).
+Table 1 describes the characteristics of vaccination children born from 1/1/2017 to 31/12/2020. Of total `r nrow(child_all2)` 6,367,991 children (53% female) vaccinated from 2017 to 2020, 2,600,539 (41%) were vaccinated at both public and private clinics, whereas 2,210,096 (35%) got immunized at public clinics only and 1,557,356 (24%) got immunized at private clinics only. There was an increase in the total number of children vaccinated at both public clinics and private clinics over 4 years. Similar trend was observed for those vaccinated at private clinics only from 2017 to 2019 then a bit drop in 2020 while the total number of children vaccinated at public clinics only decreased over years (Table 1).
 
 ```{r}
 t1 <- child_all %>% select(age, sex, province, type, type2, year) %>%

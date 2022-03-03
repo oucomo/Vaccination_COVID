@@ -84,8 +84,8 @@ dtadir <- file.path("~", "sharefolder", "data", "tuann349")
 publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
 publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
 
-
-df[df$province %in% publicProvinces, c("province", "birth17", "birth18", "birth19", "birth20", "birth17_20")]
+sum(df$birth17_20[df$province %in% publicProvinces])
+knitr::kable(df[df$province %in% publicProvinces, c("province", "birth17_20")])
 ```
 
 # Compare to whole country data

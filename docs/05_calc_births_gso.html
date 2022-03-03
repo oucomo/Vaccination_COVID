@@ -499,16 +499,16 @@ relative
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreec1ac65c0b3d9d0a41cb7f4f650610c4dc6613094targetblankc1ac65ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/c1ac65c0b3d9d0a41cb7f4f650610c4dc6613094" target="_blank">c1ac65c</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreeeaa3f8c4ab38497e0c204fc47d77b09dbebe146etargetblankeaa3f8ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/eaa3f8c4ab38497e0c204fc47d77b09dbebe146e" target="_blank">eaa3f8c</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreec1ac65c0b3d9d0a41cb7f4f650610c4dc6613094targetblankc1ac65ca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreeeaa3f8c4ab38497e0c204fc47d77b09dbebe146etargetblankeaa3f8ca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/c1ac65c0b3d9d0a41cb7f4f650610c4dc6613094" target="_blank">c1ac65c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/eaa3f8c4ab38497e0c204fc47d77b09dbebe146e" target="_blank">eaa3f8c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -558,6 +558,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/eaa3f8c4ab38497e0c204fc47d77b09dbebe146e/analysis/05_calc_births_gso.Rmd" target="_blank">eaa3f8c</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-03
+</td>
+<td>
+number of birth with GSO data
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/eaa3f8c4ab38497e0c204fc47d77b09dbebe146e/docs/05_calc_births_gso.html" target="_blank">eaa3f8c</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-03
+</td>
+<td>
+number of birth with GSO data
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -683,36 +717,155 @@ dtadir &lt;- file.path(&quot;~&quot;, &quot;sharefolder&quot;, &quot;data&quot;,
 publicProvinces &lt;- list.dirs(dtadir, full.names = F, recursive = F)
 publicProvinces &lt;- stringi::stri_trans_general(publicProvinces, &quot;any-ascii&quot;)
 
-
-df[df$province %in% publicProvinces, c(&quot;province&quot;, &quot;birth17&quot;, &quot;birth18&quot;, &quot;birth19&quot;, &quot;birth20&quot;, &quot;birth17_20&quot;)]</code></pre>
-<pre><code>      province   birth17   birth18   birth19    birth20 birth17_20
-3    Bac Giang  34388.64  31639.50  31138.88  32596.674  129763.69
-4      Bac Kan   5051.37   4680.00   4307.28   4648.797   18687.45
-6     Bac Ninh  26475.12  26478.54  34189.28  32682.564  119825.50
-14    Cao Bang   8843.52   9410.86   8866.03   8614.734   35735.14
-18   Dien Bien  13615.90  12754.80  12635.70  13195.955   52202.35
-22    Ha Giang  16090.41  17183.95  15703.23  17152.430   66130.02
-23      Ha Nam  10245.56  12282.95  13757.45  14289.141   50575.10
-24      Ha Noi 116907.22 116343.15 154593.49 147613.066  535456.93
-25     Ha Tinh  24846.90  22920.95  23096.37  22055.506   92919.73
-26   Hai Duong  24242.86  31733.13  33006.06  36035.276  125017.33
-27   Hai Phong  28019.60  27221.40  32329.47  30371.117  117941.59
-30    Hoa Binh  13182.00  13606.40  13093.74  13219.727   53101.87
-31    Hung Yen  17080.32  18636.00  21474.18  22259.839   79450.34
-35    Lai Chau   9912.35   9068.00   9807.12  10049.236   38836.71
-37    Lang Son  12760.42  12259.22  11037.48  11988.392   48045.51
-38     Lao Cai  12896.52  13695.20  13786.04  14442.066   54819.83
-40    Nam Dinh  24498.34  24978.80  29384.85  28378.460  107240.45
-41     Nghe An  67206.69  65828.00  69413.76  67505.912  269954.36
-43   Ninh Binh  12936.36  14133.15  16638.05  16300.288   60007.85
-44     Phu Tho  24032.40  24643.20  25222.08  25014.134   98911.81
-49  Quang Ninh  19920.60  19819.28  21461.76  21281.375   82483.02
-52      Son La  26937.48  22565.73  23049.68  24102.523   96655.41
-55   Thai Binh  22153.20  21136.74  28305.44  25846.717   97442.10
-56   Thanh Hoa  59821.42  63547.75  65624.40  62084.084  251077.65
-60 Tuyen Quang  14331.30  12686.29  12816.69  13574.448   53408.73
-62   Vinh Phuc  19654.25  19922.00  19862.56  20449.676   79888.49
-63     Yen Bai  15823.08  15884.70  15472.40  16132.846   63313.03</code></pre>
+sum(df$birth17_20[df$province %in% publicProvinces])</code></pre>
+<pre><code>[1] 2878892</code></pre>
+<pre class="r"><code>knitr::kable(df[df$province %in% publicProvinces, c(&quot;province&quot;, &quot;birth17_20&quot;)])</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">province</th>
+<th align="right">birth17_20</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">Bac Giang</td>
+<td align="right">129763.69</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">Bac Kan</td>
+<td align="right">18687.45</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Bac Ninh</td>
+<td align="right">119825.50</td>
+</tr>
+<tr class="even">
+<td align="left">14</td>
+<td align="left">Cao Bang</td>
+<td align="right">35735.14</td>
+</tr>
+<tr class="odd">
+<td align="left">18</td>
+<td align="left">Dien Bien</td>
+<td align="right">52202.35</td>
+</tr>
+<tr class="even">
+<td align="left">22</td>
+<td align="left">Ha Giang</td>
+<td align="right">66130.02</td>
+</tr>
+<tr class="odd">
+<td align="left">23</td>
+<td align="left">Ha Nam</td>
+<td align="right">50575.10</td>
+</tr>
+<tr class="even">
+<td align="left">24</td>
+<td align="left">Ha Noi</td>
+<td align="right">535456.93</td>
+</tr>
+<tr class="odd">
+<td align="left">25</td>
+<td align="left">Ha Tinh</td>
+<td align="right">92919.73</td>
+</tr>
+<tr class="even">
+<td align="left">26</td>
+<td align="left">Hai Duong</td>
+<td align="right">125017.33</td>
+</tr>
+<tr class="odd">
+<td align="left">27</td>
+<td align="left">Hai Phong</td>
+<td align="right">117941.59</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="left">Hoa Binh</td>
+<td align="right">53101.87</td>
+</tr>
+<tr class="odd">
+<td align="left">31</td>
+<td align="left">Hung Yen</td>
+<td align="right">79450.34</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="left">Lai Chau</td>
+<td align="right">38836.71</td>
+</tr>
+<tr class="odd">
+<td align="left">37</td>
+<td align="left">Lang Son</td>
+<td align="right">48045.51</td>
+</tr>
+<tr class="even">
+<td align="left">38</td>
+<td align="left">Lao Cai</td>
+<td align="right">54819.83</td>
+</tr>
+<tr class="odd">
+<td align="left">40</td>
+<td align="left">Nam Dinh</td>
+<td align="right">107240.45</td>
+</tr>
+<tr class="even">
+<td align="left">41</td>
+<td align="left">Nghe An</td>
+<td align="right">269954.36</td>
+</tr>
+<tr class="odd">
+<td align="left">43</td>
+<td align="left">Ninh Binh</td>
+<td align="right">60007.85</td>
+</tr>
+<tr class="even">
+<td align="left">44</td>
+<td align="left">Phu Tho</td>
+<td align="right">98911.81</td>
+</tr>
+<tr class="odd">
+<td align="left">49</td>
+<td align="left">Quang Ninh</td>
+<td align="right">82483.02</td>
+</tr>
+<tr class="even">
+<td align="left">52</td>
+<td align="left">Son La</td>
+<td align="right">96655.41</td>
+</tr>
+<tr class="odd">
+<td align="left">55</td>
+<td align="left">Thai Binh</td>
+<td align="right">97442.10</td>
+</tr>
+<tr class="even">
+<td align="left">56</td>
+<td align="left">Thanh Hoa</td>
+<td align="right">251077.65</td>
+</tr>
+<tr class="odd">
+<td align="left">60</td>
+<td align="left">Tuyen Quang</td>
+<td align="right">53408.73</td>
+</tr>
+<tr class="even">
+<td align="left">62</td>
+<td align="left">Vinh Phuc</td>
+<td align="right">79888.49</td>
+</tr>
+<tr class="odd">
+<td align="left">63</td>
+<td align="left">Yen Bai</td>
+<td align="right">63313.03</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="compare-to-whole-country-data" class="section level1">
 <h1>Compare to whole country data</h1>
