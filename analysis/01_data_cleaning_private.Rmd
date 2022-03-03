@@ -103,6 +103,7 @@ vaccine <- readRDS(file = file.path("..", "tuann349_vad", "vaccine.rds"))
 load(file.path("..", "tuann349_vad", "vacinfo.Rdata"))
 
 tmp1 <- merge(vaccine, vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
+
 tmp2 <- tmp1[, .(province, district, commune, vacname, vacdate, shot = order(vacdate)), by = .(pid, vacname2)][order(pid, vacname2, shot)]
 tab_vaccine_shot <- tmp2[, .N, by = .(vacname2, shot)][order(vacname2, shot)]
 tab_vaccine_shot
@@ -138,6 +139,9 @@ load(file.path("..", "tuann349_vad", "vacinfo_private.Rdata"))
 names(vacinfo_private) <- c("vacname2", "epi", "shot", "start")
 
 tmp1 <- merge(vaccine_clean, vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
+
+tmp1 <- tmp1 %>% distinct(., pid, province, district, commune, vacname2, vacdate)
+
 tmp2 <- tmp1[, .(province, district, commune, sex, dob, vacname, vacdate, shot = order(vacdate)), by = .(pid, vacname2)][order(pid, vacname2, shot)]
 tmp3 <- merge(tmp2, vacname3[, c("vacname", "public", "tub", "heb", "dip", "per", "tes", "hib", "pol", "msl", "rub", "jev", "strep", "men", "var", "typ", "hea", "inf", "rot", "hpv", "rab", "vib", "yel")], by = "vacname", all.x = TRUE, sort = FALSE)
 tmp1 <- merge(tmp3, vacinfo_private, by = c("vacname2", "shot"), all.x = TRUE, sort = FALSE)
