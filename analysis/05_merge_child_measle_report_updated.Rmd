@@ -41,8 +41,8 @@ select <- dplyr::select
 ```
 
 ```{r}
-error_datetime <- read.csv(file.path("..", "tuann349_vad", "error_datetime.csv")) %>% as.data.frame()
-error_duplicate <- read.csv(file.path("..", "tuann349_vad", "error_duplicate.csv")) %>% as.data.frame()
+error_datetime <- read.csv(file.path("~", "tuann349_vad", "error_datetime.csv")) %>% as.data.frame()
+error_duplicate <- read.csv(file.path("~", "tuann349_vad", "error_duplicate.csv")) %>% as.data.frame()
 ```
 
 # Introduction
@@ -56,13 +56,19 @@ We used data from the Vietnam Vaccine Registry collected at the commune, distric
 # Results & Discussions
 
 ```{r}
-load(file.path("..", "tuann349_vad", "child_all.Rdata"))
-load(file.path("..", "tuann349_vad", "tab_child_all.Rdata"))
+load(file.path("~", "tuann349_vad", "child_all.Rdata"))
+load(file.path("~", "tuann349_vad", "tab_child_all.Rdata"))
 
 # Get a vector of public provinces
 dtadir <- file.path("~", "sharefolder", "data", "tuann349")
 publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
 publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
+
+child_all <- child_all[child_all$province %in% publicProvinces,]
+child_all2 <- child_all2[child_all2$province %in% publicProvinces,]
+child_all_overall <- child_all[child_all$province %in% publicProvinces, .N, by = .(year, month)]
+child_all_province <- child_all[child_all$province %in% publicProvinces, .N, by = .(year, month, province)]
+
 ```
 
 ## Characteristics of vaccination children
@@ -70,7 +76,7 @@ publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
 Table 1 describes the characteristics of vaccination children born from 1/1/2017 to 31/12/2020. Of total 6,367,991 children (53% female) vaccinated from 2017 to 2020, 2,600,539 (41%) were vaccinated at both public and private clinics, whereas 2,210,096 (35%) got immunized at public clinics only and 1,557,356 (24%) got immunized at private clinics only. There was an increase in the total number of children vaccinated at both public clinics and private clinics over 4 years. Similar trend was observed for those vaccinated at private clinics only from 2017 to 2019 then a bit drop in 2020 while the total number of children vaccinated at public clinics only decreased over years (Table 1).
 
 ```{r}
-t1 <- child_all[child_all$province %in% publicProvinces,] %>% select(age, sex, province, type, type2, year) %>%
+t1 <- child_all %>% select(age, sex, province, type, type2, year) %>%
   tbl_summary(
   by=type, # split table by group
   percent = "column",
@@ -81,7 +87,7 @@ t1 <- child_all[child_all$province %in% publicProvinces,] %>% select(age, sex, p
   modify_header(label = "**Variable**") %>% # update the column header
   bold_labels()
 
-t2 <- child_all2[child_all2$province %in% publicProvinces,] %>% select(age, sex, province, type, type2, year) %>%
+t2 <- child_all2 %>% select(age, sex, province, type, type2, year) %>%
   tbl_summary(
   by=type, # split table by group
   percent = "column",
@@ -110,7 +116,6 @@ t2
 Overall trend of vaccination children born from 2017 to 2020 was shown in Figure 1. There was a steady increase in the total number of children born from February (around Tet holiday) to October, reach a peak in between September and October, then drop in the next month, annually. Similar trend was observed for each year (Figure 1). 
 
 ```{r}
-child_all_overall <- child_all[child_all$province %in% publicProvinces, .N, by = .(year, month)]
 ggplot(data = child_all_overall[year >= 2017 & year <= 2020], aes(x = factor(month), y = N/1000, color = factor(year))) +
   geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
   geom_point(size = 3) +
@@ -144,7 +149,6 @@ ggplot(child_all_overall[year >= 2017 & year <= 2020], aes(month, N/1000, color 
 Total number of vaccination children born in each province by month and year from 2017 to 2020 was shown in Figure 3. In general, similar trend was observed in most of provinces (Figure 3).
 
 ```{r}
-child_all_province <- child_all[child_all$province %in% publicProvinces, .N, by = .(year, month, province)]
 ggplot(data = child_all_province[year >= 2017 & year <= 2020], aes(x = factor(month), y = N/1000, color = factor(year))) +
   geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
   geom_point() +
@@ -162,7 +166,12 @@ ggplot(data = child_all_province[year >= 2017 & year <= 2020], aes(x = factor(mo
 ### Measle merge
 
 ```{r}
-load(file.path("..", "tuann349_vad", "measle_all.Rdata"))
+load(file.path("~", "tuann349_vad", "measle_all.Rdata"))
+
+# Get public provinces only
+measle_all <- measle_all[measle_all$province %in% publicProvinces,]
+mea_all_overall <- measle_all[, .N, by = .(vyear, vmonth)]
+mea_all <- measle_all[, .N, by = .(vyear, vmonth, type)]
 ```
 
 ## Measle vaccination
@@ -227,14 +236,18 @@ ggplot(mea_all_overall[vyear >= 2017 & vyear <= 2020], aes(vmonth, N/1000, color
 We quantifed the delays in Measle vaccination over years. The distribution of the delays in Measle vaccination (in months) for children born from 2017 to 2020 was shown in Figure 7. The earlier the children born, the longer in delays of Measle vaccination they could probably have. The longest delays of Measle vaccination can be up to more than 30 months for the Measle vaccine and 30 months for the Measle-Rubella vaccine compared to the schedule of those vaccines they supposed to take. According the recommended immunization schedule, the schedule of Measle and Measle-Rubella vaccines taken was 9 months and 18 months after the children were born, respectively. There was no data on the delays of Measle vaccination from the last haft of 2019 to the end of 2020 (Figure 7).
 
 ```{r}
-ggplot(data = measle_all[year>= 2017 & year <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(vmonth), color = factor(year))) +
+measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start)
+measle_all$expect_vmonth <- month(measle_all$expect_vdate)
+measle_all$expect_vyear <- year(measle_all$expect_vdate)
+
+ggplot(data = measle_all[year>= 2017 & year <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(expect_vmonth), color = factor(expect_vyear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
-  facet_grid(vacname2~year, scale = "free_y") +
-  labs(y = "Birth months", x="Duration of delays in Measle vaccination (months)") +
+  facet_grid(vacname2~expect_vyear, scale = "free_y") +
+  labs(y = "Expected month of vaccination", x="Duration of delays in Measle vaccination (months)") +
   scale_color_discrete(name = "Year") +
-  ggtitle("Delays in Measle vaccination (months) for children born 2017-2020")
+  ggtitle("Delays in Measle vaccination (months) by expected month and year")
 #ggsave(filename = file.path("..", "figures", "measle_all_delay_year.png"), width = 15, height = 10)
 ```
 
@@ -242,9 +255,10 @@ ggplot(data = measle_all[year>= 2017 & year <= 2020 & vdelay>=0], aes(x = vdelay
 #load(file.path("..", "..", "tuann349_vad", "vacinfo.Rdata"))
 #load(file.path("..", "..", "tuann349_vad", "vacinfo_private.Rdata"))
 library(lubridate)
+
 measle_all_delay <- measle_all %>%
   select(pid, province, district, commune, sex, dob, vacname2, start, shot, vacdate, vyear, vmonth, year, month, vagem, vagem2, vdelay, vsche, vsyear, vsmonth, vdelayd, type, type2) %>% filter(year>=2017 & year<=2021) %>%
-  mutate(vdelay_outcome=ifelse(vdelay>0,1,0),
+  mutate(vdelay_outcome=ifelse(vdelay>=1,1,0), # vdelay >= 1 month
          age=2021-year,
          sex=as.numeric(sex),
          sex=recode(sex, "0"="0", "1"="1", "2"="1"),
@@ -253,6 +267,9 @@ measle_all_delay <- measle_all %>%
          vacdate_f=ifelse(vacdate<"2020-04-01",0,1),
          vacdate_f=factor(vacdate_f, levels = c(0,1), labels = c("Before", "After"))) %>% 
   filter(province!="Tinh tap huan")
+
+# Check how many provinces in measle_all_delay
+# length(unique(measle_all_delay$province))
 ```
 
 ### Factors associated with delays in vaccination
@@ -319,7 +336,7 @@ ggplot(pred, ylab=expression(paste(hat(P),"(delay)"))) +
   geom_line(size=1.25) + 
   geom_ribbon(aes(ymin = pred$lower, ymax = pred$upper), alpha=0.05) + 
   xlab("Province") +
-  annotate("text", x=60, y=0.87, label=paste0("p-value<0.001"), parse = TRUE)
+  annotate("text", x=25, y=0.2, label=paste0("p-value<0.001"), parse = TRUE)
 #ggsave(filename = file.path("..", "figures", "measle_all_delay_province.png"), width = 15, height = 10)
 ```
 
