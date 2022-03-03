@@ -7,12 +7,11 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(plotly)
 ```
 
 Read and clean data
 ```{r warning=FALSE}
-pj <- "/home/thinh/Dropbox/oucru/projects/Vaccination_COVID"
+pj <- "~/Vaccination_COVID"
 birthDeath <- read.table(file.path(pj, "data", "VN_birth_death_year.csv"),
                          header = T, sep = ";")
 pop <- read.table(file.path(pj, "data", "VN_popsize_year_2.csv"),
@@ -77,7 +76,16 @@ for (i in 1:length(birthRates)) {
     df[,errs[i - 1]] <- df[,pops[i]] * 1000 - (df[,pops[i - 1]] * 1000 + df[,births[i]] - df[,deaths[i]])
   }
 }
-df[,c("province", births)]
+
+# Display sum birth from 2017-2020
+df$birth17_20 <- rowSums(df[,c("birth17", "birth18", "birth19", "birth20")])
+
+dtadir <- file.path("~", "sharefolder", "data", "tuann349")
+publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
+publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
+
+sum(df$birth17_20[df$province %in% publicProvinces])
+knitr::kable(df[df$province %in% publicProvinces, c("province", "birth17_20")])
 ```
 
 # Compare to whole country data
@@ -89,29 +97,6 @@ rownames(whole) <- c("whole", "sumProvinces")
 whole
 ```
 
-# Plot the difference
-Calculated by `err17 = pop18 - (pop17 + birth18 - death18)`
 ```{r}
-p <- plot_ly(df, x = ~province, y = ~err17, type = "bar", name = "2018", 
-             hovertext = paste0("<b>Province:</b> ", df$province, "<br>",
-                                "<b>Error:</b> ", df$err17, "<br>",
-                                "<b>Population 2017:</b> ", df$pop17 * 1000, "<br>",
-                                "<b>Birth 2018:</b> ", df$birth18, "<br>",
-                                "<b>Death 2018:</b> ", df$death18, "<br>",
-                                "<b>Population 2018:</b> ", df$pop18 * 1000), hoverinfo = "text") %>% 
-  add_trace(y = ~err18, name = "2019",
-            hovertext = paste0("<b>Province:</b> ", df$province, "<br>",
-                               "<b>Error:</b> ", df$err18, "<br>",
-                               "<b>Population 2018:</b> ", df$pop18 * 1000, "<br>",
-                               "<b>Birth 2019:</b> ", df$birth19, "<br>",
-                               "<b>Death 2019:</b> ", df$death19, "<br>",
-                               "<b>Population 2019:</b> ", df$pop19 * 1000), hoverinfo = "text") %>%
-  add_trace(y = ~err19, name = "2020",
-            hovertext = paste0("<b>Province:</b> ", df$province, "<br>",
-                               "<b>Error:</b> ", df$err19, "<br>",
-                               "<b>Population 2019:</b> ", df$pop19 * 1000, "<br>",
-                               "<b>Birth 2020:</b> ", df$birth20, "<br>",
-                               "<b>Death 2020:</b> ", df$death20, "<br>",
-                               "<b>Population 2020:</b> ", df$pop20 * 1000), hoverinfo = "text")
-p
+
 ```
