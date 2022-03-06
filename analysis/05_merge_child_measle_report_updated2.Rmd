@@ -20,8 +20,6 @@ editor_options:
 ---
 
 ```{r}
-rm(list = ls(all.names = TRUE))
-directory <- ("/home/ducdu/Vaccination_COVID")
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache.lazy = FALSE,
                       tidy.opts=list(width.cutoff=60),
                       tidy=TRUE,
@@ -38,11 +36,7 @@ library(gtsummary)
 library(ggridges)
 
 select <- dplyr::select
-```
-
-```{r}
-error_datetime <- read.csv(file.path("~", "tuann349_vad", "error_datetime.csv")) %>% as.data.frame()
-error_duplicate <- read.csv(file.path("~", "tuann349_vad", "error_duplicate.csv")) %>% as.data.frame()
+allp <- file.path("~", "updated_dataset")
 ```
 
 # Introduction
@@ -51,42 +45,34 @@ COVID-19 creates negative impacts on other diseases and health conditions, one o
 
 # Methods
 
-We used data from the Vietnam Vaccine Registry collected at the commune, district and provincial levels among vaccination children who undertook their vaccine shots at either public clinics (across 25 provinces in the Northern areas) under the Expanded Program on Immunization or private clinics (across 63 provinces in the whole country) over the period from 01-01-2017 to 31-12-2020. 
+We used data from the Vietnam Vaccine Registry collected at the commune, district and provincial levels among vaccination children who undertook their vaccine shots at either public clinics (across 28 provinces in the Northern areas) under the Expanded Program on Immunization or private clinics (across 63 provinces in the whole country) over the period from 01-01-2017 to 31-12-2020. 
 
 # Results & Discussions
 
 ```{r}
-load(file.path("~", "tuann349_vad", "child_all.Rdata"))
-load(file.path("~", "tuann349_vad", "tab_child_all.Rdata"))
+load(file.path(allp, "hepatitisb_all.Rdata"))
 
 # Get a vector of public provinces
 dtadir <- file.path("~", "sharefolder", "data", "tuann349")
 publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
 publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
 
-child_all <- child_all[child_all$province %in% publicProvinces,]
-child_all2 <- child_all2[child_all2$province %in% publicProvinces,]
-child_all_overall <- child_all[child_all$province %in% publicProvinces, .N, by = .(year, month)]
-child_all_province <- child_all[child_all$province %in% publicProvinces, .N, by = .(year, month, province)]
-
+# Child = 28 provinces born between 2017 and 2020, vaccinated with HepBN or HepB, only the 1st shot
+child_all2 <- hepatitisb_all[hepatitisb_all$province %in% publicProvinces &
+                               hepatitisb_all$year >= 2017 & 
+                               hepatitisb_all$year <= 2020 &
+                               hepatitisb_all$vacname2 %in% c("HepBN", "HepB") &
+                               hepatitisb_all$shot == 1,]
+child_all2$age <- 2021 - child_all2$year
+child_all2$sex <- ifelse(child_all2$sex==2, 1, child_all2$sex)
+child_all2$sex <- factor(child_all2$sex, levels=c(0,1), labels=c("F","M"))
+child_all_overall <- child_all2[, .N, by = .(year, month)]
+child_all_province <- child_all2[, .N, by = .(year, month, province)]
 ```
 
 ## Characteristics of vaccination children
 
-Table 1 describes the characteristics of vaccination children born from 1/1/2017 to 31/12/2020. Of total `r nrow(child_all2)` 6,367,991 children (53% female) vaccinated from 2017 to 2020, 2,600,539 (41%) were vaccinated at both public and private clinics, whereas 2,210,096 (35%) got immunized at public clinics only and 1,557,356 (24%) got immunized at private clinics only. There was an increase in the total number of children vaccinated at both public clinics and private clinics over 4 years. Similar trend was observed for those vaccinated at private clinics only from 2017 to 2019 then a bit drop in 2020 while the total number of children vaccinated at public clinics only decreased over years (Table 1).
-
 ```{r}
-t1 <- child_all %>% select(age, sex, province, type, type2, year) %>%
-  tbl_summary(
-  by=type, # split table by group
-  percent = "column",
-  #missing = "no" # don't list missing data separately
-  ) %>%
-  add_n() %>% # add column with total number of non-missing observations
-  #add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
-  modify_header(label = "**Variable**") %>% # update the column header
-  bold_labels()
-
 t2 <- child_all2 %>% select(age, sex, province, type, type2, year) %>%
   tbl_summary(
   by=type, # split table by group
@@ -97,12 +83,23 @@ t2 <- child_all2 %>% select(age, sex, province, type, type2, year) %>%
   #add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
   modify_header(label = "**Variable**") %>% # update the column header
   bold_labels() 
+# Can't filter a tbl_summary object so I make a new one: add criterion province in public provinces
+tab_child_all_sum3 <- tbl_summary(child_all2[, .(province, sex, age, type, type2, factor(year))])
+# Data from GSO
+birthGSO <- readRDS(file.path("~", "Vaccination_COVID", "data", "birthGSO.rds"))
+birthGSO <- birthGSO[birthGSO$province %in% publicProvinces,c("province", "birth17_20")]
 ```
 
+Table 1 describes the characteristics of vaccination children born from 1/1/2017 to 31/12/2020. Of total `r format(tab_child_all_sum3$N, big.mark=",")` children (`r gsub("(?<=\\()[^()]*(?=\\))(*SKIP)(*F)|.", "", as.character(tab_child_all_sum3$table_body[tab_child_all_sum3$table_body$variable=="sex" & tab_child_all_sum3$table_body$label=="F","stat_0"]), perl = T)` female) vaccinated from 2017 to 2020, `r as.character(tab_child_all_sum3$table_body[tab_child_all_sum3$table_body$variable=="type" & tab_child_all_sum3$table_body$label=="both","stat_0"])` were vaccinated at both public and private clinics, whereas `r as.character(tab_child_all_sum3$table_body[tab_child_all_sum3$table_body$variable=="type" & tab_child_all_sum3$table_body$label=="public","stat_0"])` got immunized at public clinics only and `r as.character(tab_child_all_sum3$table_body[tab_child_all_sum3$table_body$variable=="type" & tab_child_all_sum3$table_body$label=="private","stat_0"])` got immunized at private clinics only. There was an increase in the total number of children vaccinated at both public clinics and private clinics over 4 years. Similar trend was observed for those vaccinated at private clinics only from 2017 to 2019 then a bit drop in 2020 while the total number of children vaccinated at public clinics only decreased over years (Table 1).
+
 ```{r}
-# Can't filter a tbl_summary object so I make a new one: add criterion province in public provinces
-tab_child_all_sum3 <- tbl_summary(child_all2[year >= 2017 & year <= 2020 & province %in% publicProvinces, .(province, sex, age, type, type2, factor(year))])
 tab_child_all_sum3
+```
+
+The number of births calculated from GSO data:
+
+```{r}
+knitr::kable(birthGSO)
 ```
 
 ```{r}
@@ -166,7 +163,7 @@ ggplot(data = child_all_province[year >= 2017 & year <= 2020], aes(x = factor(mo
 ### Measle merge
 
 ```{r}
-load(file.path("~", "tuann349_vad", "measle_all.Rdata"))
+load(file.path(allp, "measle_all.Rdata"))
 
 # Get public provinces only
 measle_all <- measle_all[measle_all$province %in% publicProvinces,]
@@ -367,13 +364,13 @@ ggplot(pred, ylab=expression(paste(hat(P),"(delay)"))) +
 ```
 
 ```{r}
-fit6 <- lrm(vdelay_outcome~vacdate_f + province + age + type, data=measle_all_delay, maxit=1000)
-anova(fit6)
-pred <- Predict(fit6, fun=plogis)
-ggplot(pred[1:2,5:7], ylab=expression(paste(hat(P),"(delay)"))) +
-  theme(text = element_text(size=10), axis.text.x = element_text(size=10), axis.text.y = element_text(size=10), legend.text=element_text(size=10)) +
-  geom_line(size=1.25) + 
-  geom_ribbon(aes(ymin = min(pred$lower), ymax = max(pred$upper)), alpha=0.05) + 
-  xlab("Type of vaccination") +
-  annotate("text", x=2, y=0.935, label=paste0("p-value<0.001"), parse = TRUE)
+# fit6 <- lrm(vdelay_outcome~vacdate_f + province + age + type, data=measle_all_delay, maxit=1000)
+# anova(fit6)
+# pred <- Predict(fit6, fun=plogis)
+# ggplot(pred[1:2,5:7], ylab=expression(paste(hat(P),"(delay)"))) +
+#   theme(text = element_text(size=10), axis.text.x = element_text(size=10), axis.text.y = element_text(size=10), legend.text=element_text(size=10)) +
+#   geom_line(size=1.25) + 
+#   geom_ribbon(aes(ymin = min(pred$lower), ymax = max(pred$upper)), alpha=0.05) + 
+#   xlab("Type of vaccination") +
+#   annotate("text", x=2, y=0.935, label=paste0("p-value<0.001"), parse = TRUE)
 ```
