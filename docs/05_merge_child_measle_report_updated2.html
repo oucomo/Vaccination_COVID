@@ -408,7 +408,7 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 </div>
 <div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -475,16 +475,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreedbf117b91d0ccd6f2db9b0b5716921cb3f142e76targetblankdbf117ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/dbf117b91d0ccd6f2db9b0b5716921cb3f142e76" target="_blank">dbf117b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreedfbaf6d1be8cfc7e78038b446cf127a39b77d638targetblankdfbaf6da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/dfbaf6d1be8cfc7e78038b446cf127a39b77d638" target="_blank">dfbaf6d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreedbf117b91d0ccd6f2db9b0b5716921cb3f142e76targetblankdbf117ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreedfbaf6d1be8cfc7e78038b446cf127a39b77d638targetblankdfbaf6da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/dbf117b91d0ccd6f2db9b0b5716921cb3f142e76" target="_blank">dbf117b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/dfbaf6d1be8cfc7e78038b446cf127a39b77d638" target="_blank">dfbaf6d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -497,15 +497,13 @@ Ignored files:
 Untracked files:
     Untracked:  analysis/04_merge_child_measle_thinh.Rmd
     Untracked:  analysis/05_merge_child_hepatitisb.Rmd
-    Untracked:  analysis/05_merge_child_measle_report_updated2.Rmd
-    Untracked:  data/birthGSO.rds
 
 Unstaged changes:
     Modified:   analysis/01_data_cleaning2.Rmd
     Modified:   analysis/01_data_cleaning_private.Rmd
     Modified:   analysis/04_merge_child_measle.Rmd
     Modified:   analysis/05_calc_births_gso.Rmd
-    Modified:   analysis/05_merge_child_measle_report_updated.Rmd
+    Modified:   analysis/05_merge_child_measle_report_updated2.Rmd
     Modified:   code/02_vacname_private.R
 
 </code></pre>
@@ -519,9 +517,69 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/05_merge_child_measle_report_updated2.Rmd</code>) and HTML (<code>docs/05_merge_child_measle_report_updated2.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/analysis/05_merge_child_measle_report_updated2.Rmd" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+calc number of births by hepatitis b vaccination
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/05_merge_child_measle_report_updated2.html" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+calc number of births by hepatitis b vaccination
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -1902,10 +1960,124 @@ allp &lt;- file.path(&quot;~&quot;, &quot;updated_dataset&quot;)</code></pre>
 <h2>Children born by month and year</h2>
 <p>Overall trend of vaccination children born from 2017 to 2020 was shown in Figure 1. There was a steady increase in the total number of children born from February (around Tet holiday) to October, reach a peak in between September and October, then drop in the next month, annually. Similar trend was observed for each year (Figure 1).</p>
 <p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-7-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>There was an increase in the total number of children born from 2017 to 2019. The number of children born then decreased in 2020 (Figure 2).</p>
-<p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /> ## Children born by province</p>
+<p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-8-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="children-born-by-province" class="section level2">
+<h2>Children born by province</h2>
 <p>Total number of vaccination children born in each province by month and year from 2017 to 2020 was shown in Figure 3. In general, similar trend was observed in most of provinces (Figure 3).</p>
 <p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-9-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div id="measle-merge" class="section level3">
 <h3>Measle merge</h3>
 </div>
@@ -1915,15 +2087,167 @@ allp &lt;- file.path(&quot;~&quot;, &quot;updated_dataset&quot;)</code></pre>
 <div id="measle-vaccination-shots-by-month-and-year" class="section level3">
 <h3>Measle vaccination shots by month and year</h3>
 <p>Overall trend of Measle vaccination shots by month and year from 2017 to 2020 was shown in Figure 4. There was a steady increase in the total number of Measle vaccine shots from January to December, annually with a peak at different months in each year. There was a big reduction in total number of Measle vaccine shots in April, 2020 which was the first national lockdown period in Vietnam due to the COVID-19 pandemic (Figure 4).</p>
-<p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /> ### Measle vaccination shots by type of clinics</p>
+<p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-11-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="measle-vaccination-shots-by-type-of-clinics" class="section level3">
+<h3>Measle vaccination shots by type of clinics</h3>
 <p>Similar trends of Measle vaccine shots were observed for shots taken at public clinics only, private clinics only and for those taken vaccines at both public and private clinics, separately. In general, the number of Measle vaccine shots taken in public clinics were higher than those taken in private clinics (Figure 5).</p>
-<p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /> There has been a steady increase in total number of Measle vaccination shots from 2017 to the middle of 2020, then level off and decline in the last half of 2020 (Figure 6).</p>
+<p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-12-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>There has been a steady increase in total number of Measle vaccination shots from 2017 to the middle of 2020, then level off and decline in the last half of 2020 (Figure 6).</p>
 <p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-13-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="delays-in-vaccination" class="section level3">
 <h3>Delays in vaccination</h3>
 <p>We quantifed the delays in Measle vaccination over years. The distribution of the delays in Measle vaccination (in months) for children born from 2017 to 2020 was shown in Figure 7. The earlier the children born, the longer in delays of Measle vaccination they could probably have. The longest delays of Measle vaccination can be up to more than 30 months for the Measle vaccine and 30 months for the Measle-Rubella vaccine compared to the schedule of those vaccines they supposed to take. According the recommended immunization schedule, the schedule of Measle and Measle-Rubella vaccines taken was 9 months and 18 months after the children were born, respectively. There was no data on the delays of Measle vaccination from the last haft of 2019 to the end of 2020 (Figure 7).</p>
 <p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-14-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="factors-associated-with-delays-in-vaccination" class="section level3">
 <h3>Factors associated with delays in vaccination</h3>
@@ -2541,30 +2865,215 @@ vacdate_f : Before After </code></pre>
  age        16550.22   1    &lt;.0001
  TOTAL      16550.22   1    &lt;.0001</code></pre>
 <p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-18-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>                Wald Statistics          Response: vdelay_outcome 
 
  Factor     Chi-Square d.f. P     
  sex        1641.87    1    &lt;.0001
  TOTAL      1641.87    1    &lt;.0001</code></pre>
 <p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-19-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>                Wald Statistics          Response: vdelay_outcome 
 
  Factor     Chi-Square d.f. P     
  province   30556.77   27   &lt;.0001
  TOTAL      30556.77   27   &lt;.0001</code></pre>
 <p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
+Past versions of unnamed-chunk-20-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-20-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>                Wald Statistics          Response: vdelay_outcome 
 
  Factor     Chi-Square d.f. P     
  vacdate_f  15591.68   1    &lt;.0001
  TOTAL      15591.68   1    &lt;.0001</code></pre>
 <p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-21-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>                Wald Statistics          Response: vdelay_outcome 
 
  Factor     Chi-Square d.f. P     
  type       182848.9   2    &lt;.0001
  TOTAL      182848.9   2    &lt;.0001</code></pre>
 <p><img src="figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/dfbaf6d1be8cfc7e78038b446cf127a39b77d638/docs/figure/05_merge_child_measle_report_updated2.Rmd/unnamed-chunk-22-1.png" target="_blank">dfbaf6d</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

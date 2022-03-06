@@ -41,6 +41,7 @@ vacinfo_private <- as.data.table(
     cbind(vacname = "OPV",            epi = 1, shot = 3, start = 4),
     cbind(vacname = "IPV",            epi = 1, shot = 1, start = 5),
     cbind(vacname = "Measle",         epi = 1, shot = 1, start = 9),
+    cbind(vacname = "Measle_Mumps_Rubella",         epi = 0, shot = 1, start = 12),
     cbind(vacname = "Measle_Rubella", epi = 1, shot = 1, start = 18),
     cbind(vacname = "DPT",            epi = 1, shot = 1, start = 18),
     cbind(vacname = "JEV",            epi = 1, shot = 1, start = 12),
@@ -52,4 +53,4 @@ vacinfo_private <- as.data.table(
          start = as.numeric(start))
 
 vacname3 <- read_excel("data/vacname.xlsx") %>% as.data.table
-save(vacinfo_private, vacname3, file = file.path("..", "tuann349_vad", "vacinfo_private.Rdata"))
+save(vacinfo_private, vacname3, file = file.path("~", "updated_dataset", "vacinfo_private.Rdata"))

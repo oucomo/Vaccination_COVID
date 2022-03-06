@@ -27,6 +27,7 @@ library(dplyr)
 mutate <- dplyr::mutate
 
 data_path <- file.path("..", "tuann349_vad")
+outp <- file.path("..", "updated_dataset")
 dat <- readRDS(file = file.path("..", "tuann349_vad", "private_clinic.rds"))
 ```
 
@@ -53,7 +54,7 @@ range(dups$vacdate)
 table(dups$province)
 
 dups_error <- dups[, .(pid, file, dob, vacname, vacdate, type)]
-fwrite(x = dups_error, file = file.path(data_path, "error_duplicate.csv"))
+fwrite(x = dups_error, file = file.path(outp, "error_private_duplicate.csv"))
 ```
 
 ### Dates mismatch
@@ -93,7 +94,7 @@ table(error3$province)
 error <- rbindlist(l = list(error1[, .(pid, file, dob, vacdate, type)], 
                             error2[, .(pid, file, dob, vacdate, type)],
                             error3[, .(pid, file, dob, vacdate, type)]))
-fwrite(x = error, file = file.path(data_path, "error_private_datetime.csv"))
+fwrite(x = error, file = file.path(outp, "error_private_datetime.csv"))
 ```
 
 #### unusual vaccine shot
@@ -126,7 +127,7 @@ error_shot <- rbind(
 drop <- c("ACT-HIB", "Agrippal S1", "Anti-Rab 1000IU", "ANTITETA II. 1500IU", "Biosubtyl DL (Hop 10 goi)", "Biosubtyl DL (Hop 25 goi)", "Biosubtyl DL (Hop 30 goi)", "Biosubtyl DL (Hop 50 goi)", "Biosubtyl DL (Thung 50 hop)", "BKT 3ml", "Boryung JE vaccine", "D.T.VAX", "Epaxal", "Epocassa 4000IU", "Epokine Prefilled injection 2000IU/0,5ml", "Epotiv Inj. 2000IU", "Epotiv Inj. 4000IU", "Eriprove (Lo 1 lieu 0.5ml 1000IU)", "Eriprove (Lo 1 lieu 0.5ml 2000IU)", "Eriprove (Lo 1 lieu 1ml 2000IU)", "ERITROGEN 2000IU", "ERITROGEN 4000IU", "Genoepo 4000IU", "H-B-VAX II", "HAVRIX", "Hemapo 10000IU", "Hemapo 2000IU", "Huyet Thanh Khang Noc Ran Ho Dat", "Huyet Thanh Khang Noc Ran Luc Tre", "Lyssavac", "Mumps vaccine", "Nanokine 4000IU", "OKAVAX", "Pavivac", "PNEUMO 24", "Rabipur.", "Relipoietin 10000U", "SCI-B-VAC 10mg/1ml", "SCI-B-VAC 5mg/0.5ml", "TETRACT - HIB (Lo 10 lieu)", "TRITANRIX-HB", "TYPHERIX", "Vac xin thuong han vi Polysaccharide (Lo 2.5ml)", "VI vaccine", "Vinrab 1000 I.U", "VIVAXIM", "VIVOTIF", "Zerotyph cap")
 
 vaccine_clean <- dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2020-12-31")) & (vacdate >= dob) & (!vacname %in% drop), .(pid, province, district, commune, sex, dob, vacname, vacdate)]
-saveRDS(vaccine_clean, file = file.path("..", "tuann349_vad", "vaccine_clean_private.rds"))
+saveRDS(vaccine_clean, file = file.path(outp, "vaccine_clean_private.rds"))
 #fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean_private.csv"))
 ```
 
@@ -134,11 +135,29 @@ saveRDS(vaccine_clean, file = file.path("..", "tuann349_vad", "vaccine_clean_pri
 ## VAD 
 
 ```{r}
-load(file.path("..", "tuann349_vad", "vacinfo_private.Rdata"))
+load(file.path("..", "updated_dataset", "vacinfo_private.Rdata"))
 names(vacinfo_private) <- c("vacname2", "epi", "shot", "start")
 
 tmp1 <- merge(vaccine_clean, vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
-tmp2 <- tmp1[, .(province, district, commune, sex, dob, vacname, vacdate, shot = order(vacdate)), by = .(pid, vacname2)][order(pid, vacname2, shot)]
+
+# nrow(tmp1)
+# [1] 36261348
+
+# Remove duplicate by vacname2
+nodups_distinct <- tmp1 %>% distinct(., pid, province, district, commune, sex, dob, vacname2, vacdate, .keep_all = TRUE)
+
+# nrow(nodups_distinct)
+# [1] 36187644
+
+cols <- c("pid", "province", "district", "commune", "sex", "dob", "vacname2", "vacdate")
+dups2 <- tmp1[duplicated(tmp1[,..cols]) | duplicated(tmp1[,..cols], fromLast = T),]
+dups2 <- dups2[order(dups2$pid),]
+dups2$type <- "Have a same vaccine in a same date in same province"
+
+fwrite(x = dups2, file = file.path(outp, "error_duplicate2_private.csv"))
+
+# Remove duplicate
+tmp2 <- nodups_distinct[, .(province, district, commune, sex, dob, vacname, vacdate, shot = order(vacdate)), by = .(pid, vacname2)][order(pid, vacname2, shot)]
 tmp3 <- merge(tmp2, vacname3[, c("vacname", "public", "tub", "heb", "dip", "per", "tes", "hib", "pol", "msl", "rub", "jev", "strep", "men", "var", "typ", "hea", "inf", "rot", "hpv", "rab", "vib", "yel")], by = "vacname", all.x = TRUE, sort = FALSE)
 tmp1 <- merge(tmp3, vacinfo_private, by = c("vacname2", "shot"), all.x = TRUE, sort = FALSE)
 rm(list = c("tmp2", "tmp3"))
@@ -146,6 +165,9 @@ gc()
 
 #install.packages("devtools")
 devtools::install_github("krlmlr/ulimit", force = TRUE)
+
+# saveRDS(tmp1, file = file.path(outp, "tmp1_final_private.rds"))
+# tmp1 <- readRDS(file = file.path(outp, "tmp1_final_private.rds"))
 
 vaccine_vad_private <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vacname2, 
                         epi, public, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, strep, men, var, typ, hea, inf, rot, hpv, rab, vib, yel, shot, start, vacdate, 
@@ -168,19 +190,19 @@ vaccine_vad_private <- tmp1[, .(pid, province, district, commune, sex, dob, vacn
                                                              vdelayd = vsche - vacdate)][order(pid, vacdate)]
 rm(list = c("tmp1"))
 gc()
-saveRDS(vaccine_vad_private, file = file.path("..", "tuann349_vad", "vaccine_vad_private.rds"))
+saveRDS(vaccine_vad_private, file = file.path(outp, "vaccine_vad_private.rds"))
 #fwrite(x = vaccine_vad_private, file = file.path(data_path, "vaccine_vad_private.csv"))
 
-vaccine_vad_private <- readRDS(file = file.path("..", "tuann349_vad", "vaccine_vad_private.rds"))
+# vaccine_vad_private <- readRDS(file = file.path(outp, "vaccine_vad_private.rds"))
 
 tuberculosis_private <- vaccine_vad_private[tub == 1]
-saveRDS(tuberculosis_private, file = file.path("..", "tuann349_vad", "tuberculosis_private.rds"))
+saveRDS(tuberculosis_private, file = file.path(outp, "tuberculosis_private.rds"))
 #fwrite(x = tuberculosis_private, file = file.path(data_path, "tuberculosis_private.csv"))
 rm(list = c("tuberculosis_private"))
 gc()
 
 hepatitisb_private <- vaccine_vad_private[heb == 1]
-saveRDS(hepatitisb_private, file = file.path("..", "tuann349_vad", "hepatitisb_private.rds"))
+saveRDS(hepatitisb_private, file = file.path(outp, "hepatitisb_private.rds"))
 #fwrite(x = hepatitisb_private, file = file.path(data_path, "hepatitisb_private.csv"))
 rm(list = c("hepatitisb_private"))
 gc()
@@ -216,7 +238,7 @@ rm(list = c("polio_private"))
 gc()
 
 measle_private <- vaccine_vad_private[msl == 1]
-saveRDS(measle_private, file = file.path("..", "tuann349_vad", "measle_private.rds"))
+saveRDS(measle_private, file = file.path(outp, "measle_private.rds"))
 #fwrite(x = measle_private, file = file.path(data_path, "measle_private.csv"))
 rm(list = c("measle_private"))
 gc()

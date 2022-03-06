@@ -166,7 +166,8 @@ ggplot(data = child_all_province[year >= 2017 & year <= 2020], aes(x = factor(mo
 load(file.path(allp, "measle_all.Rdata"))
 
 # Get public provinces only
-measle_all <- measle_all[measle_all$province %in% publicProvinces,]
+measle_all <- measle_all[measle_all$province %in% publicProvinces &
+                           measle_all$year >= 2017 & measle_all$year <= 2020,]
 mea_all_overall <- measle_all[, .N, by = .(vyear, vmonth)]
 mea_all <- measle_all[, .N, by = .(vyear, vmonth, type)]
 ```
@@ -237,7 +238,7 @@ measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start)
 measle_all$expect_vmonth <- month(measle_all$expect_vdate)
 measle_all$expect_vyear <- year(measle_all$expect_vdate)
 
-ggplot(data = measle_all[year>= 2017 & year <= 2020 & vdelay>=0], aes(x = vdelay, y = factor(expect_vmonth), color = factor(expect_vyear))) +
+ggplot(data = measle_all[year>= 2017 & year <= 2020 & vdelay>=1], aes(x = vdelay, y = factor(expect_vmonth), color = factor(expect_vyear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
