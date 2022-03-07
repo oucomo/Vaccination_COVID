@@ -96,10 +96,20 @@ Table 1 describes the characteristics of vaccination children born from 1/1/2017
 tab_child_all_sum3
 ```
 
-The number of births calculated from GSO data:
+Compared to GSO data:
 
 ```{r}
-knitr::kable(birthGSO)
+tb <- tab_child_all_sum3$table_body[tab_child_all_sum3$table_body$variable == "province",]
+tb <- data.frame(tb)
+tb <- tb[-1,c("label", "stat_0")]
+tb <- merge(tb, birthGSO, by.x = "label", by.y = "province")
+tb$pct <- 100 * tb$birth17_20 / sum(tb$birth17_20)
+tb$gso <- paste0(format(round(tb$birth17_20), big.mark = ","), " (", sprintf("%.1f", tb$pct), "%)")
+tb <- tb[,c("label", "stat_0", "gso")]
+colnames(tb) <- c("province", "hepatitisb", "gso_estimation")
+
+knitr::kable(tb)
+
 ```
 
 ```{r}
