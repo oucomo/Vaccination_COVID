@@ -28,11 +28,14 @@ library(ggplot2)
 library(gt)
 library(gtsummary)
 library(ggridges)
+
+allp <- file.path("~", "updated_dataset")
+outp <- file.path("~", "updated_dataset")
 ```
 
 ```{r}
-error_datetime <- read.csv(file.path("..", "..", "tuann349_vad", "error_datetime.csv")) %>% as.data.frame()
-error_duplicate <- read.csv(file.path("..", "..", "tuann349_vad", "error_duplicate.csv")) %>% as.data.frame()
+error_datetime <- read.csv(file.path(outp, "error_datetime.csv")) %>% as.data.frame()
+error_duplicate <- read.csv(file.path(outp, "error_duplicate.csv")) %>% as.data.frame()
 ```
 
 ### Children
@@ -199,42 +202,35 @@ ggsave(filename = file.path("..", "figures", "child_all_province_year.png"), wid
 ### Measle merge
 
 ```{r}
-measle <- readRDS(file = file.path("..", "..", "tuann349_vad", "measle.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+measle <- readRDS(file = file.path(allp, "measle.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
 
-mea <- measle[, .N, by = .(vyear, vmonth)]
-mea2 <- measle[, .N, by = .(vyear, vmonth, vweek)]
-mea_delay <- measle[, .N, by = .(vyear, vmonth, vdelayd, vacname2)]
-
-measle_private <- readRDS(file = file.path("..", "..", "tuann349_vad", "measle_private.rds"))
-
-mea_private <- measle_private[, .N, by = .(vyear, vmonth)]
-mea_private2 <- measle_private[, .N, by = .(vyear, vmonth, vweek)]
+measle_private <- readRDS(file = file.path(allp, "measle_private.rds"))
 
 measle_merge <- merge(measle, measle_private, by="pid", all=TRUE) %>%
   mutate(type=ifelse((!is.na(dob.x) & !is.na(dob.y)),2, ifelse(!is.na(dob.x),0,1)),
          type=factor(type,levels = c(2,0,1),labels = c("both","public","private")))
 
 measle_public <- measle_merge %>% filter(type=="public") %>% 
-    select(pid, province.x, district.x, commune.x, sex.x, dob.x, vacname2.x, vacdate.x, shot.x, start.x, vyear.x, vmonth.x,vweek.x,vagem.x, vagem2.x, vdelay.x, vsche.x, vsyear.x, vsmonth.x, vsweek.x, vdelayd.x, type) %>% 
+    select(pid, province.x, district.x, commune.x, sex.x, dob.x, vacname2.x, vacdate.x, shot.x, start.x, vyear.x, vmonth.x, vagem.x, vagem2.x, vdelay.x, type) %>% 
     arrange(pid, vacdate.x, vacname2.x) %>% 
-    rename(province=province.x, district=district.x, commune=commune.x, sex=sex.x, dob=dob.x, vacname2=vacname2.x, vacdate=vacdate.x, shot=shot.x, start=start.x, vyear=vyear.x, vmonth=vmonth.x, vweek=vweek.x, vagem=vagem.x, vagem2=vagem2.x, vdelay=vdelay.x, vsche=vsche.x, vsyear=vsyear.x, vsmonth=vsmonth.x, vsweek=vsweek.x, vdelayd=vdelayd.x)
+    rename(province=province.x, district=district.x, commune=commune.x, sex=sex.x, dob=dob.x, vacname2=vacname2.x, vacdate=vacdate.x, shot=shot.x, start=start.x, vyear=vyear.x, vmonth=vmonth.x, vagem=vagem.x, vagem2=vagem2.x, vdelay=vdelay.x)
 
 measle_private <- measle_merge %>% filter(type=="private") %>% 
-    select(pid, province.y, district.y, commune.y, sex.y, dob.y, vacname2.y, vacdate.y, shot.y, start.y, vyear.y, vmonth.y,vweek.y,vagem.y, vagem2.y, vdelay.y, vsche.y, vsyear.y, vsmonth.y, vsweek.y, vdelayd.y, type) %>% 
+    select(pid, province.y, district.y, commune.y, sex.y, dob.y, vacname2.y, vacdate.y, shot.y, start.y, vyear.y, vmonth.y,vweek,vagem.y, vagem2.y, vdelay.y, vsche, vsyear, vsmonth, vsweek, vdelayd, type) %>% 
     arrange(pid, vacdate.y, vacname2.y) %>%
-    rename(province=province.y, district=district.y, commune=commune.y, sex=sex.y, dob=dob.y, vacname2=vacname2.y, vacdate=vacdate.y, shot=shot.y, start=start.y, vyear=vyear.y, vmonth=vmonth.y, vweek=vweek.y, vagem=vagem.y, vagem2=vagem2.y, vdelay=vdelay.y, vsche=vsche.y, vsyear=vsyear.y, vsmonth=vsmonth.y, vsweek=vsweek.y, vdelayd=vdelayd.y)
+    rename(province=province.y, district=district.y, commune=commune.y, sex=sex.y, dob=dob.y, vacname2=vacname2.y, vacdate=vacdate.y, shot=shot.y, start=start.y, vyear=vyear.y, vmonth=vmonth.y, vagem=vagem.y, vagem2=vagem2.y, vdelay=vdelay.y)
 
 measle_both_public <- measle_merge %>% filter(type=="both") %>%
-  select(pid, province.x, district.x, commune.x, sex.x, dob.x, vacname2.x, vacdate.x, shot.x, start.x, vyear.x, vmonth.x,vweek.x,vagem.x, vagem2.x, vdelay.x, vsche.x, vsyear.x, vsmonth.x, vsweek.x, vdelayd.x, type) %>%
+  select(pid, province.x, district.x, commune.x, sex.x, dob.x, vacname2.x, vacdate.x, shot.x, start.x, vyear.x, vmonth.x,vagem.x, vagem2.x, vdelay.x, type) %>%
     arrange(pid, vacdate.x, vacname2.x) %>%
-    rename(province=province.x, district=district.x, commune=commune.x, sex=sex.x, dob=dob.x, vacname2=vacname2.x, vacdate=vacdate.x, shot=shot.x, start=start.x, vyear=vyear.x, vmonth=vmonth.x, vweek=vweek.x, vagem=vagem.x, vagem2=vagem2.x, vdelay=vdelay.x, vsche=vsche.x, vsyear=vsyear.x, vsmonth=vsmonth.x, vsweek=vsweek.x, vdelayd=vdelayd.x) %>% mutate(type2="public")
+    rename(province=province.x, district=district.x, commune=commune.x, sex=sex.x, dob=dob.x, vacname2=vacname2.x, vacdate=vacdate.x, shot=shot.x, start=start.x, vyear=vyear.x, vmonth=vmonth.x, vagem=vagem.x, vagem2=vagem2.x, vdelay=vdelay.x) %>% mutate(type2="public")
 
 measle_both_private <- measle_merge %>% filter(type=="both") %>%
-  select(pid, province.y, district.y, commune.y, sex.y, dob.y, vacname2.y, vacdate.y, shot.y, start.y, vyear.y, vmonth.y,vweek.y,vagem.y, vagem2.y, vdelay.y, vsche.y, vsyear.y, vsmonth.y, vsweek.y, vdelayd.y, type) %>%
+  select(pid, province.y, district.y, commune.y, sex.y, dob.y, vacname2.y, vacdate.y, shot.y, start.y, vyear.y, vmonth.y,vweek,vagem.y, vagem2.y, vdelay.y, vsche, vsyear, vsmonth, vsweek, vdelayd, type) %>%
     arrange(pid, vacdate.y, vacname2.y) %>%
-    rename(province=province.y, district=district.y, commune=commune.y, sex=sex.y, dob=dob.y, vacname2=vacname2.y, vacdate=vacdate.y, shot=shot.y, start=start.y, vyear=vyear.y, vmonth=vmonth.y, vweek=vweek.y, vagem=vagem.y, vagem2=vagem2.y, vdelay=vdelay.y, vsche=vsche.y, vsyear=vsyear.y, vsmonth=vsmonth.y, vsweek=vsweek.y, vdelayd=vdelayd.y) %>% mutate(type2="private")
+    rename(province=province.y, district=district.y, commune=commune.y, sex=sex.y, dob=dob.y, vacname2=vacname2.y, vacdate=vacdate.y, shot=shot.y, start=start.y, vyear=vyear.y, vmonth=vmonth.y, vagem=vagem.y, vagem2=vagem2.y, vdelay=vdelay.y) %>% mutate(type2="private")
 
-measle_both <- rbind(measle_both_public, measle_both_private) %>% arrange(pid, vacdate, vacname2)
+measle_both <- rbind(measle_both_public, measle_both_private, fill = TRUE) %>% arrange(pid, vacdate, vacname2)
 
 temp <- rbind(measle_public, measle_private, measle_both, fill=TRUE) %>%
   mutate(type2=ifelse(type=="public", "public", ifelse(type=="private", "private", type2)), type2=factor(type2))
@@ -251,7 +247,7 @@ mea_all <- measle_all[, .N, by = .(vyear, vmonth, type)]
 mea_all2 <- measle_all[, .N, by = .(vyear, vmonth, type2)]
 mea_all_delay <- measle_all[, .N, by = .(vyear, vmonth, vdelayd, vacname2)]
 
-#save(measle, measle_all, mea_all_overall, mea_all, mea_all2, mea_all_delay, file = file.path("..", "..", "tuann349_vad", "measle_all.Rdata"))
+save(measle, measle_all, mea_all_overall, mea_all, mea_all2, mea_all_delay, file = file.path(outp, "measle_all.Rdata"))
 ```
 
 ```{r}

@@ -31,6 +31,7 @@ library(plyr)
 mutate <- dplyr::mutate
 
 data_path <- file.path("..", "tuann349_vad")
+outp <- file.path("..", "updated_dataset")
 dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
 ```
 
@@ -40,7 +41,7 @@ dat <- readRDS(file = file.path("..", "tuann349_vad", "alldat.rds"))
 
 ```{r}
 ## To increase the storage capacity
-memory.limit(size=60000)
+# memory.limit(size=60000)
 
 dupsID = dat %>%
   group_by(pid, vacdate, vacname) %>%
@@ -57,7 +58,7 @@ range(dups$vacdate)
 table(dups$province)
 
 dups_error <- dups[, .(pid, file, dob, vacname, vacdate, type)]
-fwrite(x = dups_error, file = file.path(data_path, "error_duplicate.csv"))
+fwrite(x = dups_error, file = file.path(outp, "error_duplicate.csv"))
 ```
 
 ### Dates mismatch
@@ -97,7 +98,7 @@ table(error3$province)
 error <- rbindlist(l = list(error1[, .(pid, file, dob, vacdate, type)], 
                             error2[, .(pid, file, dob, vacdate, type)],
                             error3[, .(pid, file, dob, vacdate, type)]))
-fwrite(x = error, file = file.path(data_path, "error_datetime.csv"))
+fwrite(x = error, file = file.path(outp, "error_datetime.csv"))
 ```
 
 #### unusual vaccine shot
@@ -113,14 +114,14 @@ tab_vaccine_shot
 ```
 
 ```{r}
-error_shot <- rbind(
-  data.frame(vacname2 = "BCG", shot = 2:6),
-  data.frame(vacname2 = "DPT", shot = 2:4),
-  data.frame(vacname2 = "DPT_HepB_Hib", shot = 4:7),
-  data.frame(vacname2 = "HepBN", shot = 2:9),
-  data.frame(vacname2 = "IPV", shot = 2:4),
-  data.frame(vacname2 = "JEV", shot = 4:7),
-)
+# error_shot <- rbind(
+#   data.frame(vacname2 = "BCG", shot = 2:6),
+#   data.frame(vacname2 = "DPT", shot = 2:4),
+#   data.frame(vacname2 = "DPT_HepB_Hib", shot = 4:7),
+#   data.frame(vacname2 = "HepBN", shot = 2:9),
+#   data.frame(vacname2 = "IPV", shot = 2:4),
+#   data.frame(vacname2 = "JEV", shot = 4:7),
+# )
 ```
 
 
@@ -128,8 +129,8 @@ error_shot <- rbind(
 
 ```{r}
 vaccine_clean <- dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2021-01-26")) & (vacdate >= dob) & (!vacname %in% c("BKT 0,1ml tu khoa (BCG)", "BKT 0.1ml (BCG)", "BKT 0.5 ml", "BKT 1 ml", "BKT 5 ml")), .(pid, province, district, commune, sex, dob, vacname, vacdate)]
-saveRDS(vaccine_clean, file = file.path("..", "tuann349_vad", "vaccine_clean.rds"))
-fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean.csv"))
+saveRDS(vaccine_clean, file = file.path(outp, "vaccine_clean.rds"))
+fwrite(x = vaccine_clean, file = file.path(outp, "vaccine_clean.csv"))
 ```
 
 
@@ -139,14 +140,30 @@ fwrite(x = vaccine_clean, file = file.path(data_path, "vaccine_clean.csv"))
 load(file.path("..", "tuann349_vad", "vacinfo.Rdata"))
 names(vacinfo) <- c("vacname2", "epi", "shot", "start")
 
-memory.limit(size=150000)
+# memory.limit(size=150000)
 
 tmp1 <- merge(dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2021-01-26")) & (vacdate >= dob) & (!vacname %in% c("BKT 0,1ml tu khoa (BCG)", "BKT 0.1ml (BCG)", "BKT 0.5 ml", "BKT 1 ml", "BKT 5 ml")), .(pid, province, district, commune, sex, dob, vacname, vacdate)],
               vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
 
+<<<<<<< HEAD
 tmp1 <- tmp1 %>% distinct(., pid, province, district, commune, vacname2, vacdate)
+=======
+# nrow(tmp1)
+# 29993118
 
-tmp2 <- tmp1[!is.na(vacname2)] %>%
+# Remove duplicate by vacname2
+nodups_distinct <- tmp1 %>% distinct(., pid, province, district, commune, sex, dob, vacname2, vacdate, .keep_all = TRUE)
+
+# nrow(nodups_distinct)
+# [1] 29991641
+
+cols <- c("pid", "province", "district", "commune", "sex", "dob", "vacname2", "vacdate")
+dups2 <- tmp1[duplicated(tmp1[,..cols]) | duplicated(tmp1[,..cols], fromLast = T),]
+dups2$type <- "Have a same vaccine in a same date in same province"
+fwrite(x = dups2, file = file.path(outp, "error_duplicate2.csv"))
+>>>>>>> fefeb486422cd57b275ba32d682807c0d7326b20
+
+tmp2 <- nodups_distinct[!is.na(vacname2)] %>%
   group_by(pid, vacname2) %>%
   arrange(vacdate) %>%
   mutate(shot = 1:n()) %>%
@@ -164,16 +181,11 @@ gc()
 library(data.table)
 setDT(tmp1)
 
-tmp1 <- merge(tmp3, vacinfo, by = c("vacname2", "shot"), all.x = TRUE, sort = FALSE)
-rm(list = c("tmp2", "tmp3"))
-gc()
-
 vaccine_vad <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vacname2, 
                         epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate, 
                         vyear = year(vacdate), 
                         vmonth = month(vacdate), 
                         vagem = as.period(interval(dob, vacdate), unit = 'month')$month,
-                        vagem2 = ((vacdate - dob)/dyears(1)) * 12)][, .(pid, province, district, commune, sex, dob, vacname, vacname2,
                         vagem2 = ((vacdate - dob)/dyears(1)) * 12)][, 
                                                                      .(pid, province, district, commune, sex, dob, vacname, vacname2,
                                                                        epi, tub, heb, dip, per, tes, hib, pol, msl, rub, jev, shot, start, vacdate, 
@@ -181,36 +193,36 @@ vaccine_vad <- tmp1[, .(pid, province, district, commune, sex, dob, vacname, vac
                                                                        vdelay = vagem2 - start)][order(pid, vacdate)]
 rm(list = c("tmp1"))
 gc()
-saveRDS(vaccine_vad, file = file.path("..", "tuann349_vad", "vaccine_vad.rds"))
-fwrite(x = vaccine_vad, file = file.path(data_path, "vaccine_vad.csv"))
+saveRDS(vaccine_vad, file = file.path(outp, "vaccine_vad.rds"))
+# fwrite(x = vaccine_vad, file = file.path(data_path, "vaccine_vad.csv"))
 
 measle <- vaccine_vad[msl == 1]
-saveRDS(measle, file = file.path("..", "tuann349_vad", "measle.rds"))
-fwrite(x = measle, file = file.path(data_path, "measle.csv"))
+saveRDS(measle, file = file.path(outp, "measle.rds"))
+# fwrite(x = measle, file = file.path(data_path, "measle.csv"))
 rm(list = c("measle"))
 gc()
 
 diptheria <- vaccine_vad[dip == 1]
-saveRDS(diptheria, file = file.path("..", "tuann349_vad", "diptheria.rds"))
-fwrite(x = diptheria, file = file.path(data_path, "diptheria.csv"))
+saveRDS(diptheria, file = file.path(outp, "diptheria.rds"))
+# fwrite(x = diptheria, file = file.path(data_path, "diptheria.csv"))
 rm(list = c("diptheria"))
 gc()
 
 tuberculosis <- vaccine_vad[tub == 1]
-saveRDS(tuberculosis, file = file.path("..", "tuann349_vad", "tuberculosis.rds"))
-fwrite(x = tuberculosis, file = file.path(data_path, "tuberculosis.csv"))
+saveRDS(tuberculosis, file = file.path(outp, "tuberculosis.rds"))
+# fwrite(x = tuberculosis, file = file.path(data_path, "tuberculosis.csv"))
 rm(list = c("tuberculosis"))
 gc()
 
 hepatitisb <- vaccine_vad[heb == 1]
-saveRDS(hepatitisb, file = file.path("..", "tuann349_vad", "hepatitisb.rds"))
-fwrite(x = hepatitisb, file = file.path(data_path, "hepatitisb.csv"))
+saveRDS(hepatitisb, file = file.path(outp, "hepatitisb.rds"))
+# fwrite(x = hepatitisb, file = file.path(data_path, "hepatitisb.csv"))
 rm(list = c("hepatitisb"))
 gc()
 
 polio <- vaccine_vad[pol == 1]
-saveRDS(polio, file = file.path("..", "tuann349_vad", "polio.rds"))
-fwrite(x = polio, file = file.path(data_path, "polio.csv"))
+saveRDS(polio, file = file.path(outp, "polio.rds"))
+# fwrite(x = polio, file = file.path(data_path, "polio.csv"))
 rm(list = c("polio"))
 gc()
 ```

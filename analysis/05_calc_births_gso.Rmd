@@ -79,6 +79,7 @@ for (i in 1:length(birthRates)) {
 
 # Display sum birth from 2017-2020
 df$birth17_20 <- rowSums(df[,c("birth17", "birth18", "birth19", "birth20")])
+# saveRDS(df, file.path(pj, "data", "birthGSO.rds"))
 
 dtadir <- file.path("~", "sharefolder", "data", "tuann349")
 publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)

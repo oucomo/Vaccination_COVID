@@ -1,0 +1,90 @@
+---
+title: "Data Exploration"
+date: ' 2020-01-29 (update: `r Sys.Date()`)'
+output:
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    keep_md: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache.lazy = FALSE,
+                      tidy.opts=list(width.cutoff=60),
+                      tidy=TRUE)
+
+library(workflowr)
+library(data.table)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(gt)
+library(gtsummary)
+library(ggridges)
+```
+
+```{r}
+allp <- file.path("~", "updated_dataset")
+outp <- file.path("~", "updated_dataset")
+error_datetime <- read.csv(file.path(allp, "error_datetime.csv")) %>% as.data.frame()
+error_duplicate <- read.csv(file.path(allp, "error_duplicate.csv")) %>% as.data.frame()
+```
+
+### Merge hepatitis b
+
+```{r}
+hepatitisb <- readRDS(file = file.path(allp, "hepatitisb.rds")) %>% filter(!pid %in% error_datetime$pid & !pid %in% error_duplicate$pid)
+
+hepatitisb_private <- readRDS(file = file.path(allp, "hepatitisb_private.rds"))
+
+hepatitisb_merge <- merge(hepatitisb, hepatitisb_private, by="pid", all=TRUE) %>%
+  mutate(type=ifelse((!is.na(dob.x) & !is.na(dob.y)),2, ifelse(!is.na(dob.x),0,1)),
+         type=factor(type,levels = c(2,0,1),labels = c("both","public","private")))
+
+hepatitisb_public <- hepatitisb_merge %>% filter(type=="public") %>% 
+    select(pid, province.x, district.x, commune.x, sex.x, dob.x, vacname2.x, vacdate.x, shot.x, start.x, vyear.x, vmonth.x, vagem.x, vagem2.x, vdelay.x, type) %>% 
+    arrange(pid, vacdate.x, vacname2.x) %>% 
+    rename(province=province.x, district=district.x, commune=commune.x, sex=sex.x, dob=dob.x, vacname2=vacname2.x, vacdate=vacdate.x, shot=shot.x, start=start.x, vyear=vyear.x, vmonth=vmonth.x, vagem=vagem.x, vagem2=vagem2.x, vdelay=vdelay.x)
+
+hepatitisb_private <- hepatitisb_merge %>% filter(type=="private") %>% 
+    select(pid, province.y, district.y, commune.y, sex.y, dob.y, vacname2.y, vacdate.y, shot.y, start.y, vyear.y, vmonth.y,vweek,vagem.y, vagem2.y, vdelay.y, vsche, vsyear, vsmonth, vsweek, vdelayd, type) %>% 
+    arrange(pid, vacdate.y, vacname2.y) %>%
+    rename(province=province.y, district=district.y, commune=commune.y, sex=sex.y, dob=dob.y, vacname2=vacname2.y, vacdate=vacdate.y, shot=shot.y, start=start.y, vyear=vyear.y, vmonth=vmonth.y, vagem=vagem.y, vagem2=vagem2.y, vdelay=vdelay.y)
+
+hepatitisb_both_public <- hepatitisb_merge %>% filter(type=="both") %>%
+  select(pid, province.x, district.x, commune.x, sex.x, dob.x, vacname2.x, vacdate.x, shot.x, start.x, vyear.x, vmonth.x,vagem.x, vagem2.x, vdelay.x, type) %>%
+    arrange(pid, vacdate.x, vacname2.x) %>%
+    rename(province=province.x, district=district.x, commune=commune.x, sex=sex.x, dob=dob.x, vacname2=vacname2.x, vacdate=vacdate.x, shot=shot.x, start=start.x, vyear=vyear.x, vmonth=vmonth.x, vagem=vagem.x, vagem2=vagem2.x, vdelay=vdelay.x) %>% mutate(type2="public")
+
+hepatitisb_both_private <- hepatitisb_merge %>% filter(type=="both") %>%
+  select(pid, province.y, district.y, commune.y, sex.y, dob.y, vacname2.y, vacdate.y, shot.y, start.y, vyear.y, vmonth.y,vweek,vagem.y, vagem2.y, vdelay.y, vsche, vsyear, vsmonth, vsweek, vdelayd, type) %>%
+    arrange(pid, vacdate.y, vacname2.y) %>%
+    rename(province=province.y, district=district.y, commune=commune.y, sex=sex.y, dob=dob.y, vacname2=vacname2.y, vacdate=vacdate.y, shot=shot.y, start=start.y, vyear=vyear.y, vmonth=vmonth.y, vagem=vagem.y, vagem2=vagem2.y, vdelay=vdelay.y) %>% mutate(type2="private")
+
+hepatitisb_both <- rbind(hepatitisb_both_public, hepatitisb_both_private, fill = TRUE) %>% arrange(pid, vacdate, vacname2)
+
+temp <- rbind(hepatitisb_public, hepatitisb_private, hepatitisb_both, fill=TRUE) %>%
+  mutate(type2=ifelse(type=="public", "public", ifelse(type=="private", "private", type2)), type2=factor(type2))
+
+hepatitisb_all <- temp[, .(province, district, commune, sex, dob, vacname2, vacdate, shot = order(vacdate), year = year(dob),
+                        month = month(dob), week = week(dob), start, vyear, vmonth, vweek, vagem, vagem2, vdelay, vsche, vsyear, vsmonth, vsweek, vdelayd, type, type2), by = .(pid, vacname2)][order(pid, vacname2, shot)]
+head(hepatitisb_all)  
+
+hepatitisb_all <- hepatitisb_all %>% select(-2)
+
+hepb_all_overall <- hepatitisb_all[, .N, by = .(vyear, vmonth)]
+
+hepb_all <- hepatitisb_all[, .N, by = .(vyear, vmonth, type)]
+hepb_all2 <- hepatitisb_all[, .N, by = .(vyear, vmonth, type2)]
+hepb_all_delay <- hepatitisb_all[, .N, by = .(vyear, vmonth, vdelayd, vacname2)]
+
+save(hepatitisb, hepatitisb_all, hepb_all_overall, hepb_all, hepb_all2, hepb_all_delay, file = file.path(outp, "hepatitisb_all.Rdata"))
+```
+
