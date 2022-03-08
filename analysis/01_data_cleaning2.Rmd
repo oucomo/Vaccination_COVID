@@ -145,9 +145,8 @@ names(vacinfo) <- c("vacname2", "epi", "shot", "start")
 tmp1 <- merge(dat[(vacdate >= ymd("2017-01-01")) & (vacdate < ymd("2021-01-26")) & (vacdate >= dob) & (!vacname %in% c("BKT 0,1ml tu khoa (BCG)", "BKT 0.1ml (BCG)", "BKT 0.5 ml", "BKT 1 ml", "BKT 5 ml")), .(pid, province, district, commune, sex, dob, vacname, vacdate)],
               vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
 
-<<<<<<< HEAD
 tmp1 <- tmp1 %>% distinct(., pid, province, district, commune, vacname2, vacdate)
-=======
+
 # nrow(tmp1)
 # 29993118
 
@@ -161,7 +160,7 @@ cols <- c("pid", "province", "district", "commune", "sex", "dob", "vacname2", "v
 dups2 <- tmp1[duplicated(tmp1[,..cols]) | duplicated(tmp1[,..cols], fromLast = T),]
 dups2$type <- "Have a same vaccine in a same date in same province"
 fwrite(x = dups2, file = file.path(outp, "error_duplicate2.csv"))
->>>>>>> fefeb486422cd57b275ba32d682807c0d7326b20
+
 
 tmp2 <- nodups_distinct[!is.na(vacname2)] %>%
   group_by(pid, vacname2) %>%

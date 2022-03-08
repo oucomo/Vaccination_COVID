@@ -141,11 +141,11 @@ names(vacinfo_private) <- c("vacname2", "epi", "shot", "start")
 
 tmp1 <- merge(vaccine_clean, vacname3[, c("vacname", "vacname2")], by = "vacname", all.x = TRUE, sort = FALSE)
 
-<<<<<<< HEAD
+
 tmp1 <- tmp1 %>% distinct(., pid, province, district, commune, vacname2, vacdate)
 
 tmp2 <- tmp1[, .(province, district, commune, sex, dob, vacname, vacdate, shot = order(vacdate)), by = .(pid, vacname2)][order(pid, vacname2, shot)]
-=======
+
 # nrow(tmp1)
 # [1] 36261348
 
@@ -164,7 +164,7 @@ fwrite(x = dups2, file = file.path(outp, "error_duplicate2_private.csv"))
 
 # Remove duplicate
 tmp2 <- nodups_distinct[, .(province, district, commune, sex, dob, vacname, vacdate, shot = order(vacdate)), by = .(pid, vacname2)][order(pid, vacname2, shot)]
->>>>>>> fefeb486422cd57b275ba32d682807c0d7326b20
+
 tmp3 <- merge(tmp2, vacname3[, c("vacname", "public", "tub", "heb", "dip", "per", "tes", "hib", "pol", "msl", "rub", "jev", "strep", "men", "var", "typ", "hea", "inf", "rot", "hpv", "rab", "vib", "yel")], by = "vacname", all.x = TRUE, sort = FALSE)
 tmp1 <- merge(tmp3, vacinfo_private, by = c("vacname2", "shot"), all.x = TRUE, sort = FALSE)
 rm(list = c("tmp2", "tmp3"))
