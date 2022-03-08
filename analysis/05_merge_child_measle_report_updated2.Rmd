@@ -1,6 +1,6 @@
 ---
 title: "Vaccination and delays in vaccination due to COVID-19"
-author: "Duc Du"
+author: "Duc Du, Thinh Ong"
 date: ' 2020-01-29 (update: `r Sys.Date()`)'
 output:
   workflowr::wflow_html:
@@ -96,10 +96,20 @@ Table 1 describes the characteristics of vaccination children born from 1/1/2017
 tab_child_all_sum3
 ```
 
-The number of births calculated from GSO data:
+Compared to GSO data:
 
 ```{r}
-knitr::kable(birthGSO)
+tb <- tab_child_all_sum3$table_body[tab_child_all_sum3$table_body$variable == "province",]
+tb <- data.frame(tb)
+tb <- tb[-1,c("label", "stat_0")]
+tb <- merge(tb, birthGSO, by.x = "label", by.y = "province")
+tb$pct <- 100 * tb$birth17_20 / sum(tb$birth17_20)
+tb$gso <- paste0(format(round(tb$birth17_20), big.mark = ","), " (", sprintf("%.1f", tb$pct), "%)")
+tb <- tb[,c("label", "stat_0", "gso")]
+colnames(tb) <- c("province", "hepatitisb", "gso_estimation")
+
+knitr::kable(tb)
+
 ```
 
 ```{r}
@@ -118,7 +128,7 @@ ggplot(data = child_all_overall[year >= 2017 & year <= 2020], aes(x = factor(mon
   geom_point(size = 3) +
   geom_line(aes(group = year), size = 1.5) +
   scale_x_discrete(name = "Month") +
-  scale_y_continuous(name = "Number of children born (x 10^3)", breaks = seq(from = 0, to = 300, by = 50)) +
+  scale_y_continuous(name = "Number of children born (x 10^3)", breaks = seq(from = 0, to = 150, by = 50)) +
   scale_color_discrete(name = "Year") +
   theme_bw() +
   ggtitle("Total number of vaccination children born by month and year")
@@ -168,11 +178,42 @@ load(file.path(allp, "measle_all.Rdata"))
 # Get public provinces only
 measle_all <- measle_all[measle_all$province %in% publicProvinces &
                            measle_all$year >= 2017 & measle_all$year <= 2020,]
+measle_all <- measle_all %>% distinct(., pid, province, district, commune, sex, dob, vacname2, vacdate, .keep_all = TRUE)
+measle_all <- measle_all %>%
+  group_by(pid, vacname2) %>%
+  arrange(vacdate) %>%
+  mutate(shot = 1:n()) %>%
+  ungroup()
+measle_all <- data.table(measle_all)
+measle_all$age <- 2021 - measle_all$year
+measle_all$sex <- ifelse(measle_all$sex==2, 1, measle_all$sex)
+measle_all$sex <- factor(measle_all$sex, levels=c(0,1), labels=c("F","M"))
+measle_all$shot2 <- ifelse(measle_all$shot >= 2, 2, measle_all$shot)
+measle_all$start2 <- ifelse(measle_all$shot2 == 2, NA, measle_all$start)
+measle_all$start2 <- ifelse(measle_all$vacname2 == "Measle_Mumps_Rubella" & measle_all$shot2 == 1, 12, measle_all$start2)
+measle_all$vdelay2 <- measle_all$vagem2 - measle_all$start2
 mea_all_overall <- measle_all[, .N, by = .(vyear, vmonth)]
 mea_all <- measle_all[, .N, by = .(vyear, vmonth, type)]
 ```
 
 ## Measle vaccination
+
+### Total measle vaccine shot
+
+The table below describes the data of all Measle vaccination shots.
+```{r}
+t_all <- measle_all[year >= 2017 & year <= 2020] %>% select(age, sex, vacname2, shot2, vacdate, vdelay2, type) %>% 
+  tbl_summary(
+  # by=vdelay_outcome, # split table by group
+  percent = "col",
+  #missing = "no" # don't list missing data separately
+  ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  # add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %>% # test for a difference between groups
+  modify_header(label = "**Variable**") %>% # update the column header
+  bold_labels()
+t_all
+```
 
 ### Measle vaccination shots by month and year
 
@@ -231,14 +272,15 @@ ggplot(mea_all_overall[vyear >= 2017 & vyear <= 2020], aes(vmonth, N/1000, color
 
 ### Delays in vaccination
 
-We quantifed the delays in Measle vaccination over years. The distribution of the delays in Measle vaccination (in months) for children born from 2017 to 2020 was shown in Figure 7. The earlier the children born, the longer in delays of Measle vaccination they could probably have. The longest delays of Measle vaccination can be up to more than 30 months for the Measle vaccine and 30 months for the Measle-Rubella vaccine compared to the schedule of those vaccines they supposed to take. According the recommended immunization schedule, the schedule of Measle and Measle-Rubella vaccines taken was 9 months and 18 months after the children were born, respectively. There was no data on the delays of Measle vaccination from the last haft of 2019 to the end of 2020 (Figure 7).
+We quantifed the delays in Measle vaccination over years. **We use the first dose for this analysis. Delay is defined as the actual date of vaccination later than at least 1 month compared to the expected date**. The distribution of the delays in Measle vaccination (in months) for children born from 2017 to 2020 was shown in Figure 7. The earlier the children born, the longer in delays of Measle vaccination they could probably have. The longest delays of Measle vaccination can be up to more than 30 months for the Measle vaccine and 30 months for the Measle-Rubella vaccine compared to the schedule of those vaccines they supposed to take. According the recommended immunization schedule, the schedule of Measle and Measle-Rubella vaccines taken was 9 months and 18 months after the children were born, respectively. There was no data on the delays of Measle vaccination from the last haft of 2019 to the end of 2020 (Figure 7).
 
 ```{r}
+measle_all <- measle_all[measle_all$shot == 1,]
 measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start)
 measle_all$expect_vmonth <- month(measle_all$expect_vdate)
 measle_all$expect_vyear <- year(measle_all$expect_vdate)
 
-ggplot(data = measle_all[year>= 2017 & year <= 2020 & vdelay>=1], aes(x = vdelay, y = factor(expect_vmonth), color = factor(expect_vyear))) +
+ggplot(data = measle_all[year >= 2017 & year <= 2020 & vdelay>=0,], aes(x = vdelay, y = factor(expect_vmonth), color = factor(expect_vyear))) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
@@ -255,17 +297,16 @@ ggplot(data = measle_all[year>= 2017 & year <= 2020 & vdelay>=1], aes(x = vdelay
 library(lubridate)
 
 measle_all_delay <- measle_all %>%
-  select(pid, province, district, commune, sex, dob, vacname2, start, shot, vacdate, vyear, vmonth, year, month, vagem, vagem2, vdelay, vsche, vsyear, vsmonth, vdelayd, type, type2) %>% filter(year>=2017 & year<=2021) %>%
-  mutate(vdelay_outcome=ifelse(vdelay>=1,1,0), # vdelay >= 1 month
+  select(pid, province, district, commune, sex, dob, vacname2, start2, shot2, vacdate, vyear, vmonth, year, month, vagem, vagem2, vdelay2, vsche, vsyear, vsmonth, vdelayd, type, type2) %>% filter(year>=2017 & year<=2020) %>%
+  mutate(vdelay_outcome=ifelse(vdelay2>=1,1,0), # vdelay >= 1 month
          age=2021-year,
-         sex=as.numeric(sex),
-         sex=recode(sex, "0"="0", "1"="1", "2"="1"),
-         sex=factor(sex, levels=c(0,1), labels=c("F","M")),
-         shot=factor(shot),
+         shot2=factor(shot2),
          vacdate_f=ifelse(vacdate<"2020-04-01",0,1),
          vacdate_f=factor(vacdate_f, levels = c(0,1), labels = c("Before", "After"))) %>% 
   filter(province!="Tinh tap huan")
 
+measle_all_delay$vdelay_outcome <- factor(measle_all_delay$vdelay_outcome, levels = c(0, 1),
+                                          labels = c("Not delay", "Delay"))
 # Check how many provinces in measle_all_delay
 # length(unique(measle_all_delay$province))
 ```
@@ -275,7 +316,7 @@ measle_all_delay <- measle_all %>%
 The probability of the delays in Measle vaccination (dichotomous outcome: delay versus no delay) was modeled to see if it depends on other related factors. The delays in Measle vaccination were shown to be dependent on age (p<0.001), province (p<0.001), type of vaccine (p<0.001), vaccination period (before and after COVID-19 pandemic) (p<0.001).
 
 ```{r}
-t3 <- measle_all_delay %>% select(age, sex, vacname2, vacdate_f, vdelay, vdelay_outcome, type) %>% 
+t3 <- measle_all_delay %>% select(age, sex, vacname2, vacdate_f, vdelay2, vdelay_outcome, type) %>% 
   tbl_summary(
   by=vdelay_outcome, # split table by group
   percent = "row",
