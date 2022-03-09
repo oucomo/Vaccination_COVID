@@ -1,5 +1,5 @@
 ---
-title: "Vaccination and delays in vaccination due to COVID-19"
+title: "Additional analyses"
 author: "Duc Du, Thinh Ong"
 date: ' `r Sys.Date()`'
 output:
@@ -34,32 +34,42 @@ library(ggplot2)
 library(gt)
 library(gtsummary)
 library(ggridges)
+library(ggvenn)
 
 select <- dplyr::select
 allp <- file.path("~", "updated_dataset")
 ```
 
-
-
 ```{r}
-# load(file.path(allp, "hepatitisb_all.Rdata"))
-# 
-# # Get a vector of public provinces
+# Get a vector of public provinces
 dtadir <- file.path("~", "sharefolder", "data", "tuann349")
 publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
 publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
-# 
-# # Child = 28 provinces born between 2017 and 2020, vaccinated with HepBN or HepB, only the 1st shot
-# child_all2 <- hepatitisb_all[hepatitisb_all$province %in% publicProvinces &
-#                                hepatitisb_all$year >= 2017 & 
-#                                hepatitisb_all$year <= 2020 &
-#                                hepatitisb_all$vacname2 %in% c("HepBN", "HepB") &
-#                                hepatitisb_all$shot == 1,]
-# child_all2$age <- 2021 - child_all2$year
-# child_all2$sex <- ifelse(child_all2$sex==2, 1, child_all2$sex)
-# child_all2$sex <- factor(child_all2$sex, levels=c(0,1), labels=c("F","M"))
-# child_all_overall <- child_all2[, .N, by = .(year, month)]
-# child_all_province <- child_all2[, .N, by = .(year, month, province)]
+```
+
+```{r}
+load(file.path(allp, "hepatitisb_all.Rdata"))
+
+# Child in hepB dataset
+child <- hepatitisb_all[hepatitisb_all$province %in% publicProvinces &
+                               hepatitisb_all$year >= 2017 &
+                               hepatitisb_all$year <= 2020,]
+
+HepBN <- unique(child$pid[child$vacname2 %in% c("HepB", "HepBN")])
+DPT_HepB_Hib <- unique(child$pid[child$vacname2 %in% c("DPT_HepB_Hib", "DPT_Polio_HepB_Hib")])
+DPT_HepB_Hib_only <- setdiff(DPT_HepB_Hib, HepBN)
+```
+
+HepBN (public) and HepB (private) are given to newborns or within 1 month after birth, we used them to estimate number of births. The schedule for DPT_HepB_Hib (public) and DPT_Polio_HepB_Hib (private) are at 2 month. This is the number of children (not the number of shots) received each kind of these vaccines.
+```{r}
+child %>% group_by(vacname2) %>% summarise(unique_ids = n_distinct(pid))
+```
+
+We group them into two categories: HepBN_HepB and DPT_HepB_Hib_andOr_Polio. There are `r format(length(DPT_HepB_Hib_only), big.mark = ",")` children (unique IDs) only receive DPT_HepB_Hib_andOr_Polio and never get vaccinated with HepBN or HepB. Look like this is the sign of 1 child - multiple IDs that Thai said.
+```{r}
+ggvenn(
+  list(HepBN_HepB = HepBN, DPT_HepB_Hib_andOr_Polio = DPT_HepB_Hib)
+)
 ```
 
 
@@ -93,9 +103,34 @@ measle_all$expect_vmonth <- month(measle_all$expect_vdate)
 measle_all$expect_vyear <- year(measle_all$expect_vdate)
 ```
 
+```{r}
+id_measles <- unique(measle_all$pid)
+id_measles_only <- setdiff(id_measles, HepBN)
+```
+
+When compare the IDs of HepBN/HepB with Measles, there are `r format(length(id_measles_only), big.mark = ",")` children received only Measles vaccine but their IDs are not in the HepBN/HepB set.
+```{r}
+ggvenn(
+  list(HepBN_HepB = HepBN, Measles = id_measles)
+)
+```
+
+The proportions of unique IDs to each set are unexpectedly high. We suspect this is because some children have several IDs as Thai's explanation. Immediately when they were born and got their HepBN/HepB shot they have ID1. At 2 month, they get their 5 in 1 vaccine shot (DPT_HepB_Hib/DPT_Polio_HepB_Hib) and someone make them new ID2. And then it is unsure when they go to get their Measle shot which ID they brought.
+
+If we combine both the IDs in HepBN/HepB/DPT_HepB_Hib/DPT_Polio_HepB_Hib, now only 42,568 IDs are unique to the Measles.
+```{r}
+ggvenn(
+  list(HepBN_HepB = HepBN, DPT_HepB_Hib_andOr_Polio = DPT_HepB_Hib, Measles = id_measles),
+  text_size = 3,
+  set_name_size = 4
+)
+```
+
+So now the IDs unique to HepBN/HepB can't be used to estimate the children who never get Measles shot. For example, the child got ID1 when received HepBN/HepB, then get a new ID2 for the DPT_HepB_Hib, she then use ID2 to get the Measles shot. So ID1 is never been used and belongs to the 376,325 unique IDs of HepBN/HepB but that doesn't mean the child didn't get Measles shot.
+
 # Delay distribution
 
-## Measle
+## Measles
 ```{r}
 measle_m <- measle_all[vacname2 == "Measle" & year >= 2017 & year <= 2020 & vdelay>=0 & expect_vyear %in% c(2019, 2020),]
 
@@ -105,11 +140,11 @@ ggplot(data = measle_m, aes(x = vdelay2, fill = factor(expect_vyear))) +
   theme_ridges() +
   facet_wrap(vars(expect_vmonth), nrow = 3, scales = "free_y") +
   labs(y = NULL, x = "Delay (months)", fill = "Year") +
-  ggtitle("Measle") + 
+  ggtitle("Measles") + 
   theme(axis.text.y=element_blank())
 ```
 
-## Measle Mumps Rubella
+## Measles Mumps Rubella
 ```{r}
 measle_mmr <- measle_all[vacname2 == "Measle_Mumps_Rubella" & year >= 2017 & year <= 2020 & vdelay>=0 & expect_vyear %in% c(2019, 2020),]
 
@@ -119,11 +154,11 @@ ggplot(data = measle_mmr, aes(x = vdelay2, fill = factor(expect_vyear))) +
   theme_ridges() +
   facet_wrap(vars(expect_vmonth), nrow = 3, scales = "free_y") +
   labs(y = NULL, x = "Delay (months)", fill = "Year") +
-  ggtitle("Measle Mumps Rubella") + 
+  ggtitle("Measles Mumps Rubella") + 
   theme(axis.text.y=element_blank())
 ```
 
-## Measle Rubella
+## Measles Rubella
 ```{r}
 measle_mr <- measle_all[vacname2 == "Measle_Rubella" & year >= 2017 & year <= 2020 & vdelay>=0 & expect_vyear %in% c(2019, 2020),]
 
@@ -133,13 +168,11 @@ ggplot(data = measle_mr, aes(x = vdelay2, fill = factor(expect_vyear))) +
   theme_ridges() +
   facet_wrap(vars(expect_vmonth), nrow = 3, scales = "free_y") +
   labs(y = NULL, x = "Delay (months)", fill = "Year") +
-  ggtitle("Measle Rubella") + 
+  ggtitle("Measles Rubella") + 
   theme(axis.text.y=element_blank())
 ```
 
 ```{r}
-#load(file.path("..", "..", "tuann349_vad", "vacinfo.Rdata"))
-#load(file.path("..", "..", "tuann349_vad", "vacinfo_private.Rdata"))
 library(lubridate)
 
 measle_all_delay <- measle_all %>%
@@ -164,5 +197,8 @@ options(datadist="dd")
 fit6 <- lrm(vdelay_outcome~vacdate_f + province + age + type, data=measle_all_delay, maxit=1000)
 anova(fit6)
 pred <- Predict(fit6, fun=plogis)
-ggplot(pred)
+```
+
+```{r, fig.height=7}
+ggplot(pred, ylab=expression(paste(hat(P),"(delay)")), vnames = "names")
 ```
