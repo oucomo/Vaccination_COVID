@@ -1,0 +1,168 @@
+---
+title: "Vaccination and delays in vaccination due to COVID-19"
+author: "Duc Du, Thinh Ong"
+date: ' `r Sys.Date()`'
+output:
+  workflowr::wflow_html:
+    toc: true
+    theme: cosmo
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    keep_md: yes
+  word_document:
+    toc: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache.lazy = FALSE,
+                      tidy.opts=list(width.cutoff=60),
+                      tidy=TRUE,
+                      root.dir = rprojroot::find_rstudio_root_file())
+
+library(workflowr)
+library(data.table)
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(gt)
+library(gtsummary)
+library(ggridges)
+
+select <- dplyr::select
+allp <- file.path("~", "updated_dataset")
+```
+
+
+
+```{r}
+# load(file.path(allp, "hepatitisb_all.Rdata"))
+# 
+# # Get a vector of public provinces
+dtadir <- file.path("~", "sharefolder", "data", "tuann349")
+publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
+publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
+# 
+# # Child = 28 provinces born between 2017 and 2020, vaccinated with HepBN or HepB, only the 1st shot
+# child_all2 <- hepatitisb_all[hepatitisb_all$province %in% publicProvinces &
+#                                hepatitisb_all$year >= 2017 & 
+#                                hepatitisb_all$year <= 2020 &
+#                                hepatitisb_all$vacname2 %in% c("HepBN", "HepB") &
+#                                hepatitisb_all$shot == 1,]
+# child_all2$age <- 2021 - child_all2$year
+# child_all2$sex <- ifelse(child_all2$sex==2, 1, child_all2$sex)
+# child_all2$sex <- factor(child_all2$sex, levels=c(0,1), labels=c("F","M"))
+# child_all_overall <- child_all2[, .N, by = .(year, month)]
+# child_all_province <- child_all2[, .N, by = .(year, month, province)]
+```
+
+
+```{r}
+load(file.path(allp, "measle_all.Rdata"))
+
+# Get public provinces only
+measle_all <- measle_all[measle_all$province %in% publicProvinces &
+                           measle_all$year >= 2017 & measle_all$year <= 2020,]
+measle_all <- measle_all %>% distinct(., pid, province, district, commune, sex, dob, vacname2, vacdate, .keep_all = TRUE)
+measle_all <- measle_all %>%
+  group_by(pid, vacname2) %>%
+  arrange(vacdate) %>%
+  mutate(shot = 1:n()) %>%
+  ungroup()
+measle_all <- data.table(measle_all)
+measle_all$age <- 2021 - measle_all$year
+measle_all$sex <- ifelse(measle_all$sex==2, 1, measle_all$sex)
+measle_all$sex <- factor(measle_all$sex, levels=c(0,1), labels=c("F","M"))
+measle_all$shot2 <- ifelse(measle_all$shot >= 2, 2, measle_all$shot)
+measle_all$start2 <- ifelse(measle_all$shot2 == 2, NA, measle_all$start)
+measle_all$start2 <- ifelse(measle_all$vacname2 == "Measle_Mumps_Rubella" & measle_all$shot2 == 1, 12, measle_all$start2)
+measle_all$vdelay2 <- measle_all$vagem2 - measle_all$start2
+mea_all_overall <- measle_all[, .N, by = .(vyear, vmonth)]
+mea_all <- measle_all[, .N, by = .(vyear, vmonth, type)]
+
+# Get 1st shot measle
+measle_all <- measle_all[measle_all$shot == 1,]
+measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start)
+measle_all$expect_vmonth <- month(measle_all$expect_vdate)
+measle_all$expect_vyear <- year(measle_all$expect_vdate)
+```
+
+# Delay distribution
+
+## Measle
+```{r}
+measle_m <- measle_all[vacname2 == "Measle" & year >= 2017 & year <= 2020 & vdelay>=0 & expect_vyear %in% c(2019, 2020),]
+
+ggplot(data = measle_m, aes(x = vdelay2, fill = factor(expect_vyear))) +
+  geom_density(alpha = 0.5) +
+  xlim(0, 6) +
+  theme_ridges() +
+  facet_wrap(vars(expect_vmonth), nrow = 3, scales = "free_y") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("Measle") + 
+  theme(axis.text.y=element_blank())
+```
+
+## Measle Mumps Rubella
+```{r}
+measle_mmr <- measle_all[vacname2 == "Measle_Mumps_Rubella" & year >= 2017 & year <= 2020 & vdelay>=0 & expect_vyear %in% c(2019, 2020),]
+
+ggplot(data = measle_mmr, aes(x = vdelay2, fill = factor(expect_vyear))) +
+  geom_density(alpha = 0.5) +
+  xlim(0, 8) +
+  theme_ridges() +
+  facet_wrap(vars(expect_vmonth), nrow = 3, scales = "free_y") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("Measle Mumps Rubella") + 
+  theme(axis.text.y=element_blank())
+```
+
+## Measle Rubella
+```{r}
+measle_mr <- measle_all[vacname2 == "Measle_Rubella" & year >= 2017 & year <= 2020 & vdelay>=0 & expect_vyear %in% c(2019, 2020),]
+
+ggplot(data = measle_mr, aes(x = vdelay2, fill = factor(expect_vyear))) +
+  geom_density(alpha = 0.5) +
+  xlim(0, 6) +
+  theme_ridges() +
+  facet_wrap(vars(expect_vmonth), nrow = 3, scales = "free_y") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("Measle Rubella") + 
+  theme(axis.text.y=element_blank())
+```
+
+```{r}
+#load(file.path("..", "..", "tuann349_vad", "vacinfo.Rdata"))
+#load(file.path("..", "..", "tuann349_vad", "vacinfo_private.Rdata"))
+library(lubridate)
+
+measle_all_delay <- measle_all %>%
+  select(pid, province, district, commune, sex, dob, vacname2, start2, shot2, vacdate, vyear, vmonth, year, month, vagem, vagem2, vdelay2, vsche, vsyear, vsmonth, vdelayd, type, type2) %>% filter(year>=2017 & year<=2020) %>%
+  mutate(vdelay_outcome=ifelse(vdelay2>=1,1,0), # vdelay >= 1 month
+         age=2021-year,
+         shot2=factor(shot2),
+         vacdate_f=ifelse(vacdate<"2020-04-01",0,1),
+         vacdate_f=factor(vacdate_f, levels = c(0,1), labels = c("Before", "After"))) %>% 
+  filter(province!="Tinh tap huan")
+
+measle_all_delay$vdelay_outcome <- factor(measle_all_delay$vdelay_outcome, levels = c(0, 1),
+                                          labels = c("Not delay", "Delay"))
+
+library("rms")
+theme_set(theme_bw())
+dd <- datadist(measle_all_delay)
+options(datadist="dd")
+```
+## Multivariable analysis
+```{r}
+fit6 <- lrm(vdelay_outcome~vacdate_f + province + age + type, data=measle_all_delay, maxit=1000)
+anova(fit6)
+pred <- Predict(fit6, fun=plogis)
+ggplot(pred)
+```
