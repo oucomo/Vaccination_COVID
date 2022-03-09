@@ -35,29 +35,33 @@ library(ggridges)
 #error_datetime <- read.csv(file.path("..", "..", "tuann349_vad", "error_datetime.csv")) %>% as.data.frame()
 #error_duplicate <- read.csv(file.path("..", "..", "tuann349_vad", "error_duplicate.csv")) %>% as.data.frame()
 rm(list = ls(all.names = TRUE))
+dtadir <- file.path("~", "sharefolder", "data", "tuann349")
+publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
+publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
 
-individual_private <- readRDS(file = file.path("..", "..", "tuann349_vad", "individual_private.rds")) %>% filter(year<=2020)
+individual_private <- readRDS(file = file.path("..", "..", "tuann349_vad", "individual_private.rds"))
 
 individual_private$year <- year(individual_private$dob)
 individual_private$month <- month(individual_private$dob)
 individual_private$week <- week(individual_private$dob)
 
-#child_private <- individual_private %>% filter(year <= 2020 & year >= 2017)
+library(operators)
+individual_private_south <- individual_private[individual_private$year<=2020 & individual_private$province %!in% publicProvinces]
 
-individual_private_overall <- individual_private[, .N, by = .(year, month)]
-individual_private_overall2 <- individual_private[, .N, by = .(year, month, week)]
-individual_private_province <- individual_private[, .N, by = .(year, month, province)]
-individual_private_province2 <- individual_private[, .N, by = .(year, month, week, province)]
-individual_private_sex <- individual_private[, .N, by = .(year, month, sex)]
-individual_private_sex2 <- individual_private[, .N, by = .(year, month, week, sex)]
-individual_private_province_sex <- individual_private[, .N, by = .(year, month, province, sex)]
-individual_private_province_sex2 <- individual_private[, .N, by = .(year, month, week, province, sex)]
+individual_private_south_overall <- individual_private_south[, .N, by = .(year, month)]
+individual_private_south_overall2 <- individual_private_south[, .N, by = .(year, month, week)]
+individual_private_south_province <- individual_private_south[, .N, by = .(year, month, province)]
+individual_private_south_province2 <- individual_private_south[, .N, by = .(year, month, week, province)]
+individual_private_south_sex <- individual_private_south[, .N, by = .(year, month, sex)]
+individual_private_south_sex2 <- individual_private_south[, .N, by = .(year, month, week, sex)]
+individual_private_south_province_sex <- individual_private_south[, .N, by = .(year, month, province, sex)]
+individual_private_south_province_sex2 <- individual_private_south[, .N, by = .(year, month, week, province, sex)]
  
-save(individual_private_overall, individual_private_province, individual_private_sex, individual_private_province_sex, file = file.path("..", "..", "tuann349_vad", "individual_private.Rdata"))
+save(individual_private_south_overall, individual_private_south_province, individual_private_south_sex, individual_private_south_province_sex, file = file.path("..", "..", "tuann349_vad", "individual_private_south.Rdata"))
 
-tab_individual_private_sum <- tbl_summary(individual_private[, .(province, sex, factor(year))])
+tab_individual_private_south_sum <- tbl_summary(individual_private_south[, .(province, sex, factor(year))])
 
-save(tab_individual_private_sum, file = file.path("..", "..", "tuann349_vad", "tab_individual_private.Rdata"))
+save(tab_individual_private_south_sum, file = file.path("..", "..", "tuann349_vad", "tab_individual_private_south.Rdata"))
 ```
 
 ## Quick look at vaccine shots
@@ -65,46 +69,48 @@ save(tab_individual_private_sum, file = file.path("..", "..", "tuann349_vad", "t
 ```{r}
 vaccine_vad_private <- readRDS(file = file.path("..", "..", "updated_dataset", "vaccine_vad_private.rds"))
 
-vaccine_overall_private <- vaccine_vad_private[, .N, by = .(vyear, vmonth)]
-vaccine_overall_private2 <- vaccine_vad_private[, .N, by = .(vyear, vmonth, vweek)]
+vaccine_vad_private_south <- vaccine_vad_private[vaccine_vad_private$year<=2020 & vaccine_vad_private$province %!in% publicProvinces]
 
-vaccine_schedule_private <- vaccine_vad_private[, .N, by = .(vsyear, vsmonth)]
-vaccine_schedule_private2 <- vaccine_vad_private[, .N, by = .(vsyear, vsmonth, vsweek)]
+vaccine_overall_private_south <- vaccine_vad_private_south[, .N, by = .(vyear, vmonth)]
+vaccine_overall_private_south2 <- vaccine_vad_private_south[, .N, by = .(vyear, vmonth, vweek)]
 
-vaccine_province_private <- vaccine_vad_private[, .N, by = .(vyear, vmonth, province)]
+vaccine_schedule_private_south <- vaccine_vad_private_south[, .N, by = .(vsyear, vsmonth)]
+vaccine_schedule_private_south2 <- vaccine_vad_private_south[, .N, by = .(vsyear, vsmonth, vsweek)]
 
-vaccine_vacname_private <- vaccine_vad_private[, .N, by = .(vyear, vmonth, vacname2)]
+vaccine_province_private_south <- vaccine_vad_private_south[, .N, by = .(vyear, vmonth, province)]
+
+vaccine_vacname_private_south <- vaccine_vad_private_south[, .N, by = .(vyear, vmonth, vacname2)]
 #vaccine_vacname_private2 <- vaccine_vad_private[, .N, by = .(vyear, vmonth, vweek, vacname2)]
 
-vaccine_province_vacname_private <- vaccine_vad_private[, .N, by = .(vyear, vmonth, province, vacname2)]
+vaccine_province_vacname_private_south <- vaccine_vad_private_south[, .N, by = .(vyear, vmonth, province, vacname2)]
 #vaccine_province_vacname_private2 <- vaccine_vad_private[, .N, by = .(vyear, vmonth, vweek, province, vacname2)]
 
-save(vaccine_overall_private, vaccine_province_private, vaccine_vacname_private, vaccine_province_vacname_private, file = file.path("..", "..", "updated_dataset", "vaccine_private_all.Rdata"))
+save(vaccine_overall_private_south, vaccine_province_private_south, vaccine_vacname_private_south, vaccine_province_vacname_private_south, file = file.path("..", "..", "updated_dataset", "vaccine_private_south.Rdata"))
  
-tab_vac_sum_private_all <- tbl_summary(vaccine_vad_private[, .(province, vacname2, factor(vyear))])
-save(tab_vac_sum_private_all, file = file.path("..", "..", "updated_dataset", "tab_vaccine_private_all.Rdata"))
+tab_vac_sum_private_south <- tbl_summary(vaccine_vad_private_south[, .(province, vacname2, factor(vyear))])
+save(tab_vac_sum_private_south, file = file.path("..", "..", "updated_dataset", "tab_vaccine_private_south.Rdata"))
 ```
 
 ```{r}
-load(file.path("..", "..", "updated_dataset", "vaccine_private_all.Rdata"))
-load(file.path("..", "..", "updated_dataset", "tab_vaccine_private_all.Rdata"))
+load(file.path("..", "..", "updated_dataset", "vaccine_private_south.Rdata"))
+load(file.path("..", "..", "updated_dataset", "tab_vaccine_private_south.Rdata"))
 
-load(file.path("..", "..", "tuann349_vad", "individual_private.Rdata"))
-load(file.path("..", "..", "tuann349_vad", "tab_individual_private.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "individual_private_south.Rdata"))
+load(file.path("..", "..", "tuann349_vad", "tab_individual_private_south.Rdata"))
 ```
 
 ### Descriptive table
 
 ```{r}
-tab_vac_sum_private_all
-tab_individual_private_sum
+tab_vac_sum_private_south
+tab_individual_private_south_sum
 ```
 
 
 ### Overall
 
 ```{r}
-ggplot(data = individual_private_overall, aes(x = factor(month), y = N/1000, color = factor(year))) +
+ggplot(data = individual_private_south_overall, aes(x = factor(month), y = N/1000, color = factor(year))) +
   geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey90", color = "grey90", alpha = 0.015) +
   geom_point(size = 3) +
   geom_line(aes(group = year), size = 1.5) +
@@ -113,11 +119,11 @@ ggplot(data = individual_private_overall, aes(x = factor(month), y = N/1000, col
   scale_color_discrete(name = "Year") +
   theme_bw() +
   ggtitle("Total number of vaccination individuals by month and year")
-ggsave(filename = file.path("..", "figures", "individual_private_month_year.png"), width = 15, height = 10)
+ggsave(filename = file.path("..", "figures", "individual_private_month_year_south.png"), width = 15, height = 10)
 ```
 
 ```{r}
-ggplot(individual_private_overall, aes(month, N/1000, color = factor(year))) +
+ggplot(individual_private_south_overall, aes(month, N/1000, color = factor(year))) +
   geom_point(size=2) +
   geom_line(aes(group=year)) +
   geom_smooth () +
@@ -128,11 +134,11 @@ ggplot(individual_private_overall, aes(month, N/1000, color = factor(year))) +
   theme_bw() +
   facet_wrap(~ year, scale = "free_y") +
   ggtitle("Total number of vaccination individuals by month and year")
-ggsave(filename = file.path("..", "figures", "individual_private_month_year3.png"), width = 15, height = 10)
+ggsave(filename = file.path("..", "figures", "individual_private_month_year_south3.png"), width = 15, height = 10)
 ```
 
 ```{r}
-ggplot(data = vaccine_overall_private, aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+ggplot(data = vaccine_overall_private_south, aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
   geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
   geom_point(size = 3) +
   geom_line(aes(group = vyear), size = 1.5) +
@@ -143,11 +149,11 @@ ggplot(data = vaccine_overall_private, aes(x = factor(vmonth), y = N/1000, color
   scale_color_discrete(name = "Year") +
   theme_bw() +
   ggtitle("Total number of vaccination shots by month and year at private clinics")
-ggsave(filename = file.path("..", "figures", "vaccine_month_year_private_all.png"), width = 7, height = 5)
+ggsave(filename = file.path("..", "figures", "vaccine_month_year_private_south.png"), width = 7, height = 5)
 ```
 
 ```{r}
-ggplot(vaccine_overall_private, aes(vmonth, N/1000, color = factor(vyear))) +
+ggplot(vaccine_overall_private_south, aes(vmonth, N/1000, color = factor(vyear))) +
   geom_point(size=3) +
   geom_line(aes(group=vyear)) +
   geom_smooth () + 
@@ -158,13 +164,13 @@ ggplot(vaccine_overall_private, aes(vmonth, N/1000, color = factor(vyear))) +
   theme_bw() +
   ggtitle("Total number of vaccination shots by month and year at private clinics") +
   facet_wrap(~ vyear, scale = "free_y")
-ggsave(filename = file.path("..", "figures", "vaccine_month_year_private_all2.png"), width = 7, height = 5)
+ggsave(filename = file.path("..", "figures", "vaccine_month_year_private_south2.png"), width = 7, height = 5)
 ```
 
 ### By province
 
 ```{r}
-ggplot(data = vaccine_province_private, aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+ggplot(data = vaccine_province_private_south, aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
   geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
   geom_point() +
   geom_line(aes(group = vyear)) +
@@ -175,13 +181,13 @@ ggplot(data = vaccine_province_private, aes(x = factor(vmonth), y = N/1000, colo
   theme_bw() +
   theme(legend.position = "bottom") +
   ggtitle("Number of vaccination shot in each province by month and year at private clinics")
-ggsave(filename = file.path("..", "figures", "vaccine_province_year_private_all.png"), width = 10, height = 7)
+ggsave(filename = file.path("..", "figures", "vaccine_province_year_private_south.png"), width = 10, height = 7)
 ```
 
 ### By vaccine
 
 ```{r}
-ggplot(data = vaccine_vacname_private, aes(x = factor(vmonth), y = N/1000)) +
+ggplot(data = vaccine_vacname_private_south, aes(x = factor(vmonth), y = N/1000)) +
   geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = "grey80", color = "grey90", alpha = 0.015) +
   geom_point(aes(color = factor(vyear))) +
   geom_line(aes(group = vyear, color = factor(vyear))) +
@@ -192,7 +198,7 @@ ggplot(data = vaccine_vacname_private, aes(x = factor(vmonth), y = N/1000)) +
   theme_bw() +
   theme(legend.position = "bottom") +
   ggtitle("Total number of shots of each vaccine at private clinics by month and year")
-ggsave(filename = file.path("..", "figures", "vaccine_month_year_vaccine_private_all.png"), width = 10, height = 7)
+ggsave(filename = file.path("..", "figures", "vaccine_month_year_vaccine_private_south.png"), width = 10, height = 7)
 ```
 
 ```{r}
