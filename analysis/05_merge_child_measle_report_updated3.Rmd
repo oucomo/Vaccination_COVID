@@ -88,6 +88,7 @@ t2 <- child_all2 %>% select(age, sex, province, type, type2, year) %>%
 tab_child_all_sum3 <- tbl_summary(child_all2[, .(province, sex, age, type, type2, factor(year))])
 # Data from GSO
 birthGSO <- readRDS(file.path("~", "Vaccination_COVID", "data", "birthGSO.rds"))
+birthGSO$province <- stringr::str_squish(birthGSO$province)
 birthGSO <- birthGSO[birthGSO$province %in% publicProvinces,c("province", "birth17_20")]
 ```
 
