@@ -280,11 +280,13 @@ measle_all <- measle_all[measle_all$shot == 1,]
 measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start)
 measle_all$expect_vmonth <- month(measle_all$expect_vdate)
 measle_all$expect_vyear <- year(measle_all$expect_vdate)
+```
 
+```{r, fig.height=5}
 ggplot(data = measle_all[year >= 2017 & year <= 2020 & vdelay>=0,], aes(x = vdelay, y = factor(expect_vmonth), color = factor(expect_vyear))) +
-  geom_density_ridges() +
+  geom_density_ridges(panel_scaling = FALSE) +
   theme_ridges() + 
-  theme(legend.position = "none") +
+  theme(legend.position = "none", axis.text.y=element_text(size=9)) +
   facet_grid(vacname2~expect_vyear, scale = "free_y") +
   labs(y = "Expected month of vaccination", x="Duration of delays in Measle vaccination (months)") +
   scale_color_discrete(name = "Year") +
