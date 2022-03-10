@@ -130,6 +130,12 @@ So now the IDs unique to HepBN/HepB can't be used to estimate the children who n
 
 If this is the case we can subtract the 376,325 ID1 to the one who used their ID2 but it is more confusing here since the 715,438 > 376,325. In that 715,438 IDs a lot of things happening: (1) children who used the other ID to get their DPT_HepB_Hib/DPT_Polio_HepB_Hib and Measles shots; (2) children who did not get the HepB shot but get the DPT_HepB_Hib/DPT_Polio_HepB_Hib and Measles shots; (3) another new ID as there are 3 shots of DPT_HepB_Hib/DPT_Polio_HepB_Hib and each time they visit the clinic they may get another new ID, especially in the private clinic.
 
+Our best guess for the number of children who did not get Measles vaccine is comparing the number of births (estimated with HepBN/HepB) with the number of children who get Measles or MMR. In the result below diff = n_births - n_m_mmr.
+```{r}
+n_m_mmr <- length(unique(measle_all$pid[measle_all$vacname2 %in% c("Measle", "Measle_Mumps_Rubella")]))
+data.frame(n_births = length(HepBN), n_m_mmr = n_m_mmr, diff = length(HepBN) - n_m_mmr)
+```
+
 # Delay distribution
 
 ## Measles
