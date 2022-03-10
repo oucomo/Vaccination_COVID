@@ -11,7 +11,7 @@
 
 <meta name="author" content="Duc Du, Thinh Ong" />
 
-<meta name="date" content="2022-03-09" />
+<meta name="date" content="2022-03-10" />
 
 <title>Additional analyses</title>
 
@@ -360,7 +360,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Additional analyses</h1>
 <h4 class="author">Duc Du, Thinh Ong</h4>
-<h4 class="date">2022-03-09</h4>
+<h4 class="date">2022-03-10</h4>
 
 </div>
 
@@ -385,7 +385,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-03-09
+<strong>Last updated:</strong> 2022-03-10
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -476,16 +476,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree9a8f02d58afa271d4e050475a8e9aa71a37b9ab7targetblank9a8f02da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/9a8f02d58afa271d4e050475a8e9aa71a37b9ab7" target="_blank">9a8f02d</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree77ab97fc46982389674f72887e01fc6fbfca95c6targetblank77ab97fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/77ab97fc46982389674f72887e01fc6fbfca95c6" target="_blank">77ab97f</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree9a8f02d58afa271d4e050475a8e9aa71a37b9ab7targetblank9a8f02da" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree77ab97fc46982389674f72887e01fc6fbfca95c6targetblank77ab97fa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/9a8f02d58afa271d4e050475a8e9aa71a37b9ab7" target="_blank">9a8f02d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/77ab97fc46982389674f72887e01fc6fbfca95c6" target="_blank">77ab97f</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -495,15 +495,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  analysis/05_merge_child_measle_report_updated3.Rmd
-    Untracked:  analysis/VennDiagram.2022-03-09_17-15-46.log
-    Untracked:  analysis/VennDiagram.2022-03-09_17-16-18.log
-    Untracked:  analysis/VennDiagram.2022-03-09_17-16-24.log
-    Untracked:  analysis/VennDiagram.2022-03-09_17-16-33.log
-
 Unstaged changes:
-    Modified:   analysis/05_merge_child_measle_report_updated2.Rmd
     Modified:   analysis/06_additional_analyses.Rmd
 
 </code></pre>
@@ -543,6 +535,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/77ab97fc46982389674f72887e01fc6fbfca95c6/analysis/06_additional_analyses.Rmd" target="_blank">77ab97f</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-09
+</td>
+<td>
+unique id for number of births, compare hepb with measles
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/77ab97fc46982389674f72887e01fc6fbfca95c6/docs/06_additional_analyses.html" target="_blank">77ab97f</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-09
+</td>
+<td>
+unique id for number of births, compare hepb with measles
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -625,22 +651,13 @@ library(ggvenn)</code></pre>
 <pre><code>Loading required package: grid</code></pre>
 <pre class="r"><code>select &lt;- dplyr::select
 allp &lt;- file.path(&quot;~&quot;, &quot;updated_dataset&quot;)</code></pre>
-<p>HepBN (public) and HepB (private) are given to newborns or within 1 month after birth, we used them to estimate number of births. The schedule for DPT_HepB_Hib (public) and DPT_Polio_HepB_Hib (private) are at 2 month. This is the number of children (not the number of shots) received each kind of these vaccines.</p>
-<pre><code># A tibble: 5 × 2
-  vacname2           unique_ids
-  &lt;chr&gt;                   &lt;int&gt;
-1 DPT_HepB_Hib          2290808
-2 DPT_Polio_HepB_Hib     892639
-3 HepAB                   13418
-4 HepB                   214478
-5 HepBN                 2446363</code></pre>
-<p>We group them into two categories: HepBN_HepB and DPT_HepB_Hib_andOr_Polio. There are 883,795 children (unique IDs) only receive DPT_HepB_Hib_andOr_Polio and never get vaccinated with HepBN or HepB. Look like this is the sign of 1 child - multiple IDs that Thai said. <img src="figure/06_additional_analyses.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>When compare the IDs of HepBN/HepB with Measles, there are 758,024 children received only Measles vaccine but their IDs are not in the HepBN/HepB set. <img src="figure/06_additional_analyses.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
-Past versions of unnamed-chunk-5-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div id="fig-unnamed-chunk-6-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -659,7 +676,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/9a8f02d58afa271d4e050475a8e9aa71a37b9ab7/docs/figure/06_additional_analyses.Rmd/unnamed-chunk-5-1.png" target="_blank">9a8f02d</a>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/9a8f02d58afa271d4e050475a8e9aa71a37b9ab7/docs/figure/06_additional_analyses.Rmd/unnamed-chunk-6-1.png" target="_blank">9a8f02d</a>
 </td>
 <td>
 thinhong
@@ -672,7 +689,17 @@ thinhong
 </table>
 </div>
 </div>
-<p>When compare the IDs of HepBN/HepB with Measles, there are 758,024 children received only Measles vaccine but their IDs are not in the HepBN/HepB set. <img src="figure/06_additional_analyses.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The proportions of unique IDs to each set are unexpectedly high. We suspect this is because some children have several IDs as Thai’s explanation. So we try comparing the HepBN/HepB with another type of vaccine.</p>
+<p>The most appropriate would be the closest one to the HepB shot. HepBN (public) and HepB (private) are given to newborns or within 1 month after birth (for that reason we used them to estimate the number of births). The next vaccine would be DPT_HepB_Hib (public) or DPT_Polio_HepB_Hib (private) at 2 month. This is the number of children (not the number of shots) received each kind of these vaccines.</p>
+<pre><code># A tibble: 5 × 2
+  vacname2           unique_ids
+  &lt;chr&gt;                   &lt;int&gt;
+1 DPT_HepB_Hib          2290808
+2 DPT_Polio_HepB_Hib     892639
+3 HepAB                   13418
+4 HepB                   214478
+5 HepBN                 2446363</code></pre>
+<p>We group them into two categories: HepBN_HepB and DPT_HepB_Hib_andOr_Polio. There are 883,795 children (unique IDs) only receive DPT_HepB_Hib_andOr_Polio and never get vaccinated with HepBN or HepB. Look like this is the sign of 1 child - multiple IDs that Thai said. <img src="figure/06_additional_analyses.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
 Past versions of unnamed-chunk-8-1.png
@@ -697,6 +724,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/77ab97fc46982389674f72887e01fc6fbfca95c6/docs/figure/06_additional_analyses.Rmd/unnamed-chunk-8-1.png" target="_blank">77ab97f</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/oucomo/Vaccination_COVID/blob/9a8f02d58afa271d4e050475a8e9aa71a37b9ab7/docs/figure/06_additional_analyses.Rmd/unnamed-chunk-8-1.png" target="_blank">9a8f02d</a>
 </td>
 <td>
@@ -710,22 +748,170 @@ thinhong
 </table>
 </div>
 </div>
-<p>The proportions of unique IDs to each set are unexpectedly high. We suspect this is because some children have several IDs as Thai’s explanation. Immediately when they were born and got their HepBN/HepB shot they have ID1. At 2 month, they get their 5 in 1 vaccine shot (DPT_HepB_Hib/DPT_Polio_HepB_Hib) and someone make them new ID2. And then it is unsure when they go to get their Measle shot which ID they brought.</p>
-<p>If we combine both the IDs in HepBN/HepB/DPT_HepB_Hib/DPT_Polio_HepB_Hib, now only 42,568 IDs are unique to the Measles. <img src="figure/06_additional_analyses.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>So now the IDs unique to HepBN/HepB can’t be used to estimate the children who never get Measles shot. For example, the child got ID1 when received HepBN/HepB, then get a new ID2 for the DPT_HepB_Hib, she then use ID2 to get the Measles shot. So ID1 is never been used and belongs to the 376,325 unique IDs of HepBN/HepB but that doesn’t mean the child didn’t get Measles shot.</p>
+<p>The proportions are high too, our hypothesis is: Immediately when they were born and got their HepBN/HepB shot they have ID1. At 2 month, they get their DPT_HepB_Hib/DPT_Polio_HepB_Hib shot and someone make them new ID2. Then it is unsure when they go to get their Measle shot which ID they brought. So we combine both the IDs in HepBN/HepB/DPT_HepB_Hib/DPT_Polio_HepB_Hib, now only 42,568 IDs are unique to the Measles. <img src="figure/06_additional_analyses.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/77ab97fc46982389674f72887e01fc6fbfca95c6/docs/figure/06_additional_analyses.Rmd/unnamed-chunk-9-1.png" target="_blank">77ab97f</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>So now the IDs unique to HepBN/HepB can’t be used to estimate the children who never get Measles shot. For example, the child got ID1 when received HepBN/HepB, then get a new ID2 for the DPT_HepB_Hib/DPT_Polio_HepB_Hib, she then use ID2 to get the Measles shot. So ID1 is never been used and belongs to the 376,325 unique IDs of HepBN/HepB but that doesn’t mean the child didn’t get Measles shot. By this assumption, the ID2 in the example would be in the 715,438 intersect between DPT_HepB_Hib/DPT_Polio_HepB_Hib and Measle.</p>
+<p>If this is the case we can subtract the 376,325 ID1 to the one who used their ID2 but it is more confusing here since the 715,438 &gt; 376,325. In that 715,438 IDs a lot of things happening: (1) children who used the other ID to get their DPT_HepB_Hib/DPT_Polio_HepB_Hib and Measles shots; (2) children who did not get the HepB shot but get the DPT_HepB_Hib/DPT_Polio_HepB_Hib and Measles shots; (3) another new ID as there are 3 shots of DPT_HepB_Hib/DPT_Polio_HepB_Hib and each time they visit the clinic they may get another new ID, especially in the private clinic.</p>
 <div id="delay-distribution" class="section level1">
 <h1>Delay distribution</h1>
 <div id="measles" class="section level2">
 <h2>Measles</h2>
 <p><img src="figure/06_additional_analyses.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/77ab97fc46982389674f72887e01fc6fbfca95c6/docs/figure/06_additional_analyses.Rmd/unnamed-chunk-10-1.png" target="_blank">77ab97f</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="measles-mumps-rubella" class="section level2">
 <h2>Measles Mumps Rubella</h2>
 <p><img src="figure/06_additional_analyses.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/77ab97fc46982389674f72887e01fc6fbfca95c6/docs/figure/06_additional_analyses.Rmd/unnamed-chunk-11-1.png" target="_blank">77ab97f</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="measles-rubella" class="section level2">
 <h2>Measles Rubella</h2>
 <p><img src="figure/06_additional_analyses.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/77ab97fc46982389674f72887e01fc6fbfca95c6/docs/figure/06_additional_analyses.Rmd/unnamed-chunk-12-1.png" target="_blank">77ab97f</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="multivariable-analysis" class="section level2">
 <h2>Multivariable analysis</h2>
@@ -738,6 +924,43 @@ thinhong
  type       129416.19   2   &lt;.0001
  TOTAL      211171.63  31   &lt;.0001</code></pre>
 <p><img src="figure/06_additional_analyses.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/77ab97fc46982389674f72887e01fc6fbfca95c6/docs/figure/06_additional_analyses.Rmd/unnamed-chunk-15-1.png" target="_blank">77ab97f</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
