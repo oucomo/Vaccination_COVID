@@ -39,7 +39,7 @@ dtadir <- file.path("~", "sharefolder", "data", "tuann349")
 publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
 publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
 
-individual_private <- readRDS(file = file.path("..", "..", "tuann349_vad", "individual_private.rds"))
+individual_private <- readRDS(file = file.path("..", "tuann349_vad", "individual_private.rds"))
 
 individual_private$year <- year(individual_private$dob)
 individual_private$month <- month(individual_private$dob)
@@ -57,17 +57,17 @@ individual_private_south_sex2 <- individual_private_south[, .N, by = .(year, mon
 individual_private_south_province_sex <- individual_private_south[, .N, by = .(year, month, province, sex)]
 individual_private_south_province_sex2 <- individual_private_south[, .N, by = .(year, month, week, province, sex)]
  
-save(individual_private_south_overall, individual_private_south_province, individual_private_south_sex, individual_private_south_province_sex, file = file.path("..", "..", "tuann349_vad", "individual_private_south.Rdata"))
+save(individual_private_south_overall, individual_private_south_province, individual_private_south_sex, individual_private_south_province_sex, file = file.path("..", "tuann349_vad", "individual_private_south.Rdata"))
 
 tab_individual_private_south_sum <- tbl_summary(individual_private_south[, .(province, sex, factor(year))])
 
-save(tab_individual_private_south_sum, file = file.path("..", "..", "tuann349_vad", "tab_individual_private_south.Rdata"))
+save(tab_individual_private_south_sum, file = file.path("..", "tuann349_vad", "tab_individual_private_south.Rdata"))
 ```
 
 ## Quick look at vaccine shots
 
 ```{r}
-vaccine_vad_private <- readRDS(file = file.path("..", "..", "updated_dataset", "vaccine_vad_private.rds"))
+vaccine_vad_private <- readRDS(file = file.path("..", "updated_dataset", "vaccine_vad_private.rds"))
 
 vaccine_vad_private_south <- vaccine_vad_private[vaccine_vad_private$year<=2020 & vaccine_vad_private$province %!in% publicProvinces]
 
@@ -85,18 +85,18 @@ vaccine_vacname_private_south <- vaccine_vad_private_south[, .N, by = .(vyear, v
 vaccine_province_vacname_private_south <- vaccine_vad_private_south[, .N, by = .(vyear, vmonth, province, vacname2)]
 #vaccine_province_vacname_private2 <- vaccine_vad_private[, .N, by = .(vyear, vmonth, vweek, province, vacname2)]
 
-save(vaccine_overall_private_south, vaccine_province_private_south, vaccine_vacname_private_south, vaccine_province_vacname_private_south, file = file.path("..", "..", "updated_dataset", "vaccine_private_south.Rdata"))
+save(vaccine_overall_private_south, vaccine_province_private_south, vaccine_vacname_private_south, vaccine_province_vacname_private_south, file = file.path("..", "updated_dataset", "vaccine_private_south.Rdata"))
  
 tab_vac_sum_private_south <- tbl_summary(vaccine_vad_private_south[, .(province, vacname2, factor(vyear))])
-save(tab_vac_sum_private_south, file = file.path("..", "..", "updated_dataset", "tab_vaccine_private_south.Rdata"))
+save(tab_vac_sum_private_south, file = file.path("..", "updated_dataset", "tab_vaccine_private_south.Rdata"))
 ```
 
 ```{r}
-load(file.path("..", "..", "updated_dataset", "vaccine_private_south.Rdata"))
-load(file.path("..", "..", "updated_dataset", "tab_vaccine_private_south.Rdata"))
+load(file.path("..", "updated_dataset", "vaccine_private_south.Rdata"))
+load(file.path("..", "updated_dataset", "tab_vaccine_private_south.Rdata"))
 
-load(file.path("..", "..", "tuann349_vad", "individual_private_south.Rdata"))
-load(file.path("..", "..", "tuann349_vad", "tab_individual_private_south.Rdata"))
+load(file.path("..", "tuann349_vad", "individual_private_south.Rdata"))
+load(file.path("..", "tuann349_vad", "tab_individual_private_south.Rdata"))
 ```
 
 ### Descriptive table
