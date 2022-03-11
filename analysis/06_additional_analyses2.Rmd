@@ -1,0 +1,140 @@
+---
+title: "Additional analyses"
+author: "Duc Du, Thinh Ong"
+date: ' `r Sys.Date()`'
+output:
+  workflowr::wflow_html:
+    toc: true
+    theme: cosmo
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    keep_md: yes
+  word_document:
+    toc: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache.lazy = FALSE,
+                      tidy.opts=list(width.cutoff=60),
+                      tidy=TRUE,
+                      root.dir = rprojroot::find_rstudio_root_file())
+
+library(workflowr)
+library(data.table)
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(gt)
+library(gtsummary)
+library(ggridges)
+library(ggvenn)
+
+select <- dplyr::select
+allp <- file.path("~", "updated_dataset")
+```
+
+```{r}
+# Get a vector of public provinces
+dtadir <- file.path("~", "sharefolder", "data", "tuann349")
+publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
+publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
+```
+
+```{r}
+load(file.path(allp, "hepatitisb_all.Rdata"))
+
+# Child in hepB dataset
+child <- hepatitisb_all[hepatitisb_all$province %in% publicProvinces &
+                               hepatitisb_all$year >= 2017 &
+                               hepatitisb_all$year <= 2020,]
+child <- child[child$dob <= "2020-03-31",]
+
+HepBN <- unique(child$pid[child$vacname2 %in% c("HepB", "HepBN")])
+DPT_HepB_Hib <- unique(child$pid[child$vacname2 %in% c("DPT_HepB_Hib", "DPT_Polio_HepB_Hib")])
+DPT_HepB_Hib_only <- setdiff(DPT_HepB_Hib, HepBN)
+```
+
+
+```{r}
+load(file.path(allp, "measle_all.Rdata"))
+
+# Get public provinces only
+measle_all <- measle_all[measle_all$province %in% publicProvinces &
+                           measle_all$year >= 2017 & measle_all$year <= 2020,]
+measle_all <- measle_all %>% distinct(., pid, province, district, commune, sex, dob, vacname2, vacdate, .keep_all = TRUE)
+measle_all <- measle_all %>%
+  group_by(pid, vacname2) %>%
+  arrange(vacdate) %>%
+  mutate(shot = 1:n()) %>%
+  ungroup()
+measle_all <- data.table(measle_all)
+measle_all$age <- 2021 - measle_all$year
+measle_all$sex <- ifelse(measle_all$sex==2, 1, measle_all$sex)
+measle_all$sex <- factor(measle_all$sex, levels=c(0,1), labels=c("F","M"))
+measle_all$shot2 <- ifelse(measle_all$shot >= 2, 2, measle_all$shot)
+measle_all$start2 <- ifelse(measle_all$shot2 == 2, NA, measle_all$start)
+measle_all$start2 <- ifelse(measle_all$vacname2 == "Measle_Mumps_Rubella" & measle_all$shot2 == 1, 12, measle_all$start2)
+measle_all$vdelay2 <- measle_all$vagem2 - measle_all$start2
+mea_all_overall <- measle_all[, .N, by = .(vyear, vmonth)]
+mea_all <- measle_all[, .N, by = .(vyear, vmonth, type)]
+
+# Get 1st shot measle
+measle_all <- measle_all[measle_all$shot == 1,]
+measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start)
+measle_all$expect_vmonth <- month(measle_all$expect_vdate)
+measle_all$expect_vyear <- year(measle_all$expect_vdate)
+measle_all <- measle_all[measle_all$vacname2 == "Measle",]
+```
+
+```{r}
+id_measles <- unique(measle_all$pid)
+id_measles_only <- setdiff(id_measles, HepBN)
+```
+
+When compare the IDs of HepBN/HepB with Measles, there are `r format(length(id_measles_only), big.mark = ",")` children received only Measles vaccine but their IDs are not in the HepBN/HepB set.
+```{r}
+ggvenn(
+  list(Births = HepBN, Measles = id_measles)
+)
+```
+
+The proportions of unique IDs to each set are unexpectedly high. We suspect this is because some children have several IDs as Thai's explanation. So we try comparing the HepBN/HepB with another type of vaccine.
+
+The most appropriate would be the closest one to the HepB shot. HepBN (public) and HepB (private) are given to newborns or within 1 month after birth (for that reason we used them to estimate the number of births). The next vaccine would be DPT_HepB_Hib (public) or DPT_Polio_HepB_Hib (private) at 2 month. This is the number of children (not the number of shots) received each kind of these vaccines.
+```{r}
+child %>% group_by(vacname2) %>% summarise(unique_ids = n_distinct(pid))
+```
+
+We group them into two categories: HepBN_HepB and DPT_HepB_Hib_andOr_Polio. There are `r format(length(DPT_HepB_Hib_only), big.mark = ",")` children (unique IDs) only receive DPT_HepB_Hib_andOr_Polio and never get vaccinated with HepBN or HepB. Look like this is the sign of 1 child - multiple IDs that Thai said.
+```{r}
+ggvenn(
+  list(Births = HepBN, DPT_HepB_Hib_andOr_Polio = DPT_HepB_Hib)
+)
+```
+
+The proportions are high too, our hypothesis is: Immediately when they were born and got their HepBN/HepB shot they have ID1. At 2 month, they get their DPT_HepB_Hib/DPT_Polio_HepB_Hib shot and someone make them new ID2. Then it is unsure when they go to get their Measle shot which ID they brought. So we combine both the IDs in HepBN/HepB/DPT_HepB_Hib/DPT_Polio_HepB_Hib, now only 42,568 IDs are unique to the Measles.
+```{r}
+ggvenn(
+  list(Births = HepBN, DPT_HepB_Hib_andOr_Polio = DPT_HepB_Hib, Measles = id_measles),
+  text_size = 3,
+  set_name_size = 4
+)
+```
+
+So now the IDs unique to HepBN/HepB can't be used to estimate the children who never get Measles shot. For example, the child got ID1 when received HepBN/HepB, then get a new ID2 for the DPT_HepB_Hib/DPT_Polio_HepB_Hib, she then use ID2 to get the Measles shot. So ID1 is never been used and belongs to the 376,325 unique IDs of HepBN/HepB but that doesn't mean the child didn't get Measles shot. By this assumption, the ID2 in the example would be in the 715,438 intersect between DPT_HepB_Hib/DPT_Polio_HepB_Hib and Measle. 
+
+If this is the case we can subtract the 376,325 ID1 to the one who used their ID2 but it is more confusing here since the 715,438 > 376,325. In that 715,438 IDs a lot of things happening: (1) children who used the other ID to get their DPT_HepB_Hib/DPT_Polio_HepB_Hib and Measles shots; (2) children who did not get the HepB shot but get the DPT_HepB_Hib/DPT_Polio_HepB_Hib and Measles shots; (3) another new ID as there are 3 shots of DPT_HepB_Hib/DPT_Polio_HepB_Hib and each time they visit the clinic they may get another new ID, especially in the private clinic.
+
+Our best guess for the number of children who did not get Measles vaccine is comparing the number of births (estimated with HepBN/HepB) with the number of children who get Measles or MMR. In the result below diff = n_births - n_m_mmr.
+```{r}
+n_m_mmr <- length(unique(measle_all$pid[measle_all$vacname2 %in% c("Measle")]))
+data.frame(n_births = length(HepBN), n_m_mmr = n_m_mmr, diff = length(HepBN) - n_m_mmr)
+```
+
