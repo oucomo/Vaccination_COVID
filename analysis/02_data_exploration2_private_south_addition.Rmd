@@ -1,0 +1,252 @@
+---
+title: "Data Exploration"
+date: ' 2020-01-29 (update: `r Sys.Date()`)'
+output:
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    keep_md: yes
+  pdf_document:
+    toc: yes
+  word_document:
+    toc: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+knitr::opts_chunk$set()
+
+library(workflowr)
+library(data.table)
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(gt)
+library(gtsummary)
+library(ggridges)
+```
+
+## Quick look at individuals
+
+```{r}
+error_datetime <- read.csv(file.path("~", "tuann349_vad", "error_datetime.csv")) %>% as.data.frame()
+error_duplicate <- read.csv(file.path("~", "tuann349_vad", "error_duplicate.csv")) %>% as.data.frame()
+
+dtadir <- file.path("~", "sharefolder", "data", "tuann349")
+publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
+publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
+# 
+# individual_private <- readRDS(file = file.path("~", "tuann349_vad", "individual_private.rds"))
+# 
+# individual_private$year <- year(individual_private$dob)
+# individual_private$month <- month(individual_private$dob)
+# individual_private$week <- week(individual_private$dob)
+# 
+# library(operators)
+# individual_private_south <- individual_private[individual_private$year<=2020 & individual_private$province %!in% publicProvinces]
+# 
+# individual_private_south_overall <- individual_private_south[, .N, by = .(year, month)]
+# individual_private_south_overall2 <- individual_private_south[, .N, by = .(year, month, week)]
+# individual_private_south_province <- individual_private_south[, .N, by = .(year, month, province)]
+# individual_private_south_province2 <- individual_private_south[, .N, by = .(year, month, week, province)]
+# individual_private_south_sex <- individual_private_south[, .N, by = .(year, month, sex)]
+# individual_private_south_sex2 <- individual_private_south[, .N, by = .(year, month, week, sex)]
+# individual_private_south_province_sex <- individual_private_south[, .N, by = .(year, month, province, sex)]
+# individual_private_south_province_sex2 <- individual_private_south[, .N, by = .(year, month, week, province, sex)]
+# 
+# save(individual_private_south_overall, individual_private_south_province, individual_private_south_sex, individual_private_south_province_sex, file = file.path("~", "updated_dataset", "individual_private_south.Rdata"))
+# 
+# tab_individual_private_south_sum <- tbl_summary(individual_private_south[, .(province, sex, factor(year))])
+# 
+# save(tab_individual_private_south_sum, file = file.path("~", "updated_dataset", "tab_individual_private_south.Rdata"))
+```
+
+
+```{r}
+vaccine_vad <- readRDS(file = file.path("~", "tuann349_vad", "vaccine_vad.rds")) %>% filter(!(pid %in% error_datetime$pid) & !(pid %in% error_duplicate$pid))
+vaccine_vad$vweek <- week(vaccine_vad$vacdate)
+vaccine_vad$byear <- year(vaccine_vad$dob)
+vaccine_vad$bmonth <- month(vaccine_vad$dob)
+
+# make dataset with a few variables to summarize
+vaccine_vad2 <- vaccine_vad %>% 
+  filter(vyear >= 2017 & vyear <= 2020) %>%
+  select(vyear, vmonth, vacdate, byear, bmonth, vdelay, vacname2)
+
+rm(list=c("vaccine_vad"))
+gc()
+# summarize the data with gt_summary package
+
+# memory.limit(size=150000)
+
+vaccine_sum <- vaccine_vad2 %>%
+  select(byear, bmonth, vdelay, vacname2) %>%
+  mutate(bmonth=factor(bmonth)) %>%
+  tbl_summary(.,
+              by = byear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**All vaccines**") %>% # update the column header
+  bold_labels()
+
+vaccine_sum2 <- vaccine_vad2 %>%
+  select(vyear, vmonth, vdelay, vacname2) %>%
+  mutate(vmonth=factor(vmonth)) %>%
+  tbl_summary(.,
+              by = vyear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**All vaccines**") %>% # update the column header
+  bold_labels()
+
+measle_sum <- vaccine_vad2 %>%
+  filter(vacname2=="Measle") %>%
+  select(byear, bmonth, vdelay) %>%
+  mutate(bmonth=factor(bmonth)) %>%
+  tbl_summary(.,
+              by = byear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**Measle**") %>% # update the column header
+  bold_labels()
+
+measle_sum2 <- vaccine_vad2 %>%
+  filter(vacname2=="Measle") %>%
+  select(vyear, vmonth, vdelay) %>%
+  mutate(vmonth=factor(vmonth)) %>%
+  tbl_summary(.,
+              by = vyear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**Measle**") %>% # update the column header
+  bold_labels()
+
+measle_rubella_sum <- vaccine_vad2 %>%
+  filter(vacname2=="Measle_Rubella") %>%
+  select(byear, bmonth, vdelay) %>%
+  mutate(bmonth=factor(bmonth)) %>%
+  tbl_summary(.,
+              by = byear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**Measle_Rubella**") %>% # update the column header
+  bold_labels()
+
+measle_rubella_sum2 <- vaccine_vad2 %>%
+  filter(vacname2=="Measle_Rubella") %>%
+  select(vyear, vmonth, vdelay) %>%
+  mutate(vmonth=factor(vmonth)) %>%
+  tbl_summary(.,
+              by = vyear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**Measle_Rubella**") %>% # update the column header
+  bold_labels()
+
+dpt_sum <- vaccine_vad2 %>%
+  filter(vacname2=="DPT") %>%
+  select(byear, bmonth, vdelay) %>%
+  mutate(bmonth=factor(bmonth)) %>%
+  tbl_summary(.,
+              by = byear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**DPT**") %>% # update the column header
+  bold_labels()
+
+dpt_sum2 <- vaccine_vad2 %>%
+  filter(vacname2=="DPT") %>%
+  select(vyear, vmonth, vdelay) %>%
+  mutate(vmonth=factor(vmonth)) %>%
+  tbl_summary(.,
+              by = vyear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**DPT**") %>% # update the column header
+  bold_labels()
+
+hepbn_sum <- vaccine_vad2 %>%
+  filter(vacname2=="HepBN") %>%
+  select(byear, bmonth, vdelay) %>%
+  mutate(bmonth=factor(bmonth)) %>%
+  tbl_summary(.,
+              by = byear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**HepBN**") %>% # update the column header
+  bold_labels()
+
+hepbn_sum2 <- vaccine_vad2 %>%
+  filter(vacname2=="HepBN") %>%
+  select(vyear, vmonth, vdelay) %>%
+  mutate(vmonth=factor(vmonth)) %>%
+  tbl_summary(.,
+              by = vyear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**HepBN**") %>% # update the column header
+  bold_labels()
+
+bcg_sum <- vaccine_vad2 %>%
+  filter(vacname2=="BCG") %>%
+  select(byear, bmonth, vdelay) %>%
+  mutate(bmonth=factor(bmonth)) %>%
+  tbl_summary(.,
+              by = byear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**BCG**") %>% # update the column header
+  bold_labels()
+
+bcg_sum2 <- vaccine_vad2 %>%
+  filter(vacname2=="BCG") %>%
+  select(vyear, vmonth, vdelay) %>%
+  mutate(vmonth=factor(vmonth)) %>%
+  tbl_summary(.,
+              by = vyear, # split table by group
+              percent = "col",
+              missing = "no" # don't list missing data separately
+              ) %>%
+  add_n() %>% # add column with total number of non-missing observations
+  modify_header(label = "**BCG**") %>% # update the column header
+  bold_labels()
+
+vaccine_sum
+vaccine_sum2
+measle_sum
+measle_sum2
+measle_rubella_sum
+measle_rubella_sum2
+dpt_sum
+dpt_sum2
+hepbn_sum
+hepbn_sum2
+bcg_sum
+bcg_sum2
+```
+
