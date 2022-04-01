@@ -1,0 +1,224 @@
+---
+title: "Vaccination and delays in vaccination due to COVID-19"
+author: "Duc Du, Thinh Ong"
+date: ' 2020-01-29 (update: `r Sys.Date()`)'
+output:
+  workflowr::wflow_html:
+    toc: true
+    theme: cosmo
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    keep_md: yes
+  word_document:
+    toc: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache.lazy = FALSE,
+                      tidy.opts=list(width.cutoff=60),
+                      tidy=TRUE,
+                      root.dir = rprojroot::find_rstudio_root_file())
+
+library(workflowr)
+library(data.table)
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(gt)
+library(gtsummary)
+library(ggridges)
+library(cowplot)
+library(rms)
+
+select <- dplyr::select
+allp <- file.path("~", "updated_dataset")
+```
+
+```{r}
+# Get a vector of public provinces
+dtadir <- file.path("~", "sharefolder", "data", "tuann349")
+publicProvinces <- list.dirs(dtadir, full.names = F, recursive = F)
+publicProvinces <- stringi::stri_trans_general(publicProvinces, "any-ascii")
+```
+
+
+```{r}
+load(file.path(allp, "measle_all.Rdata"))
+
+# Get public provinces only
+measle_all <- measle_all[measle_all$province %in% publicProvinces &
+                           measle_all$year >= 2017 & measle_all$year <= 2020,]
+measle_all <- measle_all %>% distinct(., pid, province, district, commune, sex, dob, vacname2, vacdate, .keep_all = TRUE)
+measle_all <- measle_all %>%
+  group_by(pid, vacname2) %>%
+  arrange(vacdate) %>%
+  mutate(shot = 1:n()) %>%
+  ungroup()
+measle_all <- data.table(measle_all)
+measle_all$age <- 2021 - measle_all$year
+measle_all$sex <- ifelse(measle_all$sex==2, 1, measle_all$sex)
+measle_all$sex <- factor(measle_all$sex, levels=c(0,1), labels=c("F","M"))
+measle_all$shot2 <- ifelse(measle_all$shot >= 2, 2, measle_all$shot)
+measle_all$start2 <- ifelse(measle_all$shot2 == 2, NA, measle_all$start)
+measle_all$start2 <- ifelse(measle_all$vacname2 == "Measle_Mumps_Rubella" & measle_all$shot2 == 1, 12, measle_all$start2)
+measle_all$vdelay2 <- measle_all$vagem2 - measle_all$start2
+mea_all_overall <- measle_all[, .N, by = .(vyear, vmonth)]
+mea_all <- measle_all[, .N, by = .(vyear, vmonth, type)]
+```
+
+
+```{r}
+measle_all <- measle_all[measle_all$shot == 1,]
+measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start)
+measle_all$expect_vmonth <- month(measle_all$expect_vdate)
+measle_all$expect_vyear <- year(measle_all$expect_vdate)
+```
+
+```{r}
+#load(file.path("..", "..", "tuann349_vad", "vacinfo.Rdata"))
+#load(file.path("..", "..", "tuann349_vad", "vacinfo_private.Rdata"))
+library(lubridate)
+
+measle_all_delay <- measle_all %>%
+  select(pid, province, district, commune, sex, dob, vacname2, start2, shot2, vacdate, vyear, vmonth, year, month, vagem, vagem2, vdelay2, vsche, vsyear, vsmonth, vdelayd, type, type2, expect_vyear) %>% filter(year>=2017 & year<=2020) %>%
+  mutate(vdelay_outcome=ifelse(vdelay2>=1,1,0), # vdelay >= 1 month
+         age=2021-year,
+         shot2=factor(shot2),
+         vacdate_f=ifelse(vacdate<"2020-04-01",0,1),
+         vacdate_f=factor(vacdate_f, levels = c(0,1), labels = c("Before", "After"))) %>% 
+  filter(province!="Tinh tap huan")
+
+measle_all_delay$vdelay_outcome <- factor(measle_all_delay$vdelay_outcome, levels = c(0, 1),
+                                          labels = c("Not delay", "Delay"))
+measle_all_delay$expect_vyear <- factor(measle_all_delay$expect_vyear)
+measle_all_delay$vyear <- factor(measle_all_delay$vyear)
+# Check how many provinces in measle_all_delay
+# length(unique(measle_all_delay$province))
+# t1 <- measle_all_delay[measle_all_delay$expect_vyear %in% c(2021, 2022),]
+# write.csv(t1, file.path(allp, "measles_2021_2022.csv"))
+```
+
+
+```{r}
+
+theme_set(theme_bw())
+dd <- datadist(measle_all_delay)
+options(datadist="dd")
+```
+
+## Use year of birth
+```{r, fig.height = 7}
+fit1 <- lrm(vdelay_outcome~vacdate_f + province + age + type, data=measle_all_delay, maxit=1000)
+anova(fit1)
+pred <- Predict(fit1, fun=plogis)
+dt <- data.frame(pred)
+colnames(dt) <- ifelse(colnames(dt) == ".predictor.", "predictor", colnames(dt))
+dt$predictor <- factor(dt$predictor)
+dt1 <- dt[dt$predictor == "age",]
+dt1$age <- ifelse(dt1$age == 1, 2020, 
+                  ifelse(dt1$age == 2, 2019, 
+                         ifelse(dt1$age == 3, 2018, 2017)))
+p1 <- ggplot(dt1, aes(x = yhat, y = age)) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Year of birth")
+
+dt2 <- dt[dt$predictor == "province",]
+p2 <- ggplot(dt2, aes(x = yhat, y = reorder(province, -yhat))) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Province")
+
+dt3 <- dt[dt$predictor == "type",]
+p3 <- ggplot(dt3, aes(x = yhat, y = type)) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Type")
+
+dt4 <- dt[dt$predictor == "vacdate_f",]
+p4 <- ggplot(dt4, aes(x = yhat, y = vacdate_f)) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Vaccination period")
+
+plot_grid(p1, p2, p3, p4)
+```
+
+## Use year of vaccination
+```{r, fig.height = 7}
+fit2 <- lrm(vdelay_outcome~vacdate_f + province + vyear + type, data=measle_all_delay, maxit=1000)
+anova(fit2)
+pred <- Predict(fit2, fun=plogis)
+dt <- data.frame(pred)
+colnames(dt) <- ifelse(colnames(dt) == ".predictor.", "predictor", colnames(dt))
+dt$predictor <- factor(dt$predictor)
+dt1 <- dt[dt$predictor == "vyear",]
+p1 <- ggplot(dt1, aes(x = yhat, y = vyear)) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Vaccination year")
+
+dt2 <- dt[dt$predictor == "province",]
+p2 <- ggplot(dt2, aes(x = yhat, y = reorder(province, -yhat))) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Province")
+
+dt3 <- dt[dt$predictor == "type",]
+p3 <- ggplot(dt3, aes(x = yhat, y = type)) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Type")
+
+dt4 <- dt[dt$predictor == "vacdate_f",]
+p4 <- ggplot(dt4, aes(x = yhat, y = vacdate_f)) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Vaccination period")
+
+plot_grid(p1, p2, p3, p4)
+```
+
+## Use expected year of vaccination
+```{r, fig.height = 7}
+fit3 <- lrm(vdelay_outcome~vacdate_f + province + expect_vyear + type, data=measle_all_delay, maxit=1000)
+anova(fit3)
+pred <- Predict(fit3, fun=plogis)
+dt <- data.frame(pred)
+colnames(dt) <- ifelse(colnames(dt) == ".predictor.", "predictor", colnames(dt))
+dt$predictor <- factor(dt$predictor)
+dt1 <- dt[dt$predictor == "expect_vyear",]
+p1 <- ggplot(dt1, aes(x = yhat, y = expect_vyear)) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Expected vaccination year")
+
+dt2 <- dt[dt$predictor == "province",]
+p2 <- ggplot(dt2, aes(x = yhat, y = reorder(province, -yhat))) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Province")
+
+dt3 <- dt[dt$predictor == "type",]
+p3 <- ggplot(dt3, aes(x = yhat, y = type)) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Type")
+
+dt4 <- dt[dt$predictor == "vacdate_f",]
+p4 <- ggplot(dt4, aes(x = yhat, y = vacdate_f)) + 
+  geom_point() +
+  labs(x = expression(paste(hat(P),"(delay)")), y = "Vaccination period")
+
+plot_grid(p1, p2, p3, p4)
+```
+
+## Some issues
+
+Date of birth = date of vaccination although this is measles
+```{r}
+table(measle_all_delay$dob == measle_all_delay$vacdate)
+```
+
+Some children were vaccinated very soon after birth (0 - 6 months)
+```{r}
+table(measle_all_delay$vagem, measle_all_delay$vacname2)
+```
+
+

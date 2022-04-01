@@ -1,0 +1,2579 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data Exploration</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Vaccination_COVID</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/oucomo/Vaccination_COVID">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Data Exploration</h1>
+<h4 class="date">2020-01-29 (update: 2022-04-01)</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-04-01
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Vaccination_COVID/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version 1.7.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210126code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210126)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210126code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210126)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree3de5b2c3228397ec18ecb6dde3e0530c21625052targetblank3de5b2ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/3de5b2c3228397ec18ecb6dde3e0530c21625052" target="_blank">3de5b2c</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree3de5b2c3228397ec18ecb6dde3e0530c21625052targetblank3de5b2ca" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/3de5b2c3228397ec18ecb6dde3e0530c21625052" target="_blank">3de5b2c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/02_data_exploration2_private_south_children.Rmd
+    Untracked:  analysis/05_merge_child_measle_report_updated4.Rmd
+
+Unstaged changes:
+    Deleted:    analysis/VennDiagram.2022-03-09_17-15-46.log
+    Deleted:    analysis/VennDiagram.2022-03-09_17-16-18.log
+    Deleted:    analysis/VennDiagram.2022-03-09_17-16-24.log
+    Deleted:    analysis/VennDiagram.2022-03-09_17-16-33.log
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>knitr::opts_chunk$set()
+
+library(workflowr)</code></pre>
+<pre><code>This is workflowr version 1.7.0
+Run ?workflowr for help getting started</code></pre>
+<pre class="r"><code>library(data.table)
+library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+✓ tibble  3.1.6     ✓ dplyr   1.0.8
+✓ tidyr   1.2.0     ✓ stringr 1.4.0
+✓ readr   2.1.2     ✓ forcats 0.5.1</code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+x dplyr::between()   masks data.table::between()
+x dplyr::filter()    masks stats::filter()
+x dplyr::first()     masks data.table::first()
+x dplyr::lag()       masks stats::lag()
+x dplyr::last()      masks data.table::last()
+x purrr::transpose() masks data.table::transpose()</code></pre>
+<pre class="r"><code>library(dplyr)
+library(lubridate)</code></pre>
+<pre><code>
+Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:data.table&#39;:
+
+    hour, isoweek, mday, minute, month, quarter, second, wday, week,
+    yday, year</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(gt)
+library(gtsummary)
+library(ggridges)</code></pre>
+<div id="quick-look-at-individuals" class="section level2">
+<h2>Quick look at individuals</h2>
+<pre class="r"><code>error_datetime &lt;- read.csv(file.path(&quot;~&quot;, &quot;tuann349_vad&quot;, &quot;error_datetime.csv&quot;)) %&gt;% as.data.frame()
+error_duplicate &lt;- read.csv(file.path(&quot;~&quot;, &quot;tuann349_vad&quot;, &quot;error_duplicate.csv&quot;)) %&gt;% as.data.frame()
+rm(list = ls(all.names = TRUE))
+dtadir &lt;- file.path(&quot;~&quot;, &quot;sharefolder&quot;, &quot;data&quot;, &quot;tuann349&quot;)
+publicProvinces &lt;- list.dirs(dtadir, full.names = F, recursive = F)
+publicProvinces &lt;- stringi::stri_trans_general(publicProvinces, &quot;any-ascii&quot;)
+
+# individual_private &lt;- readRDS(file = file.path(&quot;~&quot;, &quot;tuann349_vad&quot;, &quot;individual_private.rds&quot;))
+# 
+# individual_private$year &lt;- year(individual_private$dob)
+# individual_private$month &lt;- month(individual_private$dob)
+# individual_private$week &lt;- week(individual_private$dob)
+# 
+# library(operators)
+# individual_private_south &lt;- individual_private[individual_private$year &gt;= 2017 &amp; individual_private$year &lt;= 2020 &amp; individual_private$province %!in% publicProvinces]
+# 
+# individual_private_south_overall &lt;- individual_private_south[, .N, by = .(year, month)]
+# individual_private_south_overall2 &lt;- individual_private_south[, .N, by = .(year, month, week)]
+# individual_private_south_province &lt;- individual_private_south[, .N, by = .(year, month, province)]
+# individual_private_south_province2 &lt;- individual_private_south[, .N, by = .(year, month, week, province)]
+# individual_private_south_sex &lt;- individual_private_south[, .N, by = .(year, month, sex)]
+# individual_private_south_sex2 &lt;- individual_private_south[, .N, by = .(year, month, week, sex)]
+# individual_private_south_province_sex &lt;- individual_private_south[, .N, by = .(year, month, province, sex)]
+# individual_private_south_province_sex2 &lt;- individual_private_south[, .N, by = .(year, month, week, province, sex)]
+# 
+# save(individual_private_south_overall, individual_private_south_province, individual_private_south_sex, individual_private_south_province_sex, file = file.path(&quot;~&quot;, &quot;updated_dataset&quot;, &quot;individual_private_south.Rdata&quot;))
+# 
+# tab_individual_private_south_sum &lt;- tbl_summary(individual_private_south[, .(province, sex, factor(year))])
+# 
+# save(tab_individual_private_south_sum, file = file.path(&quot;~&quot;, &quot;updated_dataset&quot;, &quot;tab_individual_private_south.Rdata&quot;))</code></pre>
+</div>
+<div id="quick-look-at-vaccine-shots" class="section level2">
+<h2>Quick look at vaccine shots</h2>
+<pre class="r"><code>vaccine_vad_private &lt;- readRDS(file = file.path(&quot;~&quot;, &quot;updated_dataset&quot;, &quot;vaccine_vad_private.rds&quot;))</code></pre>
+<p>All vaccines in private dataset</p>
+<pre class="r"><code>unique(vaccine_vad_private$vacname2)</code></pre>
+<pre><code> [1] &quot;Rabies&quot;               &quot;Influenza&quot;            &quot;HepB&quot;                
+ [4] &quot;Measle_Mumps_Rubella&quot; &quot;HepAB&quot;                &quot;Strep&quot;               
+ [7] &quot;SAT&quot;                  &quot;Tetanus&quot;              &quot;DPT&quot;                 
+[10] &quot;Yellow&quot;               &quot;Td&quot;                   &quot;Varicella&quot;           
+[13] &quot;Meningo_ACYW&quot;         &quot;Typhoid&quot;              &quot;Meningo_AC&quot;          
+[16] &quot;HepA&quot;                 &quot;HPV&quot;                  &quot;Vibrio&quot;              
+[19] &quot;JEV&quot;                  &quot;Meningo_BC&quot;           &quot;DPT_Polio&quot;           
+[22] &quot;DPT_Polio_Hib&quot;        &quot;Hib&quot;                  &quot;DPT_Polio_HepB_Hib&quot;  
+[25] &quot;Measle&quot;               &quot;Rota&quot;                 &quot;BCG&quot;                 
+[28] &quot;Rubella&quot;              &quot;DPT_Hib&quot;              &quot;IPV&quot;                 
+[31] &quot;Measle_Rubella&quot;       NA                    </code></pre>
+<p>Select vaccines that are consistent to public</p>
+<pre class="r"><code>vacs &lt;- as.data.table(
+  rbind(
+    cbind(public = &quot;BCG&quot;,            private = &quot;BCG&quot;),
+    cbind(public = &quot;HepBN&quot;,          private = &quot;HepB&quot;),
+    cbind(public = &quot;DPT_HepB_Hib&quot;,   private = c(&quot;DPT_Hib&quot;, &quot;DPT_Polio&quot;, &quot;DPT_Polio_Hib&quot;, &quot;DPT_Polio_HepB_Hib&quot;)),
+    cbind(public = &quot;OPV&quot;,            private = NA),
+    cbind(public = &quot;IPV&quot;,            private = &quot;IPV&quot;),
+    cbind(public = &quot;Measle&quot;,         private = c(&quot;Measle&quot;, &quot;Measle_Mumps_Rubella&quot;, &quot;Measle_Rubella&quot;)),
+    cbind(public = &quot;DPT&quot;,            private = &quot;DPT&quot;),
+    cbind(public = &quot;JEV&quot;,            private = &quot;JEV&quot;),
+    cbind(public = &quot;Td&quot;,             private = &quot;Td&quot;)
+  )
+)
+# Get a vectors of the private vaccines that have the same type in public
+vacnames &lt;- vacs$private[!is.na(vacs$private)]
+vacs</code></pre>
+<pre><code>          public              private
+ 1:          BCG                  BCG
+ 2:        HepBN                 HepB
+ 3: DPT_HepB_Hib              DPT_Hib
+ 4: DPT_HepB_Hib            DPT_Polio
+ 5: DPT_HepB_Hib        DPT_Polio_Hib
+ 6: DPT_HepB_Hib   DPT_Polio_HepB_Hib
+ 7:          OPV                 &lt;NA&gt;
+ 8:          IPV                  IPV
+ 9:       Measle               Measle
+10:       Measle Measle_Mumps_Rubella
+11:       Measle       Measle_Rubella
+12:          DPT                  DPT
+13:          JEV                  JEV
+14:           Td                   Td</code></pre>
+<pre class="r"><code># Children, private provinces and same vaccine as public
+vaccine_vad_private_south &lt;- vaccine_vad_private[vaccine_vad_private$year &gt;= 2017 &amp;
+                                                   vaccine_vad_private$year &lt;= 2020 &amp;
+                                                   !(vaccine_vad_private$province %in% publicProvinces) &amp;
+                                                   vaccine_vad_private$vacname2 %in% vacnames]
+
+# vaccine_overall_private_south &lt;- vaccine_vad_private_south[, .N, by = .(vyear, vmonth)]
+# vaccine_overall_private_south2 &lt;- vaccine_vad_private_south[, .N, by = .(vyear, vmonth, vweek)]
+# 
+# vaccine_schedule_private_south &lt;- vaccine_vad_private_south[, .N, by = .(vsyear, vsmonth)]
+# vaccine_schedule_private_south2 &lt;- vaccine_vad_private_south[, .N, by = .(vsyear, vsmonth, vsweek)]
+# 
+# vaccine_province_private_south &lt;- vaccine_vad_private_south[, .N, by = .(vyear, vmonth, province)]
+# 
+# vaccine_vacname_private_south &lt;- vaccine_vad_private_south[, .N, by = .(vyear, vmonth, vacname2)]
+# #vaccine_vacname_private2 &lt;- vaccine_vad_private[, .N, by = .(vyear, vmonth, vweek, vacname2)]
+# 
+# vaccine_province_vacname_private_south &lt;- vaccine_vad_private_south[, .N, by = .(vyear, vmonth, province, vacname2)]
+# #vaccine_province_vacname_private2 &lt;- vaccine_vad_private[, .N, by = .(vyear, vmonth, vweek, province, vacname2)]
+# 
+# save(vaccine_overall_private_south, vaccine_province_private_south, vaccine_vacname_private_south, vaccine_province_vacname_private_south, file = file.path(&quot;~&quot;, &quot;updated_dataset&quot;, &quot;vaccine_private_south.Rdata&quot;))
+# 
+# tab_vac_sum_private_south &lt;- tbl_summary(vaccine_vad_private_south[, .(province, vacname2, factor(vyear))])
+# save(tab_vac_sum_private_south, file = file.path(&quot;~&quot;, &quot;updated_dataset&quot;, &quot;tab_vaccine_private_south.Rdata&quot;))
+rm(list=c(&quot;vaccine_vad_private&quot;))
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   2493358  133.2   15575928   831.9   10394196   555.2
+Vcells 229734175 1752.8 1931796872 14738.5 2008835763 15326.3</code></pre>
+<pre class="r"><code>load(file.path(&quot;~&quot;, &quot;updated_dataset&quot;, &quot;vaccine_private_south.Rdata&quot;))
+load(file.path(&quot;~&quot;, &quot;updated_dataset&quot;, &quot;tab_vaccine_private_south.Rdata&quot;))
+
+load(file.path(&quot;~&quot;, &quot;updated_dataset&quot;, &quot;individual_private_south.Rdata&quot;))
+load(file.path(&quot;~&quot;, &quot;updated_dataset&quot;, &quot;tab_individual_private_south.Rdata&quot;))</code></pre>
+<div id="descriptive-table" class="section level3">
+<h3>Descriptive table</h3>
+<pre class="r"><code>tab_vac_sum_private_south</code></pre>
+<div id="snzbomsund" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#snzbomsund .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#snzbomsund .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#snzbomsund .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#snzbomsund .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#snzbomsund .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#snzbomsund .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#snzbomsund .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#snzbomsund .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#snzbomsund .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#snzbomsund .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#snzbomsund .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#snzbomsund .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#snzbomsund .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#snzbomsund .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#snzbomsund .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#snzbomsund .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#snzbomsund .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#snzbomsund .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#snzbomsund .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#snzbomsund .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#snzbomsund .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#snzbomsund .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#snzbomsund .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#snzbomsund .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#snzbomsund .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#snzbomsund .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#snzbomsund .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#snzbomsund .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#snzbomsund .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#snzbomsund .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#snzbomsund .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#snzbomsund .gt_left {
+  text-align: left;
+}
+
+#snzbomsund .gt_center {
+  text-align: center;
+}
+
+#snzbomsund .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#snzbomsund .gt_font_normal {
+  font-weight: normal;
+}
+
+#snzbomsund .gt_font_bold {
+  font-weight: bold;
+}
+
+#snzbomsund .gt_font_italic {
+  font-style: italic;
+}
+
+#snzbomsund .gt_super {
+  font-size: 65%;
+}
+
+#snzbomsund .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#snzbomsund .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#snzbomsund .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#snzbomsund .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#snzbomsund .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>N = 4,562,933</strong><sup class="gt_footnote_marks">1</sup></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">province</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">An Giang</td>
+<td class="gt_row gt_center">55,957 (1.2%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ba Ria - Vung Tau</td>
+<td class="gt_row gt_center">110,385 (2.4%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Lieu</td>
+<td class="gt_row gt_center">31,905 (0.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ben Tre</td>
+<td class="gt_row gt_center">66,808 (1.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Dinh</td>
+<td class="gt_row gt_center">90,583 (2.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Duong</td>
+<td class="gt_row gt_center">317,286 (7.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Phuoc</td>
+<td class="gt_row gt_center">71,440 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Thuan</td>
+<td class="gt_row gt_center">59,207 (1.3%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ca Mau</td>
+<td class="gt_row gt_center">20,903 (0.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Can Tho</td>
+<td class="gt_row gt_center">90,827 (2.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Da Nang</td>
+<td class="gt_row gt_center">162,438 (3.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Lak</td>
+<td class="gt_row gt_center">142,774 (3.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Nong</td>
+<td class="gt_row gt_center">30,084 (0.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Nai</td>
+<td class="gt_row gt_center">394,550 (8.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Thap</td>
+<td class="gt_row gt_center">63,243 (1.4%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Gia Lai</td>
+<td class="gt_row gt_center">33,958 (0.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hau Giang</td>
+<td class="gt_row gt_center">21,647 (0.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Khanh Hoa</td>
+<td class="gt_row gt_center">72,170 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kien Giang</td>
+<td class="gt_row gt_center">41,776 (0.9%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kon Tum</td>
+<td class="gt_row gt_center">14,328 (0.3%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lam Dong</td>
+<td class="gt_row gt_center">76,249 (1.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Long An</td>
+<td class="gt_row gt_center">119,426 (2.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ninh Thuan</td>
+<td class="gt_row gt_center">27,126 (0.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Phu Yen</td>
+<td class="gt_row gt_center">26,457 (0.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Binh</td>
+<td class="gt_row gt_center">31,582 (0.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Nam</td>
+<td class="gt_row gt_center">99,117 (2.2%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Ngai</td>
+<td class="gt_row gt_center">74,925 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Tri</td>
+<td class="gt_row gt_center">22,532 (0.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Soc Trang</td>
+<td class="gt_row gt_center">38,912 (0.9%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tay Ninh</td>
+<td class="gt_row gt_center">72,929 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thanh pho Ho Chi Minh</td>
+<td class="gt_row gt_center">1,833,150 (40%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thua Thien Hue</td>
+<td class="gt_row gt_center">72,288 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tien Giang</td>
+<td class="gt_row gt_center">98,906 (2.2%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tinh tap huan</td>
+<td class="gt_row gt_center">12 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tra Vinh</td>
+<td class="gt_row gt_center">28,140 (0.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Vinh Long</td>
+<td class="gt_row gt_center">48,913 (1.1%)</td></tr>
+    <tr><td class="gt_row gt_left">vacname2</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">BCG</td>
+<td class="gt_row gt_center">712 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">DPT</td>
+<td class="gt_row gt_center">1,775 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">DPT_Hib</td>
+<td class="gt_row gt_center">111 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">DPT_Polio</td>
+<td class="gt_row gt_center">47,631 (1.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">DPT_Polio_HepB_Hib</td>
+<td class="gt_row gt_center">2,363,559 (52%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">DPT_Polio_Hib</td>
+<td class="gt_row gt_center">180,949 (4.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">HepB</td>
+<td class="gt_row gt_center">454,479 (10.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">IPV</td>
+<td class="gt_row gt_center">590 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">JEV</td>
+<td class="gt_row gt_center">702,170 (15%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Measle</td>
+<td class="gt_row gt_center">244,105 (5.3%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Measle_Mumps_Rubella</td>
+<td class="gt_row gt_center">564,162 (12%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Measle_Rubella</td>
+<td class="gt_row gt_center">2,431 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Td</td>
+<td class="gt_row gt_center">259 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left">V3</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2017</td>
+<td class="gt_row gt_center">249,276 (5.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2018</td>
+<td class="gt_row gt_center">765,147 (17%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2019</td>
+<td class="gt_row gt_center">1,715,135 (38%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2020</td>
+<td class="gt_row gt_center">1,833,375 (40%)</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="2"><sup class="gt_footnote_marks">1</sup> n (%)</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+<pre class="r"><code>tab_individual_private_south_sum</code></pre>
+<div id="fgwzvuadah" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#fgwzvuadah .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#fgwzvuadah .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#fgwzvuadah .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#fgwzvuadah .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#fgwzvuadah .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#fgwzvuadah .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#fgwzvuadah .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#fgwzvuadah .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#fgwzvuadah .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#fgwzvuadah .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#fgwzvuadah .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#fgwzvuadah .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#fgwzvuadah .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#fgwzvuadah .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#fgwzvuadah .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#fgwzvuadah .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#fgwzvuadah .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fgwzvuadah .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#fgwzvuadah .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#fgwzvuadah .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fgwzvuadah .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#fgwzvuadah .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#fgwzvuadah .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#fgwzvuadah .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fgwzvuadah .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#fgwzvuadah .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#fgwzvuadah .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#fgwzvuadah .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#fgwzvuadah .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fgwzvuadah .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#fgwzvuadah .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fgwzvuadah .gt_left {
+  text-align: left;
+}
+
+#fgwzvuadah .gt_center {
+  text-align: center;
+}
+
+#fgwzvuadah .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#fgwzvuadah .gt_font_normal {
+  font-weight: normal;
+}
+
+#fgwzvuadah .gt_font_bold {
+  font-weight: bold;
+}
+
+#fgwzvuadah .gt_font_italic {
+  font-style: italic;
+}
+
+#fgwzvuadah .gt_super {
+  font-size: 65%;
+}
+
+#fgwzvuadah .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#fgwzvuadah .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#fgwzvuadah .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#fgwzvuadah .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#fgwzvuadah .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>N = 2,373,188</strong><sup class="gt_footnote_marks">1</sup></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">province</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">An Giang</td>
+<td class="gt_row gt_center">33,741 (1.4%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ba Ria - Vung Tau</td>
+<td class="gt_row gt_center">60,256 (2.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Lieu</td>
+<td class="gt_row gt_center">18,623 (0.8%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ben Tre</td>
+<td class="gt_row gt_center">37,383 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Dinh</td>
+<td class="gt_row gt_center">53,997 (2.3%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Duong</td>
+<td class="gt_row gt_center">154,315 (6.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Phuoc</td>
+<td class="gt_row gt_center">43,989 (1.9%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Thuan</td>
+<td class="gt_row gt_center">33,832 (1.4%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ca Mau</td>
+<td class="gt_row gt_center">12,740 (0.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Can Tho</td>
+<td class="gt_row gt_center">52,018 (2.2%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Da Nang</td>
+<td class="gt_row gt_center">78,846 (3.3%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Lak</td>
+<td class="gt_row gt_center">92,554 (3.9%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Nong</td>
+<td class="gt_row gt_center">21,019 (0.9%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Nai</td>
+<td class="gt_row gt_center">200,967 (8.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Thap</td>
+<td class="gt_row gt_center">36,976 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Gia Lai</td>
+<td class="gt_row gt_center">20,551 (0.9%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hau Giang</td>
+<td class="gt_row gt_center">13,779 (0.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Khanh Hoa</td>
+<td class="gt_row gt_center">54,602 (2.3%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kien Giang</td>
+<td class="gt_row gt_center">25,385 (1.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kon Tum</td>
+<td class="gt_row gt_center">12,295 (0.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lam Dong</td>
+<td class="gt_row gt_center">43,507 (1.8%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Long An</td>
+<td class="gt_row gt_center">63,350 (2.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ninh Thuan</td>
+<td class="gt_row gt_center">20,477 (0.9%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Phu Yen</td>
+<td class="gt_row gt_center">19,393 (0.8%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Binh</td>
+<td class="gt_row gt_center">17,193 (0.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Nam</td>
+<td class="gt_row gt_center">56,968 (2.4%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Ngai</td>
+<td class="gt_row gt_center">47,930 (2.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Tri</td>
+<td class="gt_row gt_center">15,890 (0.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Soc Trang</td>
+<td class="gt_row gt_center">24,516 (1.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tay Ninh</td>
+<td class="gt_row gt_center">38,891 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thanh pho Ho Chi Minh</td>
+<td class="gt_row gt_center">821,425 (35%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thua Thien Hue</td>
+<td class="gt_row gt_center">45,881 (1.9%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tien Giang</td>
+<td class="gt_row gt_center">52,579 (2.2%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tinh tap huan</td>
+<td class="gt_row gt_center">5 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tra Vinh</td>
+<td class="gt_row gt_center">18,514 (0.8%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Vinh Long</td>
+<td class="gt_row gt_center">28,801 (1.2%)</td></tr>
+    <tr><td class="gt_row gt_left">sex</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">0</td>
+<td class="gt_row gt_center">1,243,804 (52%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">1</td>
+<td class="gt_row gt_center">1,128,194 (48%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2</td>
+<td class="gt_row gt_center">1,190 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left">V3</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2017</td>
+<td class="gt_row gt_center">641,572 (27%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2018</td>
+<td class="gt_row gt_center">779,740 (33%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2019</td>
+<td class="gt_row gt_center">658,087 (28%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2020</td>
+<td class="gt_row gt_center">293,789 (12%)</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="2"><sup class="gt_footnote_marks">1</sup> n (%)</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+<pre class="r"><code>t1 &lt;- vaccine_vad_private_south %&gt;% 
+  mutate(age=2021-as.numeric(year)
+         # agegr=NA,
+         # agegr=ifelse(age&gt;=0 &amp; age&lt;=10, 1, 
+         #              ifelse(age&gt;10 &amp; age&lt;=20, 2,
+         #                      ifelse(age&gt;20 &amp; age&lt;=30, 3, 
+         #                             ifelse(age&gt;30 &amp; age&lt;=40, 4, 
+         #                                    ifelse(age&gt;40 &amp; age&lt;=50, 5, 
+         #                                           ifelse(age&gt;50, 6, agegr)))))
+         #                 ),
+         # agegr=factor(agegr, levels = c(1,2,3,4,5,6), labels = c(&quot;0-10&quot;, &quot;11-20&quot;, &quot;21-30&quot;, &quot;31-40&quot;, &quot;41-50&quot;, &quot;&gt; 50&quot;)),
+         # yeargr=NA,
+         # yeargr=ifelse(year&gt;=1969 &amp; year&lt;=1980, 1, 
+         #               ifelse(year&gt;1980 &amp; year&lt;=1990, 2, 
+         #                      ifelse(year&gt;1990 &amp; year&lt;=2000, 3, 
+         #                             ifelse(year&gt;2000 &amp; year&lt;=2010, 4, 
+         #                                    ifelse(year&gt;2010 &amp; year&lt;=2020, 5, yeargr))))
+         #               ),
+         # yeargr=factor(yeargr, levels = c(1,2,3,4,5), labels = c(&quot;1969-1980&quot;, &quot;1981-1990&quot;, &quot;1991-2000&quot;, &quot;2001-2010&quot;,&quot;2011-2020&quot;))
+         ) %&gt;%
+  dplyr::select(age, sex, province) %&gt;%
+  tbl_summary(
+  #by=type, # split table by group
+  percent = &quot;column&quot;,
+  missing = &quot;no&quot; # don&#39;t list missing data separately
+  ) %&gt;%
+  add_n() %&gt;% # add column with total number of non-missing observations
+  #add_p(pvalue_fun=~style_pvalue(.x,digits=2)) %&gt;% # test for a difference between groups
+  modify_header(label = &quot;**Variable**&quot;) %&gt;% # update the column header
+  bold_labels() 
+t1</code></pre>
+<div id="jipletdcmn" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#jipletdcmn .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#jipletdcmn .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jipletdcmn .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#jipletdcmn .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#jipletdcmn .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jipletdcmn .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jipletdcmn .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#jipletdcmn .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#jipletdcmn .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#jipletdcmn .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#jipletdcmn .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#jipletdcmn .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#jipletdcmn .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#jipletdcmn .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#jipletdcmn .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#jipletdcmn .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#jipletdcmn .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jipletdcmn .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#jipletdcmn .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#jipletdcmn .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jipletdcmn .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#jipletdcmn .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#jipletdcmn .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jipletdcmn .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jipletdcmn .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#jipletdcmn .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#jipletdcmn .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jipletdcmn .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jipletdcmn .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jipletdcmn .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jipletdcmn .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jipletdcmn .gt_left {
+  text-align: left;
+}
+
+#jipletdcmn .gt_center {
+  text-align: center;
+}
+
+#jipletdcmn .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#jipletdcmn .gt_font_normal {
+  font-weight: normal;
+}
+
+#jipletdcmn .gt_font_bold {
+  font-weight: bold;
+}
+
+#jipletdcmn .gt_font_italic {
+  font-style: italic;
+}
+
+#jipletdcmn .gt_super {
+  font-size: 65%;
+}
+
+#jipletdcmn .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#jipletdcmn .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#jipletdcmn .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#jipletdcmn .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#jipletdcmn .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Variable</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>N</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>N = 4,562,933</strong><sup class="gt_footnote_marks">1</sup></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left" style="font-weight: bold;">age</td>
+<td class="gt_row gt_center">4,562,933</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">1</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">634,068 (14%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">1,533,835 (34%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">3</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">1,496,374 (33%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">4</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">898,656 (20%)</td></tr>
+    <tr><td class="gt_row gt_left" style="font-weight: bold;">sex</td>
+<td class="gt_row gt_center">4,562,933</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">0</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">2,390,107 (52%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">1</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">2,170,809 (48%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">2,017 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="font-weight: bold;">province</td>
+<td class="gt_row gt_center">4,562,933</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">An Giang</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">55,957 (1.2%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ba Ria - Vung Tau</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">110,385 (2.4%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Lieu</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">31,905 (0.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ben Tre</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">66,808 (1.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Dinh</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">90,583 (2.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Duong</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">317,286 (7.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Phuoc</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">71,440 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Binh Thuan</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">59,207 (1.3%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ca Mau</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">20,903 (0.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Can Tho</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">90,827 (2.0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Da Nang</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">162,438 (3.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Lak</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">142,774 (3.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dak Nong</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">30,084 (0.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Nai</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">394,550 (8.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dong Thap</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">63,243 (1.4%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Gia Lai</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">33,958 (0.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hau Giang</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">21,647 (0.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Khanh Hoa</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">72,170 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kien Giang</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">41,776 (0.9%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Kon Tum</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">14,328 (0.3%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lam Dong</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">76,249 (1.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Long An</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">119,426 (2.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ninh Thuan</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">27,126 (0.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Phu Yen</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">26,457 (0.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Binh</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">31,582 (0.7%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Nam</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">99,117 (2.2%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Ngai</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">74,925 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Tri</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">22,532 (0.5%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Soc Trang</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">38,912 (0.9%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tay Ninh</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">72,929 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thanh pho Ho Chi Minh</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">1,833,150 (40%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thua Thien Hue</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">72,288 (1.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tien Giang</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">98,906 (2.2%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tinh tap huan</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">12 (&lt;0.1%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tra Vinh</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">28,140 (0.6%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Vinh Long</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">48,913 (1.1%)</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="3"><sup class="gt_footnote_marks">1</sup> n (%)</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+</div>
+<div id="overall" class="section level3">
+<h3>Overall</h3>
+<pre class="r"><code># individual_private_south_overall &lt;- individual_private_south_overall %&gt;% mutate(
+#   yeargr=NA,
+#   yeargr=ifelse(year&gt;=1969 &amp; year&lt;=1980, 1, 
+#                        ifelse(year&gt;1980 &amp; year&lt;=1990, 2, 
+#                               ifelse(year&gt;1990 &amp; year&lt;=2000, 3, 
+#                                      ifelse(year&gt;2000 &amp; year&lt;=2010, 4, 
+#                                             ifelse(year&gt;2010 &amp; year&lt;=2020, 5, yeargr))))
+#                        ),
+#   yeargr=factor(yeargr, levels = c(1,2,3,4,5), labels = c(&quot;1969-1980&quot;, &quot;1981-1990&quot;, &quot;1991-2000&quot;, &quot;2001-2010&quot;,&quot;2011-2020&quot;))
+# ) 
+individual_private_south_overall2 &lt;- aggregate(individual_private_south_overall$N, by = list(individual_private_south_overall$year, individual_private_south_overall$month), FUN=sum)
+colnames(individual_private_south_overall2) &lt;- c(&quot;year&quot;, &quot;month&quot;, &quot;N&quot;)</code></pre>
+<pre class="r"><code>ggplot(data = individual_private_south_overall2, aes(x = factor(month), y = N/1000, color = factor(year))) +
+  # geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = &quot;grey90&quot;, color = &quot;grey90&quot;, alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = year), size = 1.5) +
+  scale_x_discrete(name = &quot;Month&quot;) +
+  scale_y_continuous(name = &quot;Number of vaccination individuals at private clinics (x 10^3)&quot;) +
+  scale_color_discrete(name = &quot;Year&quot;) +
+  theme_bw() +
+  ggtitle(&quot;Total number of vaccination individuals by month and year&quot;)</code></pre>
+<p><img src="figure/02_data_exploration2_private_south_children.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(filename = file.path(&quot;..&quot;, &quot;figures&quot;, &quot;individual_private_month_year_south.png&quot;), width = 15, height = 10)</code></pre>
+<pre class="r"><code>ggplot(individual_private_south_overall2, aes(month, N/1000, color = factor(year))) +
+  geom_point(size=2) +
+  geom_line(aes(group=year)) +
+  geom_smooth () +
+  #stat_smooth(method=&quot;loess&quot;, formula = y ~ x, colour=&quot;blue&quot;, size=0.5) +
+  scale_x_discrete(name = &quot;Month&quot;) +
+  scale_y_continuous(name = &quot;Number of vaccination individuals (x 10^3)&quot;) +
+  scale_color_discrete(name = &quot;Year&quot;) +
+  theme_bw() +
+  facet_wrap(~ year, scale = &quot;free_y&quot;) +
+  ggtitle(&quot;Total number of vaccination individuals by month and year&quot;)</code></pre>
+<pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="figure/02_data_exploration2_private_south_children.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(filename = file.path(&quot;..&quot;, &quot;figures&quot;, &quot;individual_private_month_year_south3.png&quot;), width = 15, height = 10)</code></pre>
+<pre class="r"><code>ggplot(data = vaccine_overall_private_south, aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = &quot;grey80&quot;, color = &quot;grey90&quot;, alpha = 0.015) +
+  geom_point(size = 3) +
+  geom_line(aes(group = vyear), size = 1.5) +
+  scale_x_discrete(name = &quot;Month&quot;) +
+  geom_smooth() +
+  stat_smooth(method=&quot;loess&quot;, formula = y ~ x, colour=&quot;blue&quot;, size=1.5) +
+  scale_y_continuous(name = &quot;Number of shot (x 10^3)&quot;, breaks = seq(from = 50, to = 1600, by = 100)) +
+  scale_color_discrete(name = &quot;Year&quot;) +
+  theme_bw() +
+  ggtitle(&quot;Total number of vaccination shots by month and year at private clinics&quot;)</code></pre>
+<pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="figure/02_data_exploration2_private_south_children.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(filename = file.path(&quot;..&quot;, &quot;figures&quot;, &quot;vaccine_month_year_private_south.png&quot;), width = 7, height = 5)</code></pre>
+<pre class="r"><code>ggplot(vaccine_overall_private_south, aes(vmonth, N/1000, color = factor(vyear))) +
+  geom_point(size=3) +
+  geom_line(aes(group=vyear)) +
+  geom_smooth () + 
+  stat_smooth(method=&quot;loess&quot;, formula = y ~ x, colour=&quot;blue&quot;, size=1) +
+  scale_x_discrete(name = &quot;Month&quot;) +
+  scale_y_continuous(name = &quot;Number of shot (x 10^3)&quot;) +
+  scale_color_discrete(name = &quot;Year&quot;) +
+  theme_bw() +
+  ggtitle(&quot;Total number of vaccination shots by month and year at private clinics&quot;) +
+  facet_wrap(~ vyear, scale = &quot;free_y&quot;)</code></pre>
+<pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="figure/02_data_exploration2_private_south_children.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(filename = file.path(&quot;..&quot;, &quot;figures&quot;, &quot;vaccine_month_year_private_south2.png&quot;), width = 7, height = 5)</code></pre>
+</div>
+<div id="by-province" class="section level3">
+<h3>By province</h3>
+<pre class="r"><code>ggplot(data = vaccine_province_private_south, aes(x = factor(vmonth), y = N/1000, color = factor(vyear))) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = &quot;grey80&quot;, color = &quot;grey90&quot;, alpha = 0.015) +
+  geom_point() +
+  geom_line(aes(group = vyear)) +
+  scale_x_discrete(name = &quot;Month&quot;) +
+  scale_y_continuous(name = &quot;Number of shot (x 10^3)&quot;) +
+  scale_color_discrete(name = &quot;Year&quot;) +
+  facet_wrap(~ province, scale = &quot;free_y&quot;) +
+  theme_bw() +
+  theme(legend.position = &quot;bottom&quot;) +
+  ggtitle(&quot;Number of vaccination shot in each province by month and year at private clinics&quot;)</code></pre>
+<p><img src="figure/02_data_exploration2_private_south_children.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(filename = file.path(&quot;..&quot;, &quot;figures&quot;, &quot;vaccine_province_year_private_south.png&quot;), width = 10, height = 7)</code></pre>
+</div>
+<div id="by-vaccine" class="section level3">
+<h3>By vaccine</h3>
+<pre class="r"><code>ggplot(data = vaccine_vacname_private_south[!is.na(vacname2)], aes(x = factor(vmonth), y = N/1000)) +
+  geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = &quot;grey80&quot;, color = &quot;grey90&quot;, alpha = 0.015) +
+  geom_point(aes(color = factor(vyear))) +
+  geom_line(aes(group = vyear, color = factor(vyear))) +
+  scale_x_discrete(name = &quot;Month&quot;) +
+  scale_y_continuous(name = &quot;Number of shot (x 10^3)&quot;) +
+  scale_color_discrete(name = &quot;Year&quot;) +
+  facet_wrap(~ vacname2, scale = &quot;free_y&quot;) +
+  theme_bw() +
+  theme(legend.position = &quot;bottom&quot;) +
+  ggtitle(&quot;Total number of shots of each vaccine at private clinics by month and year&quot;)</code></pre>
+<p><img src="figure/02_data_exploration2_private_south_children.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(filename = file.path(&quot;..&quot;, &quot;figures&quot;, &quot;vaccine_month_year_vaccine_private_south.png&quot;), width = 10, height = 7)</code></pre>
+<pre class="r"><code>ggplot(data = vaccine_vacname_private_south[!is.na(vacname2)], aes(x = reorder(vacname2, N/1000, decreasing=T), y = N/1000)) +
+  #geom_rect(aes(xmin = 3, xmax = 5, ymin = -Inf, ymax = Inf), fill = &quot;grey80&quot;, color = &quot;grey90&quot;, alpha = 0.015) +
+  geom_bar(stat = &quot;identity&quot;, fill=&quot;red&quot;, width = 0.75) +
+  #geom_text(aes(label = N/1000, y = N/1000 + 10), size = 3) +
+  scale_x_discrete(name = NULL) +
+  scale_y_continuous(name = &quot;Number of shot (x 10^3)&quot;) +
+  scale_color_discrete(name = &quot;Year&quot;) +
+  facet_wrap(~ vyear, scale = &quot;free_y&quot;) +
+  theme_bw() +
+  theme(axis.text.y = element_text(size = 6),
+        panel.grid.major = element_blank()) + coord_flip() +
+  ggtitle(&quot;Total number of shots at private clinics by vaccine and year&quot;)</code></pre>
+<p><img src="figure/02_data_exploration2_private_south_children.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(filename = file.path(&quot;..&quot;, &quot;figures&quot;, &quot;vaccine_year_vaccine_private_south.png&quot;), width = 10, height = 7)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.5 (2021-03-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.5 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+
+locale:
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] ggridges_0.5.3    gtsummary_1.5.2   gt_0.4.0          lubridate_1.8.0  
+ [5] forcats_0.5.1     stringr_1.4.0     dplyr_1.0.8       purrr_0.3.4      
+ [9] readr_2.1.2       tidyr_1.2.0       tibble_3.1.6      ggplot2_3.3.5    
+[13] tidyverse_1.3.1   data.table_1.14.2 workflowr_1.7.0  
+
+loaded via a namespace (and not attached):
+ [1] httr_1.4.2          sass_0.4.0          splines_4.0.5      
+ [4] jsonlite_1.8.0      modelr_0.1.8        assertthat_0.2.1   
+ [7] getPass_0.2-2       highr_0.9           cellranger_1.1.0   
+[10] yaml_2.3.5          lattice_0.20-41     pillar_1.7.0       
+[13] backports_1.4.1     glue_1.6.2          digest_0.6.29      
+[16] promises_1.2.0.1    checkmate_2.0.0     rvest_1.0.2        
+[19] colorspace_2.0-3    Matrix_1.3-2        htmltools_0.5.2    
+[22] httpuv_1.6.5        plyr_1.8.6          pkgconfig_2.0.3    
+[25] broom_0.7.12        haven_2.4.3         scales_1.1.1       
+[28] processx_3.5.2      whisker_0.4         later_1.3.0        
+[31] tzdb_0.2.0          git2r_0.29.0        mgcv_1.8-33        
+[34] generics_0.1.2      farver_2.1.0        ellipsis_0.3.2     
+[37] withr_2.4.3         cli_3.2.0           magrittr_2.0.2     
+[40] crayon_1.5.0        readxl_1.3.1        evaluate_0.15      
+[43] ps_1.6.0            fs_1.5.2            fansi_1.0.2        
+[46] nlme_3.1-152        broom.helpers_1.6.0 xml2_1.3.3         
+[49] tools_4.0.5         hms_1.1.1           lifecycle_1.0.1    
+[52] munsell_0.5.0       reprex_2.0.1        callr_3.7.0        
+[55] compiler_4.0.5      jquerylib_0.1.4     rlang_1.0.1        
+[58] grid_4.0.5          rstudioapi_0.13     labeling_0.4.2     
+[61] rmarkdown_2.11      gtable_0.3.0        DBI_1.1.2          
+[64] R6_2.5.1            knitr_1.37          fastmap_1.1.0      
+[67] utf8_1.2.2          commonmark_1.7      rprojroot_2.0.2    
+[70] stringi_1.7.6       Rcpp_1.0.8          vctrs_0.3.8        
+[73] dbplyr_2.1.1        tidyselect_1.1.2    xfun_0.29          </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
