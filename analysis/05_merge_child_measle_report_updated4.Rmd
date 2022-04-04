@@ -230,6 +230,12 @@ measles_both$is_private <- ifelse(measles_both$type2 == "private", 1, 0)
 
 We analyse `r nrow(measles_both)` children who went to both public and private clinics for their measles shots.
 
+```{r}
+measles_both %>% select(sex, province, vyear, vacdate_f, type2) %>%
+  tbl_summary(by = type2, percent = "row")
+  
+```
+
 ```{r, fig.height = 7}
 theme_set(theme_bw())
 dd <- datadist(measles_both)
