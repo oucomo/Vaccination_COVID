@@ -125,22 +125,26 @@ dt1$age <- ifelse(dt1$age == 1, 2020,
                   ifelse(dt1$age == 2, 2019, 
                          ifelse(dt1$age == 3, 2018, 2017)))
 p1 <- ggplot(dt1, aes(x = yhat, y = age)) + 
-  geom_point() +
+  geom_point() + 
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Year of birth")
 
 dt2 <- dt[dt$predictor == "province",]
 p2 <- ggplot(dt2, aes(x = yhat, y = reorder(province, -yhat))) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Province")
 
 dt3 <- dt[dt$predictor == "type",]
 p3 <- ggplot(dt3, aes(x = yhat, y = type)) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Type")
 
 dt4 <- dt[dt$predictor == "vacdate_f",]
 p4 <- ggplot(dt4, aes(x = yhat, y = vacdate_f)) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Vaccination period")
 
 plot_grid(p1, p2, p3, p4)
@@ -157,21 +161,25 @@ dt$predictor <- factor(dt$predictor)
 dt1 <- dt[dt$predictor == "vyear",]
 p1 <- ggplot(dt1, aes(x = yhat, y = vyear)) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Vaccination year")
 
 dt2 <- dt[dt$predictor == "province",]
 p2 <- ggplot(dt2, aes(x = yhat, y = reorder(province, -yhat))) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Province")
 
 dt3 <- dt[dt$predictor == "type",]
 p3 <- ggplot(dt3, aes(x = yhat, y = type)) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Type")
 
 dt4 <- dt[dt$predictor == "vacdate_f",]
 p4 <- ggplot(dt4, aes(x = yhat, y = vacdate_f)) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Vaccination period")
 
 plot_grid(p1, p2, p3, p4)
@@ -188,24 +196,52 @@ dt$predictor <- factor(dt$predictor)
 dt1 <- dt[dt$predictor == "expect_vyear",]
 p1 <- ggplot(dt1, aes(x = yhat, y = expect_vyear)) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Expected vaccination year")
 
 dt2 <- dt[dt$predictor == "province",]
 p2 <- ggplot(dt2, aes(x = yhat, y = reorder(province, -yhat))) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Province")
 
 dt3 <- dt[dt$predictor == "type",]
 p3 <- ggplot(dt3, aes(x = yhat, y = type)) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Type")
 
 dt4 <- dt[dt$predictor == "vacdate_f",]
 p4 <- ggplot(dt4, aes(x = yhat, y = vacdate_f)) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(delay)")), y = "Vaccination period")
 
 plot_grid(p1, p2, p3, p4)
+```
+
+
+
+```{r}
+dt_2122 <- measle_all_delay[measle_all_delay$expect_vyear %in% c(2021, 2022),]
+dt_2122$expect_vyear <- factor(dt_2122$expect_vyear)
+dt_2122 %>% select(year, expect_vyear, vacname2, vacdate_f, vagem, type2) %>%
+  tbl_summary(by = expect_vyear, percent = "column")
+```
+
+More information on these 7 children with expected year in 2022.
+```{r, echo = TRUE}
+table(dt_2122$vagem, dt_2122$expect_vyear)
+```
+
+Number of months from date of birth to date of vaccination by type of vaccine in subset children with expected vaccination year in 2021, 2022.
+```{r, echo = TRUE}
+table(dt_2122$vagem, dt_2122$vacname2)
+```
+
+Measles-mumps-rubella is a vaccine in private clinics only.
+```{r}
+table(measle_all_delay$vacname2, measle_all_delay$type2)
 ```
 
 ## Some issues
@@ -230,12 +266,6 @@ measles_both$is_private <- ifelse(measles_both$type2 == "private", 1, 0)
 
 We analyse `r nrow(measles_both)` children who went to both public and private clinics for their measles shots.
 
-```{r}
-measles_both %>% select(sex, province, vyear, vacdate_f, type2) %>%
-  tbl_summary(by = type2, percent = "row")
-  
-```
-
 ```{r, fig.height = 7}
 theme_set(theme_bw())
 dd <- datadist(measles_both)
@@ -250,25 +280,28 @@ dt$predictor <- factor(dt$predictor)
 dt1 <- dt[dt$predictor == "vyear",]
 p1 <- ggplot(dt1, aes(x = yhat, y = vyear)) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(private)")), y = "Year of vaccination")
 
 dt2 <- dt[dt$predictor == "province",]
 p2 <- ggplot(dt2, aes(x = yhat, y = reorder(province, -yhat))) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(private)")), y = "Province")
 
 dt3 <- dt[dt$predictor == "sex",]
 p3 <- ggplot(dt3, aes(x = yhat, y = sex)) + 
   geom_point() + 
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   scale_x_continuous(limits = c(0.4, 0.6)) +
   labs(x = expression(paste(hat(P),"(private)")), y = "Sex")
 
 dt4 <- dt[dt$predictor == "vacdate_f",]
 p4 <- ggplot(dt4, aes(x = yhat, y = vacdate_f)) + 
   geom_point() +
+  geom_errorbar(aes(xmin=lower, xmax=upper), width = .02) +
   labs(x = expression(paste(hat(P),"(private)")), y = "Vaccination period")
 
 plot_grid(p1, p2, p3, p4)
 ```
-
 

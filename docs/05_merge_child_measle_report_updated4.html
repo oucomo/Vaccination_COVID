@@ -359,7 +359,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Vaccination and delays in vaccination due to COVID-19</h1>
 <h4 class="author">Duc Du, Thinh Ong</h4>
-<h4 class="date">2020-01-29 (update: 2022-04-04)</h4>
+<h4 class="date">2020-01-29 (update: 2022-04-05)</h4>
 
 </div>
 
@@ -384,7 +384,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-04-04
+<strong>Last updated:</strong> 2022-04-05
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -475,16 +475,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreec0137f659b61cd690e98f701b1ea3fa72b4bb1b4targetblankc0137f6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/c0137f659b61cd690e98f701b1ea3fa72b4bb1b4" target="_blank">c0137f6</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreebabfba1056b9934a80ccdcdb45149869e4a801f8targetblankbabfba1a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/babfba1056b9934a80ccdcdb45149869e4a801f8" target="_blank">babfba1</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreec0137f659b61cd690e98f701b1ea3fa72b4bb1b4targetblankc0137f6a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreebabfba1056b9934a80ccdcdb45149869e4a801f8targetblankbabfba1a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/c0137f659b61cd690e98f701b1ea3fa72b4bb1b4" target="_blank">c0137f6</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/babfba1056b9934a80ccdcdb45149869e4a801f8" target="_blank">babfba1</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -534,6 +534,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/babfba1056b9934a80ccdcdb45149869e4a801f8/analysis/05_merge_child_measle_report_updated4.Rmd" target="_blank">babfba1</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-04-04
+</td>
+<td>
+add description table for children in “both” clinics
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/babfba1056b9934a80ccdcdb45149869e4a801f8/docs/05_merge_child_measle_report_updated4.html" target="_blank">babfba1</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-04-04
+</td>
+<td>
+add description table for children in “both” clinics
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -822,68 +856,6 @@ thinhong
 </table>
 </div>
 </div>
-</div>
-<div id="some-issues" class="section level2">
-<h2>Some issues</h2>
-<p>Date of birth = date of vaccination although this is measles</p>
-<pre><code>
-  FALSE    TRUE 
-4212095     560 </code></pre>
-<p>Some children were vaccinated very soon after birth (0 - 6 months)</p>
-<pre><code>    
-      Measle Measle_Mumps_Rubella Measle_Rubella
-  0      204                  390            310
-  1       90                   97             90
-  2      113                  120             81
-  3      128                  125             81
-  4      188                  145            110
-  5      381                  160            138
-  6     2138                  202            254
-  7     2472                  216            229
-  8    30086                 1256            236
-  9  1551202                56167            603
-  10  438837                15728            479
-  11  158356                 7795            568
-  12   44281                86714           3646
-  13   21786                52092           8620
-  14   12610                37110          18746
-  15    7329                42690          22119
-  16    4550                31012          23902
-  17    3279                25094          42179
-  18    2937                38832         770517
-  19    1968                23644         269185
-  20    1397                14682         109413
-  21    1124                10171          53970
-  22     724                 7563          32738
-  23     523                 6217          20857
-  24     383                 5667           8535
-  25     291                 4997           6190
-  26     216                 4295           5135
-  27     169                 3716           4237
-  28     144                 3126           3847
-  29     129                 2716           3261
-  30      72                 2389           2323
-  31      69                 2299           1893
-  32      76                 1970           1712
-  33      73                 1812           1490
-  34      43                 1611           1391
-  35      36                 1353            854
-  36      20                 1250            583
-  37      21                 1098            473
-  38      22                  941            432
-  39      20                  860            413
-  40       8                  686            388
-  41       4                  604            317
-  42       6                  479            306
-  43       7                  290            266
-  44       3                  183            108
-  45       3                  146             47
-  46       1                   86             26
-  47       0                   28             14</code></pre>
-</div>
-<div id="people-switch-from-public-to-private" class="section level2">
-<h2>People switch from public to private</h2>
-<p>We analyse 632810 children who went to both public and private clinics for their measles shots.</p>
 <div id="pphsnnkypr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
@@ -1292,140 +1264,174 @@ thinhong
   <thead class="gt_col_headings">
     <tr>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Characteristic</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>private</strong>, N = 275,124<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>public</strong>, N = 357,686<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>2021</strong>, N = 5,721<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>2022</strong>, N = 7<sup class="gt_footnote_marks">1</sup></th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_left">sex</td>
+    <tr><td class="gt_row gt_left">year</td>
 <td class="gt_row gt_center"></td>
 <td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">F</td>
-<td class="gt_row gt_center">159,191 (43%)</td>
-<td class="gt_row gt_center">208,600 (57%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">M</td>
-<td class="gt_row gt_center">115,933 (44%)</td>
-<td class="gt_row gt_center">149,086 (56%)</td></tr>
-    <tr><td class="gt_row gt_left">province</td>
-<td class="gt_row gt_center"></td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Giang</td>
-<td class="gt_row gt_center">5,951 (42%)</td>
-<td class="gt_row gt_center">8,372 (58%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Kan</td>
-<td class="gt_row gt_center">386 (42%)</td>
-<td class="gt_row gt_center">523 (58%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Bac Ninh</td>
-<td class="gt_row gt_center">13,041 (40%)</td>
-<td class="gt_row gt_center">19,164 (60%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Cao Bang</td>
-<td class="gt_row gt_center">540 (45%)</td>
-<td class="gt_row gt_center">662 (55%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Dien Bien</td>
-<td class="gt_row gt_center">722 (42%)</td>
-<td class="gt_row gt_center">1,012 (58%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Giang</td>
-<td class="gt_row gt_center">397 (44%)</td>
-<td class="gt_row gt_center">513 (56%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Nam</td>
-<td class="gt_row gt_center">4,178 (44%)</td>
-<td class="gt_row gt_center">5,309 (56%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Noi</td>
-<td class="gt_row gt_center">116,429 (45%)</td>
-<td class="gt_row gt_center">143,295 (55%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ha Tinh</td>
-<td class="gt_row gt_center">4,385 (43%)</td>
-<td class="gt_row gt_center">5,767 (57%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hai Duong</td>
-<td class="gt_row gt_center">11,745 (42%)</td>
-<td class="gt_row gt_center">16,061 (58%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hai Phong</td>
-<td class="gt_row gt_center">10,158 (45%)</td>
-<td class="gt_row gt_center">12,553 (55%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hoa Binh</td>
-<td class="gt_row gt_center">2,363 (42%)</td>
-<td class="gt_row gt_center">3,233 (58%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hung Yen</td>
-<td class="gt_row gt_center">7,700 (44%)</td>
-<td class="gt_row gt_center">9,624 (56%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lai Chau</td>
-<td class="gt_row gt_center">457 (42%)</td>
-<td class="gt_row gt_center">630 (58%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lang Son</td>
-<td class="gt_row gt_center">977 (45%)</td>
-<td class="gt_row gt_center">1,186 (55%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Lao Cai</td>
-<td class="gt_row gt_center">772 (47%)</td>
-<td class="gt_row gt_center">860 (53%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Nam Dinh</td>
-<td class="gt_row gt_center">10,905 (41%)</td>
-<td class="gt_row gt_center">15,491 (59%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Nghe An</td>
-<td class="gt_row gt_center">10,997 (45%)</td>
-<td class="gt_row gt_center">13,333 (55%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Ninh Binh</td>
-<td class="gt_row gt_center">3,503 (45%)</td>
-<td class="gt_row gt_center">4,240 (55%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Phu Tho</td>
-<td class="gt_row gt_center">15,642 (42%)</td>
-<td class="gt_row gt_center">21,652 (58%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Quang Ninh</td>
-<td class="gt_row gt_center">8,128 (44%)</td>
-<td class="gt_row gt_center">10,205 (56%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Son La</td>
-<td class="gt_row gt_center">1,006 (44%)</td>
-<td class="gt_row gt_center">1,263 (56%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thai Binh</td>
-<td class="gt_row gt_center">6,417 (41%)</td>
-<td class="gt_row gt_center">9,079 (59%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thai Nguyen</td>
-<td class="gt_row gt_center">4,307 (45%)</td>
-<td class="gt_row gt_center">5,317 (55%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Thanh Hoa</td>
-<td class="gt_row gt_center">19,601 (42%)</td>
-<td class="gt_row gt_center">27,396 (58%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Tuyen Quang</td>
-<td class="gt_row gt_center">867 (48%)</td>
-<td class="gt_row gt_center">953 (52%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Vinh Phuc</td>
-<td class="gt_row gt_center">11,939 (40%)</td>
-<td class="gt_row gt_center">18,045 (60%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Yen Bai</td>
-<td class="gt_row gt_center">1,611 (45%)</td>
-<td class="gt_row gt_center">1,948 (55%)</td></tr>
-    <tr><td class="gt_row gt_left">vyear</td>
-<td class="gt_row gt_center"></td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2017</td>
-<td class="gt_row gt_center">1,078 (6.3%)</td>
-<td class="gt_row gt_center">15,913 (94%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2018</td>
-<td class="gt_row gt_center">42,412 (24%)</td>
-<td class="gt_row gt_center">132,424 (76%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2019</td>
-<td class="gt_row gt_center">101,234 (42%)</td>
-<td class="gt_row gt_center">138,913 (58%)</td></tr>
+<td class="gt_row gt_center">1,635 (29%)</td>
+<td class="gt_row gt_center">0 (0%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2020</td>
-<td class="gt_row gt_center">130,400 (65%)</td>
-<td class="gt_row gt_center">70,436 (35%)</td></tr>
+<td class="gt_row gt_center">4,086 (71%)</td>
+<td class="gt_row gt_center">7 (100%)</td></tr>
+    <tr><td class="gt_row gt_left">vacname2</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Measle</td>
+<td class="gt_row gt_center">292 (5.1%)</td>
+<td class="gt_row gt_center">0 (0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Measle_Mumps_Rubella</td>
+<td class="gt_row gt_center">3,715 (65%)</td>
+<td class="gt_row gt_center">0 (0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Measle_Rubella</td>
+<td class="gt_row gt_center">1,714 (30%)</td>
+<td class="gt_row gt_center">7 (100%)</td></tr>
     <tr><td class="gt_row gt_left">vacdate_f</td>
 <td class="gt_row gt_center"></td>
 <td class="gt_row gt_center"></td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Before</td>
-<td class="gt_row gt_center">172,830 (35%)</td>
-<td class="gt_row gt_center">315,745 (65%)</td></tr>
+<td class="gt_row gt_center">93 (1.6%)</td>
+<td class="gt_row gt_center">0 (0%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">After</td>
-<td class="gt_row gt_center">102,294 (71%)</td>
-<td class="gt_row gt_center">41,941 (29%)</td></tr>
+<td class="gt_row gt_center">5,628 (98%)</td>
+<td class="gt_row gt_center">7 (100%)</td></tr>
+    <tr><td class="gt_row gt_left">vagem</td>
+<td class="gt_row gt_center">9.0 (9.0, 11.0)</td>
+<td class="gt_row gt_center">1.0 (0.5, 2.0)</td></tr>
+    <tr><td class="gt_row gt_left">type2</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">private</td>
+<td class="gt_row gt_center">3,938 (69%)</td>
+<td class="gt_row gt_center">0 (0%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">public</td>
+<td class="gt_row gt_center">1,783 (31%)</td>
+<td class="gt_row gt_center">7 (100%)</td></tr>
   </tbody>
   
   <tfoot class="gt_footnotes">
     <tr>
-      <td class="gt_footnote" colspan="3"><sup class="gt_footnote_marks">1</sup> n (%)</td>
+      <td class="gt_footnote" colspan="3"><sup class="gt_footnote_marks">1</sup> n (%); Median (IQR)</td>
     </tr>
   </tfoot>
 </table>
 </div>
+<p>More information on these 7 children with expected year in 2022.</p>
+<pre class="r"><code>table(dt_2122$vagem, dt_2122$expect_vyear)</code></pre>
+<pre><code>    
+     2021 2022
+  0    82    2
+  1    20    2
+  2    27    2
+  3    46    0
+  4    43    1
+  5    48    0
+  6   170    0
+  7   102    0
+  8   151    0
+  9  3014    0
+  10  555    0
+  11  126    0
+  12  260    0
+  13  215    0
+  14  294    0
+  15  243    0
+  16  240    0
+  17   85    0</code></pre>
+<p>Number of months from date of birth to date of vaccination by type of vaccine in subset children with expected vaccination year in 2021, 2022.</p>
+<pre class="r"><code>table(dt_2122$vagem, dt_2122$vacname2)</code></pre>
+<pre><code>    
+     Measle Measle_Mumps_Rubella Measle_Rubella
+  0      10                   52             22
+  1       5                    7             10
+  2       9                   11              9
+  3      14                   17             15
+  4       9                   14             21
+  5      16                   11             21
+  6     130                   16             24
+  7      53                   13             36
+  8      46                   73             32
+  9       0                 2925             89
+  10      0                  502             53
+  11      0                   74             52
+  12      0                    0            260
+  13      0                    0            215
+  14      0                    0            294
+  15      0                    0            243
+  16      0                    0            240
+  17      0                    0             85</code></pre>
+<p>Measles-mumps-rubella is a vaccine in private clinics only.</p>
+<pre><code>                      
+                       private  public
+  Measle                128029 2160490
+  Measle_Mumps_Rubella  500824       0
+  Measle_Rubella           312 1423000</code></pre>
+</div>
+<div id="some-issues" class="section level2">
+<h2>Some issues</h2>
+<p>Date of birth = date of vaccination although this is measles</p>
+<pre><code>
+  FALSE    TRUE 
+4212095     560 </code></pre>
+<p>Some children were vaccinated very soon after birth (0 - 6 months)</p>
+<pre><code>    
+      Measle Measle_Mumps_Rubella Measle_Rubella
+  0      204                  390            310
+  1       90                   97             90
+  2      113                  120             81
+  3      128                  125             81
+  4      188                  145            110
+  5      381                  160            138
+  6     2138                  202            254
+  7     2472                  216            229
+  8    30086                 1256            236
+  9  1551202                56167            603
+  10  438837                15728            479
+  11  158356                 7795            568
+  12   44281                86714           3646
+  13   21786                52092           8620
+  14   12610                37110          18746
+  15    7329                42690          22119
+  16    4550                31012          23902
+  17    3279                25094          42179
+  18    2937                38832         770517
+  19    1968                23644         269185
+  20    1397                14682         109413
+  21    1124                10171          53970
+  22     724                 7563          32738
+  23     523                 6217          20857
+  24     383                 5667           8535
+  25     291                 4997           6190
+  26     216                 4295           5135
+  27     169                 3716           4237
+  28     144                 3126           3847
+  29     129                 2716           3261
+  30      72                 2389           2323
+  31      69                 2299           1893
+  32      76                 1970           1712
+  33      73                 1812           1490
+  34      43                 1611           1391
+  35      36                 1353            854
+  36      20                 1250            583
+  37      21                 1098            473
+  38      22                  941            432
+  39      20                  860            413
+  40       8                  686            388
+  41       4                  604            317
+  42       6                  479            306
+  43       7                  290            266
+  44       3                  183            108
+  45       3                  146             47
+  46       1                   86             26
+  47       0                   28             14</code></pre>
+</div>
+<div id="people-switch-from-public-to-private" class="section level2">
+<h2>People switch from public to private</h2>
+<p>We analyse 632810 children who went to both public and private clinics for their measles shots.</p>
 <pre><code>                Wald Statistics          Response: is_private 
 
  Factor     Chi-Square d.f. P     
@@ -1434,7 +1440,7 @@ thinhong
  province    7283.74   27   &lt;.0001
  sex            7.49    1   0.0062
  TOTAL      75966.08   32   &lt;.0001</code></pre>
-<p><img src="figure/05_merge_child_measle_report_updated4.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/05_merge_child_measle_report_updated4.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1477,29 +1483,29 @@ loaded via a namespace (and not attached):
 [19] cluster_2.1.1       dbplyr_2.1.1        png_0.1-7          
 [22] compiler_4.0.5      httr_1.4.2          backports_1.4.1    
 [25] assertthat_0.2.1    Matrix_1.3-2        fastmap_1.1.0      
-[28] cli_3.2.0           later_1.3.0         htmltools_0.5.2    
-[31] quantreg_5.88       tools_4.0.5         gtable_0.3.0       
-[34] glue_1.6.2          Rcpp_1.0.8          cellranger_1.1.0   
-[37] jquerylib_0.1.4     vctrs_0.3.8         nlme_3.1-152       
-[40] broom.helpers_1.6.0 xfun_0.29           ps_1.6.0           
-[43] rvest_1.0.2         lifecycle_1.0.1     polspline_1.1.19   
-[46] getPass_0.2-2       MASS_7.3-53.1       zoo_1.8-9          
-[49] scales_1.1.1        hms_1.1.1           promises_1.2.0.1   
-[52] sandwich_3.0-1      RColorBrewer_1.1-2  yaml_2.3.5         
-[55] gridExtra_2.3       sass_0.4.0          rpart_4.1-15       
-[58] latticeExtra_0.6-29 stringi_1.7.6       highr_0.9          
-[61] checkmate_2.0.0     commonmark_1.7      rlang_1.0.1        
-[64] pkgconfig_2.0.3     evaluate_0.15       htmlwidgets_1.5.4  
-[67] labeling_0.4.2      processx_3.5.2      tidyselect_1.1.2   
-[70] plyr_1.8.6          magrittr_2.0.2      R6_2.5.1           
-[73] generics_0.1.2      multcomp_1.4-18     DBI_1.1.2          
-[76] pillar_1.7.0        haven_2.4.3         whisker_0.4        
-[79] foreign_0.8-81      withr_2.4.3         nnet_7.3-15        
-[82] modelr_0.1.8        crayon_1.5.0        utf8_1.2.2         
-[85] tzdb_0.2.0          rmarkdown_2.11      jpeg_0.1-9         
-[88] grid_4.0.5          readxl_1.3.1        callr_3.7.0        
-[91] git2r_0.29.0        reprex_2.0.1        digest_0.6.29      
-[94] httpuv_1.6.5        munsell_0.5.0      </code></pre>
+[28] cli_3.2.0           formatR_1.11        later_1.3.0        
+[31] htmltools_0.5.2     quantreg_5.88       tools_4.0.5        
+[34] gtable_0.3.0        glue_1.6.2          Rcpp_1.0.8         
+[37] cellranger_1.1.0    jquerylib_0.1.4     vctrs_0.3.8        
+[40] nlme_3.1-152        broom.helpers_1.6.0 xfun_0.29          
+[43] ps_1.6.0            rvest_1.0.2         lifecycle_1.0.1    
+[46] polspline_1.1.19    getPass_0.2-2       MASS_7.3-53.1      
+[49] zoo_1.8-9           scales_1.1.1        hms_1.1.1          
+[52] promises_1.2.0.1    sandwich_3.0-1      RColorBrewer_1.1-2 
+[55] yaml_2.3.5          gridExtra_2.3       sass_0.4.0         
+[58] rpart_4.1-15        latticeExtra_0.6-29 stringi_1.7.6      
+[61] highr_0.9           checkmate_2.0.0     commonmark_1.7     
+[64] rlang_1.0.1         pkgconfig_2.0.3     evaluate_0.15      
+[67] htmlwidgets_1.5.4   labeling_0.4.2      processx_3.5.2     
+[70] tidyselect_1.1.2    plyr_1.8.6          magrittr_2.0.2     
+[73] R6_2.5.1            generics_0.1.2      multcomp_1.4-18    
+[76] DBI_1.1.2           pillar_1.7.0        haven_2.4.3        
+[79] whisker_0.4         foreign_0.8-81      withr_2.4.3        
+[82] nnet_7.3-15         modelr_0.1.8        crayon_1.5.0       
+[85] utf8_1.2.2          tzdb_0.2.0          rmarkdown_2.11     
+[88] jpeg_0.1-9          grid_4.0.5          readxl_1.3.1       
+[91] callr_3.7.0         git2r_0.29.0        reprex_2.0.1       
+[94] digest_0.6.29       httpuv_1.6.5        munsell_0.5.0      </code></pre>
 </div>
 </div>
 
