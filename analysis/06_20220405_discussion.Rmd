@@ -1,0 +1,161 @@
+---
+title: "Discussion on 05/04/2022"
+author: "Duc Du, Thinh Ong"
+date: ' `r Sys.Date()`'
+output:
+  workflowr::wflow_html:
+    toc: true
+    theme: cosmo
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    keep_md: yes
+  word_document:
+    toc: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache.lazy = FALSE, tidy.opts=list(width.cutoff=60), tidy=TRUE, root.dir = rprojroot::find_rstudio_root_file())
+
+library(data.table)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(ggplot2)
+
+# Path to dataset
+allp <- file.path("~", "updated_dataset")
+# Load vector of public provinces names
+publicProvinces <- readRDS("~/Vaccination_COVID/data/publicProvinces.rds")
+```
+
+Load and process measles dataset
+
+```{r}
+# Load measles data
+load(file.path(allp, "measle_all.Rdata"))
+# Get children and public provinces only
+measle_all <- measle_all[measle_all$province %in% publicProvinces &
+                           measle_all$year >= 2017 & measle_all$year <= 2020,]
+measle_all <- measle_all %>%
+  distinct(., pid, province, district, commune, sex, dob,
+           vacname2, vacdate, .keep_all = TRUE)
+measle_all <- measle_all %>%
+  group_by(pid, vacname2) %>%
+  arrange(vacdate) %>%
+  mutate(shot = 1:n()) %>%
+  ungroup()
+measle_all <- data.table(measle_all)
+measle_all$age <- 2021 - measle_all$year
+measle_all$sex <- ifelse(measle_all$sex==2, 1, measle_all$sex)
+measle_all$sex <- factor(measle_all$sex, levels=c(0,1), labels=c("F","M"))
+measle_all$shot2 <- ifelse(measle_all$shot >= 2, 2, measle_all$shot)
+measle_all$start2 <- ifelse(measle_all$shot2 == 2, NA, measle_all$start)
+measle_all$start2 <- ifelse(measle_all$vacname2 == "Measle_Mumps_Rubella" & measle_all$shot2 == 1, 12, measle_all$start2)
+measle_all$vdelay2 <- measle_all$vagem2 - measle_all$start2
+measle_all <- measle_all[measle_all$shot == 1,]
+measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start)
+```
+
+## Individual level
+
+Extract children who get 2 shots
+
+```{r}
+measles_2shots <- measle_all[duplicated(measle_all$pid) | duplicated(measle_all$pid, fromLast = T),]
+
+dup_sameday <- measles_2shots[duplicated(measles_2shots[,c("pid", "vacdate")]) |
+                                duplicated(measles_2shots[,c("pid", "vacdate")], fromLast = T),
+                              c("pid", "vacdate", "vacname2", "type2")]
+head(dup_sameday, 10)
+```
+
+Some received the same vaccine in the same day, filter them out and continue
+
+```{r}
+# Remove children with multiple shots of measles in the same day
+measles_2shots <- measles_2shots %>%
+  distinct(., pid, vacdate, .keep_all = T)
+
+# Now subset the one still get 2 shots
+measles_2shots <- measles_2shots[duplicated(measles_2shots$pid) | duplicated(measles_2shots$pid, fromLast = T),]
+
+# Sort by vaccination date and numbering the shot
+measles_2shots <- measles_2shots %>%
+  group_by(pid) %>%
+  arrange(vacdate) %>%
+  mutate(vtimes = 1:n(),
+         vacdate_1st = first(vacdate)) %>%
+  ungroup()
+
+# How many shots they receive
+table(measles_2shots$vtimes)
+```
+
+Some received 3 shots, filtered them out. Change dataset from long to wide format
+
+```{r}
+# Remove those who get the 3rd shot
+measles_2shots <- measles_2shots[measles_2shots$vtimes != 3,]
+measles_2shots <- measles_2shots[order(measles_2shots$pid),]
+
+# Prefix "shot" to vtimes to make wide data frame easier
+measles_2shots$vtimes <- paste0("shot", measles_2shots$vtimes)
+
+df <- measles_2shots[, c("pid", "vacdate_1st", "vtimes", "type2")]
+df <- df %>%
+  pivot_wider(., names_from = vtimes, values_from = type2)
+
+head(df)
+```
+
+Aggregate them by month
+
+```{r}
+df$vyear_1st <- year(df$vacdate_1st)
+df$vmonth_1st <- month(df$vacdate_1st)
+
+df_type <- aggregate(pid ~ vyear_1st + vmonth_1st + shot1 + shot2, data = df, FUN = length)
+
+df_type <- df_type %>%
+  group_by(vyear_1st, vmonth_1st, shot1) %>%
+  mutate(denom = sum(pid))
+
+df_type$pct2 <- 100 * df_type$pid / df_type$denom
+
+# Take 01/2018 as an example
+df_type %>%
+  filter(vyear_1st == 2018 & vmonth_1st == 1) %>%
+  print()
+```
+
+Line plot
+
+```{r}
+# Get only row that 2nd shot is private
+df_plot <- df_type[df_type$shot2 == "private",]
+
+# To plot on a date format x-axis
+df_plot$vacdate_1st <- ym(paste0(df_plot$vyear_1st, "-", df_plot$vmonth_1st))
+
+# Subset from 09/2017 to 03/2020
+df_plot <- df_plot[df_plot$vacdate_1st >= "2017-09-01" &
+                     df_plot$vacdate_1st <= "2020-03-01",]
+
+df_plot$shot1 <- factor(df_plot$shot1, levels = c("public", "private"))
+
+ggplot(df_plot, aes(x = vacdate_1st, y = pct2, group = shot1)) +
+  geom_line(aes(linetype = shot1), stat = "identity", size = 1.1) +
+  scale_x_date(date_labels = "%b-%Y", date_breaks = "1 month") +
+  ylim(c(0, 100)) +
+  theme_minimal() +
+  labs(x = "Month of receiving 1st dose", y = "% 2nd dose in private", linetype = "1st dose in") +
+  theme(axis.text.x = element_text(angle = -45, hjust = -0.1),
+        panel.grid.minor.x = element_blank())
+```
+
