@@ -97,7 +97,7 @@ measles_2shots <- measles_2shots %>%
 table(measles_2shots$vtimes)
 ```
 
-Some received 3 shots, filtered them out. Change dataset from long to wide format
+Some received 3 shots, filtered them out.
 
 ```{r}
 # Remove those who get the 3rd shot
@@ -106,10 +106,16 @@ measles_2shots <- measles_2shots[order(measles_2shots$pid),]
 
 # Prefix "shot" to vtimes to make wide data frame easier
 measles_2shots$vtimes <- paste0("shot", measles_2shots$vtimes)
+```
 
+Change dataset from long to wide format
+```{r}
 df <- measles_2shots[, c("pid", "vacdate_1st", "vtimes", "type2")]
 df <- df %>%
   pivot_wider(., names_from = vtimes, values_from = type2)
+
+df$vyear_1st <- year(df$vacdate_1st)
+df$vmonth_1st <- month(df$vacdate_1st)
 
 head(df)
 ```
@@ -117,9 +123,6 @@ head(df)
 Aggregate them by month
 
 ```{r}
-df$vyear_1st <- year(df$vacdate_1st)
-df$vmonth_1st <- month(df$vacdate_1st)
-
 df_type <- aggregate(pid ~ vyear_1st + vmonth_1st + shot1 + shot2, data = df, FUN = length)
 
 df_type <- df_type %>%
@@ -151,6 +154,7 @@ df_plot$shot1 <- factor(df_plot$shot1, levels = c("public", "private"))
 
 ggplot(df_plot, aes(x = vacdate_1st, y = pct2, group = shot1)) +
   geom_line(aes(linetype = shot1), stat = "identity", size = 1.1) +
+  geom_vline(xintercept=as.numeric(as.Date("2019-07-01")), color = "orange") +
   scale_x_date(date_labels = "%b-%Y", date_breaks = "1 month") +
   ylim(c(0, 100)) +
   theme_minimal() +
@@ -158,4 +162,53 @@ ggplot(df_plot, aes(x = vacdate_1st, y = pct2, group = shot1)) +
   theme(axis.text.x = element_text(angle = -45, hjust = -0.1),
         panel.grid.minor.x = element_blank())
 ```
+
+Aggregate by province
+```{r}
+df <- measles_2shots[, c("pid", "province", "vacdate_1st", "vtimes", "type2")]
+df <- df %>%
+  pivot_wider(., names_from = vtimes, values_from = type2)
+
+df$vyear_1st <- year(df$vacdate_1st)
+df$vmonth_1st <- month(df$vacdate_1st)
+
+df_type <- aggregate(pid ~ vyear_1st + vmonth_1st + province + shot1 + shot2, data = df, FUN = length)
+
+df_type <- df_type %>%
+  group_by(vyear_1st, province, vmonth_1st, shot1) %>%
+  mutate(denom = sum(pid))
+
+df_type$pct2 <- 100 * df_type$pid / df_type$denom
+
+# An example
+df_type %>%
+  filter(vyear_1st == 2018 & province == "Ha Noi" & vmonth_1st == 1) %>%
+  print()
+```
+
+Plot by province
+```{r}
+# Get only row that 2nd shot is private
+df_plot <- df_type[df_type$shot2 == "private",]
+
+# To plot on a date format x-axis
+df_plot$vacdate_1st <- ym(paste0(df_plot$vyear_1st, "-", df_plot$vmonth_1st))
+
+# Subset from 09/2017 to 03/2020
+df_plot <- df_plot[df_plot$vacdate_1st >= "2017-09-01" &
+                     df_plot$vacdate_1st <= "2020-03-01",]
+
+df_plot$shot1 <- factor(df_plot$shot1, levels = c("public", "private"))
+
+ggplot(df_plot, aes(x = vacdate_1st, y = pct2, group = shot1)) +
+  geom_line(aes(linetype = shot1), stat = "identity") +
+  geom_vline(xintercept=as.numeric(as.Date("2019-07-01")), color = "orange") +
+  facet_wrap(. ~ province) +
+  ylim(c(0, 100)) +
+  theme_minimal() +
+  labs(x = "Month of receiving 1st dose", y = "% 2nd dose in private", linetype = "1st dose in") +
+  theme(axis.text.x = element_blank(),
+        panel.grid.minor.x = element_blank())
+```
+
 
