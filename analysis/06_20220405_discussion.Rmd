@@ -59,7 +59,7 @@ measle_all$start2 <- ifelse(measle_all$shot2 == 2, NA, measle_all$start)
 measle_all$start2 <- ifelse(measle_all$vacname2 == "Measle_Mumps_Rubella" & measle_all$shot2 == 1, 12, measle_all$start2)
 measle_all$vdelay2 <- measle_all$vagem2 - measle_all$start2
 measle_all <- measle_all[measle_all$shot == 1,]
-measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start)
+measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start2)
 ```
 
 ## Individual level
@@ -211,4 +211,53 @@ ggplot(df_plot, aes(x = vacdate_1st, y = pct2, group = shot1)) +
         panel.grid.minor.x = element_blank())
 ```
 
+## Population level
+```{r}
+df <- measle_all[, c("pid", "province", "vyear", "vmonth", "type2")]
+df_type <- aggregate(pid ~ vyear + vmonth + type2, data = df, FUN = length)
+
+# Percentage of private
+df_type <- df_type %>%
+  group_by(vyear, vmonth) %>%
+  mutate(denom = sum(pid))
+
+df_type$pct <- 100 * df_type$pid / df_type$denom
+
+# Get only row that 2nd shot is private
+df_plot <- df_type[df_type$type2 == "private",]
+
+# To plot on a date format x-axis
+df_plot$vacdate <- ym(paste0(df_plot$vyear, "-", df_plot$vmonth))
+df_plot <- df_plot[df_plot$vacdate >= "2017-09-01",]
+
+ggplot(df_plot, aes(x = vacdate, y = pct)) +
+  geom_line(stat = "identity") +
+  labs(x = "Percentage of private shot", y = "Month of receiving shot") +
+  theme_minimal()
+```
+
+## Plot per province
+```{r}
+df_type <- aggregate(pid ~ vyear + province + vmonth + type2, data = df, FUN = length)
+
+# Percentage of private
+df_type <- df_type %>%
+  group_by(vyear, province, vmonth) %>%
+  mutate(denom = sum(pid))
+
+df_type$pct <- 100 * df_type$pid / df_type$denom
+
+# Get only row that 2nd shot is private
+df_plot <- df_type[df_type$type2 == "private",]
+
+# To plot on a date format x-axis
+df_plot$vacdate <- ym(paste0(df_plot$vyear, "-", df_plot$vmonth))
+df_plot <- df_plot[df_plot$vacdate >= "2017-09-01",]
+
+ggplot(df_plot, aes(x = vacdate, y = pct)) +
+  geom_line(stat = "identity") +
+  facet_wrap(. ~ province) +
+  labs(x = "Percentage of private shot", y = "Month of receiving shot") +
+  theme_minimal()
+```
 

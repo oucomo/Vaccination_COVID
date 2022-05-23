@@ -1,0 +1,234 @@
+---
+title: "Discussion on 05/04/2022"
+author: "Duc Du, Thinh Ong"
+date: ' `r Sys.Date()`'
+output:
+  workflowr::wflow_html:
+    toc: true
+    theme: cosmo
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+    keep_md: yes
+  word_document:
+    toc: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache.lazy = FALSE, tidy.opts=list(width.cutoff=60), tidy=TRUE, root.dir = rprojroot::find_rstudio_root_file())
+
+library(data.table)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(ggplot2)
+
+# Path to dataset
+allp <- file.path("~", "updated_dataset")
+
+# Load vector of public provinces names
+publicProvinces <- readRDS("~/Vaccination_COVID/data/publicProvinces.rds")
+```
+
+Load and process measles dataset
+
+```{r}
+# Load measles data
+load(file.path(allp, "measle_all.Rdata"))
+
+# Get children and public provinces only
+measle_all <- measle_all[measle_all$province %in% publicProvinces &
+                           measle_all$year >= 2017 & measle_all$year <= 2020,]
+
+# Remove duplication: same id, address (province, district, commune), sex, dob, received the same vaccine in the same day (vacname2, vacdate)
+measle_all <- measle_all %>%
+  distinct(., pid, province, district, commune, sex, dob,
+           vacname2, vacdate, .keep_all = TRUE)
+
+# Remove records have the same measles vaccine in 1 day
+measle_all <- measle_all %>%
+  distinct(., pid, vacdate, .keep_all = T)
+
+# Remove records have dob = vacdate (since this is measles)
+measle_all <- measle_all[measle_all$dob != measle_all$vacdate,]
+
+# Grouped by id and vaccine name, sorted by vaccination date, the 1st time they come shot = 1, second time shot = 2...
+measle_all <- measle_all %>%
+  group_by(pid, vacname2) %>%
+  arrange(vacdate) %>%
+  mutate(shot = 1:n()) %>%
+  ungroup()
+
+# Turn into data table
+measle_all <- data.table(measle_all)
+
+# How many shots they got
+# table(measle_all$shot)
+# 
+#       1       2       3       4       5 
+# 4211481  295200    2074      34       7 
+
+# Only get people having <= 2 shots
+measle_all <- measle_all[measle_all$shot <= 2,]
+
+# table(measle_all$shot)
+#       1       2 
+# 4211481  295200 
+
+# Clean sex variable
+measle_all$sex <- ifelse(measle_all$sex==2, 1, measle_all$sex)
+measle_all$sex <- factor(measle_all$sex, levels=c(0,1), labels=c("F","M"))
+
+# Compute age
+measle_all$age <- 2021 - measle_all$year
+measle_all$vdelaym <- measle_all$vagem2 - measle_all$start
+
+# Expected date of receiving vaccine shots
+measle_all$expect_vdate <- measle_all$dob %m+% months(measle_all$start)
+measle_all$expect_vyear <- year(measle_all$expect_vdate)
+measle_all$expect_vyear <- factor(measle_all$expect_vyear)
+measle_all$expect_vmonth <- month(measle_all$expect_vdate)
+measle_all$expect_vmonth <- factor(measle_all$expect_vmonth)
+```
+
+All provinces
+```{r}
+measles_1st <- measle_all[measle_all$shot == 1 & measle_all$expect_vyear %in% c(2019, 2020),]
+
+ggplot(measles_1st, aes(x = vdelaym, group = expect_vyear, fill = expect_vyear)) +
+  geom_density(alpha = 0.5) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal() +
+  facet_wrap(. ~ expect_vmonth, scales = "free_y") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("Measles") +
+  theme(axis.text.y=element_blank())
+```
+
+## April
+
+```{r}
+measles_1st <- measle_all[measle_all$shot == 1 & measle_all$expect_vyear %in% c(2019, 2020) & measle_all$expect_vmonth == 4,]
+
+ggplot(measles_1st, aes(x = vdelaym, group = expect_vyear, fill = expect_vyear)) +
+  geom_density(alpha = 0.5) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal() +
+  facet_wrap(. ~ province, scales = "free") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("All clinics: April") +
+  theme(axis.text.y=element_blank())
+```
+
+```{r}
+measles_1st <- measle_all[measle_all$shot == 1 & measle_all$expect_vyear %in% c(2019, 2020) & measle_all$expect_vmonth == 4 & measle_all$type2 == "public",]
+
+ggplot(measles_1st, aes(x = vdelaym, group = expect_vyear, fill = expect_vyear)) +
+  geom_density(alpha = 0.5) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal() +
+  facet_wrap(. ~ province, scales = "free") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("Public clinics: April") +
+  theme(axis.text.y=element_blank())
+```
+
+```{r}
+measles_1st <- measle_all[measle_all$shot == 1 & measle_all$expect_vyear %in% c(2019, 2020) & measle_all$expect_vmonth == 4 & measle_all$type2 == "private",]
+
+ggplot(measles_1st, aes(x = vdelaym, group = expect_vyear, fill = expect_vyear)) +
+  geom_density(alpha = 0.5) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal() +
+  facet_wrap(. ~ province, scales = "free") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("Private clinics: April") +
+  theme(axis.text.y=element_blank())
+```
+
+## May
+
+```{r}
+measles_1st <- measle_all[measle_all$shot == 1 & measle_all$expect_vyear %in% c(2019, 2020) & measle_all$expect_vmonth == 5,]
+
+ggplot(measles_1st, aes(x = vdelaym, group = expect_vyear, fill = expect_vyear)) +
+  geom_density(alpha = 0.5) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal() +
+  facet_wrap(. ~ province, scales = "free") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("All clinics: May") +
+  theme(axis.text.y=element_blank())
+```
+
+```{r}
+measles_1st <- measle_all[measle_all$shot == 1 & measle_all$expect_vyear %in% c(2019, 2020) & measle_all$expect_vmonth == 5 & measle_all$type2 == "public",]
+
+ggplot(measles_1st, aes(x = vdelaym, group = expect_vyear, fill = expect_vyear)) +
+  geom_density(alpha = 0.5) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal() +
+  facet_wrap(. ~ province, scales = "free") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("Public clinics: May") +
+  theme(axis.text.y=element_blank())
+```
+
+```{r}
+measles_1st <- measle_all[measle_all$shot == 1 & measle_all$expect_vyear %in% c(2019, 2020) & measle_all$expect_vmonth == 5 & measle_all$type2 == "private",]
+
+ggplot(measles_1st, aes(x = vdelaym, group = expect_vyear, fill = expect_vyear)) +
+  geom_density(alpha = 0.5) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal() +
+  facet_wrap(. ~ province, scales = "free") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("Private clinics: May") +
+  theme(axis.text.y=element_blank())
+```
+
+## June
+
+```{r}
+measles_1st <- measle_all[measle_all$shot == 1 & measle_all$expect_vyear %in% c(2019, 2020) & measle_all$expect_vmonth == 6,]
+
+ggplot(measles_1st, aes(x = vdelaym, group = expect_vyear, fill = expect_vyear)) +
+  geom_density(alpha = 0.5) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal() +
+  facet_wrap(. ~ province, scales = "free") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("All clinics: June") +
+  theme(axis.text.y=element_blank())
+```
+
+```{r}
+measles_1st <- measle_all[measle_all$shot == 1 & measle_all$expect_vyear %in% c(2019, 2020) & measle_all$expect_vmonth == 6 & measle_all$type2 == "public",]
+
+ggplot(measles_1st, aes(x = vdelaym, group = expect_vyear, fill = expect_vyear)) +
+  geom_density(alpha = 0.5) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal() +
+  facet_wrap(. ~ province, scales = "free") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("Public clinics: June") +
+  theme(axis.text.y=element_blank())
+```
+
+```{r}
+measles_1st <- measle_all[measle_all$shot == 1 & measle_all$expect_vyear %in% c(2019, 2020) & measle_all$expect_vmonth == 6 & measle_all$type2 == "private",]
+
+ggplot(measles_1st, aes(x = vdelaym, group = expect_vyear, fill = expect_vyear)) +
+  geom_density(alpha = 0.5) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal() +
+  facet_wrap(. ~ province, scales = "free") +
+  labs(y = NULL, x = "Delay (months)", fill = "Year") +
+  ggtitle("Private clinics: June") +
+  theme(axis.text.y=element_blank())
+```
