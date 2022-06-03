@@ -3,7 +3,7 @@ title: "Discussion on 05/04/2022"
 author: "Duc Du, Thinh Ong"
 date: ' `r Sys.Date()`'
 output:
-  word_document:
+  pdf_document:
     toc: yes
   workflowr::wflow_html:
     toc: true
@@ -13,7 +13,7 @@ output:
     toc: yes
     toc_float: yes
     keep_md: yes
-  pdf_document:
+  word_document:
     toc: yes
 editor_options:
   chunk_output_type: inline
@@ -232,8 +232,15 @@ df_plot <- df_plot[df_plot$vacdate >= "2017-09-01",]
 
 ggplot(df_plot, aes(x = vacdate, y = pct)) +
   geom_line(stat = "identity") +
+  geom_vline(xintercept=as.numeric(as.Date("2020-04-01")), color = "orange") +
   labs(y = "Percentage of private shot", x = "Month of receiving shot") +
   theme_minimal()
+```
+
+A sudden increase in percentage of private shot in April because there were less shots in public (the denominator is low)
+```{r}
+df_plot <- data.frame(df_plot)
+df_plot[order(df_plot$vacdate),]
 ```
 
 ## Plot per province
@@ -256,6 +263,7 @@ df_plot <- df_plot[df_plot$vacdate >= "2017-09-01",]
 
 ggplot(df_plot, aes(x = vacdate, y = pct)) +
   geom_line(stat = "identity") +
+  geom_vline(xintercept=as.numeric(as.Date("2020-04-01")), color = "orange") +
   facet_wrap(. ~ province) +
   labs(x = "Percentage of private shot", y = "Month of receiving shot") +
   theme_light()

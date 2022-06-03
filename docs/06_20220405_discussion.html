@@ -500,16 +500,16 @@ data/publicProvinces.rds
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreec040fded8b5d4da3ad6947653a9dda591fee8aa7targetblankc040fdea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/c040fded8b5d4da3ad6947653a9dda591fee8aa7" target="_blank">c040fde</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree643d512a932012abbaff2f11bbc386af47524f75targetblank643d512a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/643d512a932012abbaff2f11bbc386af47524f75" target="_blank">643d512</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreec040fded8b5d4da3ad6947653a9dda591fee8aa7targetblankc040fdea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtree643d512a932012abbaff2f11bbc386af47524f75targetblank643d512a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/c040fded8b5d4da3ad6947653a9dda591fee8aa7" target="_blank">c040fde</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/643d512a932012abbaff2f11bbc386af47524f75" target="_blank">643d512</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -519,12 +519,8 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  analysis/01_data_cleaning_T.Rmd
-
 Unstaged changes:
     Modified:   analysis/06_20220405_discussion.Rmd
-    Modified:   analysis/06_20220522_poster.Rmd
 
 </code></pre>
 <p>
@@ -563,6 +559,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/643d512a932012abbaff2f11bbc386af47524f75/analysis/06_20220405_discussion.Rmd" target="_blank">643d512</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-06-03
+</td>
+<td>
+Switching from public to private
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/643d512a932012abbaff2f11bbc386af47524f75/docs/06_20220405_discussion.html" target="_blank">643d512</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-06-03
+</td>
+<td>
+Switching from public to private
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -973,9 +1003,91 @@ df_plot$vacdate &lt;- ym(paste0(df_plot$vyear, &quot;-&quot;, df_plot$vmonth))
 df_plot &lt;- df_plot[df_plot$vacdate &gt;= &quot;2017-09-01&quot;, ]
 
 ggplot(df_plot, aes(x = vacdate, y = pct)) + geom_line(stat = &quot;identity&quot;) +
-    labs(y = &quot;Percentage of private shot&quot;, x = &quot;Month of receiving shot&quot;) +
-    theme_minimal()</code></pre>
+    geom_vline(xintercept = as.numeric(as.Date(&quot;2020-04-01&quot;)),
+        color = &quot;orange&quot;) + labs(y = &quot;Percentage of private shot&quot;,
+    x = &quot;Month of receiving shot&quot;) + theme_minimal()</code></pre>
 <p><img src="figure/06_20220405_discussion.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/643d512a932012abbaff2f11bbc386af47524f75/docs/figure/06_20220405_discussion.Rmd/unnamed-chunk-11-1.png" target="_blank">643d512</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>A sudden increase in percentage of private shot in April because there were less shots in public (the denominator is low)</p>
+<pre class="r"><code>df_plot &lt;- data.frame(df_plot)
+df_plot[order(df_plot$vacdate), ]</code></pre>
+<pre><code>   vyear vmonth   type2   pid  denom       pct    vacdate
+25  2017      9 private    36    474  7.594937 2017-09-01
+29  2017     10 private   772  22505  3.430349 2017-10-01
+33  2017     11 private  1790  52177  3.430630 2017-11-01
+37  2017     12 private  1828  55225  3.310095 2017-12-01
+1   2018      1 private  2683  56231  4.771389 2018-01-01
+4   2018      2 private  2244  45005  4.986113 2018-02-01
+7   2018      3 private  5375  68759  7.817158 2018-03-01
+10  2018      4 private  5203  63080  8.248256 2018-04-01
+13  2018      5 private  6527  76754  8.503791 2018-05-01
+16  2018      6 private  7089  77318  9.168628 2018-06-01
+19  2018      7 private  9075 113127  8.021958 2018-07-01
+22  2018      8 private 10925 132428  8.249766 2018-08-01
+26  2018      9 private 10227 112362  9.101832 2018-09-01
+30  2018     10 private 11871 118028 10.057783 2018-10-01
+34  2018     11 private 10649 119010  8.947988 2018-11-01
+38  2018     12 private 10355 167894  6.167582 2018-12-01
+2   2019      1 private 11308  98387 11.493388 2019-01-01
+5   2019      2 private 10439  83395 12.517537 2019-02-01
+8   2019      3 private 17204 120072 14.328070 2019-03-01
+11  2019      4 private 15582 113395 13.741347 2019-04-01
+14  2019      5 private 17836 127113 14.031610 2019-05-01
+17  2019      6 private 18360 140843 13.035792 2019-06-01
+20  2019      7 private 19348 139661 13.853545 2019-07-01
+23  2019      8 private 20662 133728 15.450766 2019-08-01
+27  2019      9 private 19362 122779 15.769798 2019-09-01
+31  2019     10 private 21356 127627 16.733136 2019-10-01
+35  2019     11 private 21800 124771 17.472009 2019-11-01
+39  2019     12 private 21470 117455 18.279341 2019-12-01
+3   2020      1 private 18131  87731 20.666583 2020-01-01
+6   2020      2 private 22358 127126 17.587276 2020-02-01
+9   2020      3 private 20695 125450 16.496612 2020-03-01
+12  2020      4 private 15097  52442 28.787994 2020-04-01
+15  2020      5 private 36325 184711 19.665856 2020-05-01
+18  2020      6 private 31839 149030 21.364155 2020-06-01
+21  2020      7 private 33947 144345 23.517960 2020-07-01
+24  2020      8 private 32955 159425 20.671162 2020-08-01
+28  2020      9 private 28295 133579 21.182222 2020-09-01
+32  2020     10 private 24356 106421 22.886460 2020-10-01
+36  2020     11 private 27443 108791 25.225432 2020-11-01
+40  2020     12 private 26235 103643 25.312853 2020-12-01</code></pre>
 </div>
 <div id="plot-per-province" class="section level2">
 <h2>Plot per province</h2>
@@ -997,9 +1109,10 @@ df_plot$vacdate &lt;- ym(paste0(df_plot$vyear, &quot;-&quot;, df_plot$vmonth))
 df_plot &lt;- df_plot[df_plot$vacdate &gt;= &quot;2017-09-01&quot;, ]
 
 ggplot(df_plot, aes(x = vacdate, y = pct)) + geom_line(stat = &quot;identity&quot;) +
-    facet_wrap(. ~ province) + labs(x = &quot;Percentage of private shot&quot;,
+    geom_vline(xintercept = as.numeric(as.Date(&quot;2020-04-01&quot;)),
+        color = &quot;orange&quot;) + facet_wrap(. ~ province) + labs(x = &quot;Percentage of private shot&quot;,
     y = &quot;Month of receiving shot&quot;) + theme_light()</code></pre>
-<p><img src="figure/06_20220405_discussion.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/06_20220405_discussion.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="missing-measles-shot-for-children-born-in-2019-and-2020-vaccine-measles-at-9-month" class="section level2">
 <h2>Missing measles shot for children born in 2019 and 2020: vaccine Measles (at 9 month)</h2>
@@ -1049,19 +1162,20 @@ other attached packages:
 [5] data.table_1.14.2
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.8       formatR_1.11     pillar_1.7.0     compiler_4.0.5  
- [5] later_1.3.0      jquerylib_0.1.4  git2r_0.29.0     highr_0.9       
- [9] workflowr_1.7.0  tools_4.0.5      digest_0.6.29    gtable_0.3.0    
-[13] evaluate_0.15    lifecycle_1.0.1  tibble_3.1.6     pkgconfig_2.0.3 
-[17] rlang_1.0.1      DBI_1.1.2        cli_3.2.0        rstudioapi_0.13 
-[21] yaml_2.3.5       xfun_0.29        fastmap_1.1.0    withr_2.4.3     
-[25] stringr_1.4.0    knitr_1.37       generics_0.1.2   fs_1.5.2        
-[29] vctrs_0.3.8      grid_4.0.5       rprojroot_2.0.2  tidyselect_1.1.2
-[33] glue_1.6.2       R6_2.5.1         fansi_1.0.2      rmarkdown_2.11  
-[37] farver_2.1.0     purrr_0.3.4      magrittr_2.0.2   whisker_0.4     
-[41] scales_1.1.1     promises_1.2.0.1 ellipsis_0.3.2   htmltools_0.5.2 
-[45] assertthat_0.2.1 colorspace_2.0-3 httpuv_1.6.5     labeling_0.4.2  
-[49] utf8_1.2.2       stringi_1.7.6    munsell_0.5.0    crayon_1.5.0    </code></pre>
+ [1] tidyselect_1.1.2 xfun_0.29        bslib_0.3.1      purrr_0.3.4     
+ [5] colorspace_2.0-3 vctrs_0.3.8      generics_0.1.2   htmltools_0.5.2 
+ [9] yaml_2.3.5       utf8_1.2.2       rlang_1.0.1      jquerylib_0.1.4 
+[13] later_1.3.0      pillar_1.7.0     glue_1.6.2       withr_2.4.3     
+[17] DBI_1.1.2        lifecycle_1.0.1  stringr_1.4.0    munsell_0.5.0   
+[21] gtable_0.3.0     workflowr_1.7.0  evaluate_0.15    labeling_0.4.2  
+[25] knitr_1.37       fastmap_1.1.0    httpuv_1.6.5     fansi_1.0.2     
+[29] highr_0.9        Rcpp_1.0.8       promises_1.2.0.1 scales_1.1.1    
+[33] formatR_1.11     jsonlite_1.8.0   farver_2.1.0     fs_1.5.2        
+[37] digest_0.6.29    stringi_1.7.6    rprojroot_2.0.2  grid_4.0.5      
+[41] cli_3.2.0        tools_4.0.5      magrittr_2.0.2   sass_0.4.0      
+[45] tibble_3.1.6     crayon_1.5.0     whisker_0.4      pkgconfig_2.0.3 
+[49] ellipsis_0.3.2   assertthat_0.2.1 rmarkdown_2.11   rstudioapi_0.13 
+[53] R6_2.5.1         git2r_0.29.0     compiler_4.0.5  </code></pre>
 </div>
 </div>
 
