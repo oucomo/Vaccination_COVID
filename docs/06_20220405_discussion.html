@@ -11,7 +11,7 @@
 
 <meta name="author" content="Duc Du, Thinh Ong" />
 
-<meta name="date" content="2022-05-06" />
+<meta name="date" content="2022-06-03" />
 
 <title>Discussion on 05/04/2022</title>
 
@@ -360,7 +360,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Discussion on 05/04/2022</h1>
 <h4 class="author">Duc Du, Thinh Ong</h4>
-<h4 class="date">2022-05-06</h4>
+<h4 class="date">2022-06-03</h4>
 
 </div>
 
@@ -385,7 +385,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-05-06
+<strong>Last updated:</strong> 2022-06-03
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
@@ -500,16 +500,16 @@ data/publicProvinces.rds
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreecf4184de6b17761e70df395ad54f359e8d412378targetblankcf4184da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/cf4184de6b17761e70df395ad54f359e8d412378" target="_blank">cf4184d</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreec040fded8b5d4da3ad6947653a9dda591fee8aa7targetblankc040fdea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/c040fded8b5d4da3ad6947653a9dda591fee8aa7" target="_blank">c040fde</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreecf4184de6b17761e70df395ad54f359e8d412378targetblankcf4184da" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreec040fded8b5d4da3ad6947653a9dda591fee8aa7targetblankc040fdea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/cf4184de6b17761e70df395ad54f359e8d412378" target="_blank">cf4184d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/c040fded8b5d4da3ad6947653a9dda591fee8aa7" target="_blank">c040fde</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -519,8 +519,12 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
+Untracked files:
+    Untracked:  analysis/01_data_cleaning_T.Rmd
+
 Unstaged changes:
     Modified:   analysis/06_20220405_discussion.Rmd
+    Modified:   analysis/06_20220522_poster.Rmd
 
 </code></pre>
 <p>
@@ -559,6 +563,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/c040fded8b5d4da3ad6947653a9dda591fee8aa7/analysis/06_20220405_discussion.Rmd" target="_blank">c040fde</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-05-23
+</td>
+<td>
+new analyses
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/d3c90b9d637a0595060c7159b8a7281b950dcdf5/analysis/06_20220405_discussion.Rmd" target="_blank">d3c90b9</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-05-06
+</td>
+<td>
+add children switching from public to private per province
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/d3c90b9d637a0595060c7159b8a7281b950dcdf5/docs/06_20220405_discussion.html" target="_blank">d3c90b9</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-05-06
+</td>
+<td>
+add children switching from public to private per province
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -657,7 +712,7 @@ measle_all$start2 &lt;- ifelse(measle_all$vacname2 == &quot;Measle_Mumps_Rubella
     measle_all$shot2 == 1, 12, measle_all$start2)
 measle_all$vdelay2 &lt;- measle_all$vagem2 - measle_all$start2
 measle_all &lt;- measle_all[measle_all$shot == 1, ]
-measle_all$expect_vdate &lt;- measle_all$dob %m+% months(measle_all$start)</code></pre>
+measle_all$expect_vdate &lt;- measle_all$dob %m+% months(measle_all$start2)</code></pre>
 <div id="individual-level" class="section level2">
 <h2>Individual level</h2>
 <p>Extract children who get 2 shots</p>
@@ -771,6 +826,43 @@ ggplot(df_plot, aes(x = vacdate_1st, y = pct2, group = shot1)) +
         linetype = &quot;1st dose in&quot;) + theme(axis.text.x = element_text(angle = -45,
     hjust = -0.1), panel.grid.minor.x = element_blank())</code></pre>
 <p><img src="figure/06_20220405_discussion.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/d3c90b9d637a0595060c7159b8a7281b950dcdf5/docs/figure/06_20220405_discussion.Rmd/unnamed-chunk-8-1.png" target="_blank">d3c90b9</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-05-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Aggregate by province</p>
 <pre class="r"><code>df &lt;- measles_2shots[, c(&quot;pid&quot;, &quot;province&quot;, &quot;vacdate_1st&quot;, &quot;vtimes&quot;,
     &quot;type2&quot;)]
@@ -822,6 +914,111 @@ ggplot(df_plot, aes(x = vacdate_1st, y = pct2, group = shot1)) +
     y = &quot;% 2nd dose in private&quot;, linetype = &quot;1st dose in&quot;) +
     theme(axis.text.x = element_blank(), panel.grid.minor.x = element_blank())</code></pre>
 <p><img src="figure/06_20220405_discussion.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/d3c90b9d637a0595060c7159b8a7281b950dcdf5/docs/figure/06_20220405_discussion.Rmd/unnamed-chunk-10-1.png" target="_blank">d3c90b9</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-05-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="population-level" class="section level2">
+<h2>Population level</h2>
+<pre class="r"><code>df &lt;- measle_all[, c(&quot;pid&quot;, &quot;province&quot;, &quot;vyear&quot;, &quot;vmonth&quot;, &quot;type2&quot;)]
+df_type &lt;- aggregate(pid ~ vyear + vmonth + type2, data = df,
+    FUN = length)
+
+# Percentage of private
+df_type &lt;- df_type %&gt;%
+    group_by(vyear, vmonth) %&gt;%
+    mutate(denom = sum(pid))
+
+df_type$pct &lt;- 100 * df_type$pid/df_type$denom
+
+# Get only row that 2nd shot is private
+df_plot &lt;- df_type[df_type$type2 == &quot;private&quot;, ]
+
+# To plot on a date format x-axis
+df_plot$vacdate &lt;- ym(paste0(df_plot$vyear, &quot;-&quot;, df_plot$vmonth))
+df_plot &lt;- df_plot[df_plot$vacdate &gt;= &quot;2017-09-01&quot;, ]
+
+ggplot(df_plot, aes(x = vacdate, y = pct)) + geom_line(stat = &quot;identity&quot;) +
+    labs(y = &quot;Percentage of private shot&quot;, x = &quot;Month of receiving shot&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="figure/06_20220405_discussion.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plot-per-province" class="section level2">
+<h2>Plot per province</h2>
+<pre class="r"><code>df_type &lt;- aggregate(pid ~ vyear + province + vmonth + type2,
+    data = df, FUN = length)
+
+# Percentage of private
+df_type &lt;- df_type %&gt;%
+    group_by(vyear, province, vmonth) %&gt;%
+    mutate(denom = sum(pid))
+
+df_type$pct &lt;- 100 * df_type$pid/df_type$denom
+
+# Get only row that 2nd shot is private
+df_plot &lt;- df_type[df_type$type2 == &quot;private&quot;, ]
+
+# To plot on a date format x-axis
+df_plot$vacdate &lt;- ym(paste0(df_plot$vyear, &quot;-&quot;, df_plot$vmonth))
+df_plot &lt;- df_plot[df_plot$vacdate &gt;= &quot;2017-09-01&quot;, ]
+
+ggplot(df_plot, aes(x = vacdate, y = pct)) + geom_line(stat = &quot;identity&quot;) +
+    facet_wrap(. ~ province) + labs(x = &quot;Percentage of private shot&quot;,
+    y = &quot;Month of receiving shot&quot;) + theme_light()</code></pre>
+<p><img src="figure/06_20220405_discussion.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="missing-measles-shot-for-children-born-in-2019-and-2020-vaccine-measles-at-9-month" class="section level2">
+<h2>Missing measles shot for children born in 2019 and 2020: vaccine Measles (at 9 month)</h2>
+<pre class="r"><code>load(file.path(allp, &quot;hepatitisb_all.Rdata&quot;))
+
+# Child in hepB dataset
+child &lt;- hepatitisb_all[hepatitisb_all$province %in% publicProvinces &amp;
+    hepatitisb_all$year == 2019 | (hepatitisb_all$year == 2020 &amp;
+    hepatitisb_all$month &lt;= 3), ]
+
+
+measles_1920 &lt;- measle_all[measle_all$province %in% publicProvinces &amp;
+    measle_all$year == 2019 | (measle_all$year == 2020 &amp; measle_all$month &lt;=
+    3), ]
+id_measles &lt;- unique(measles_1920$pid)
+id_hepb &lt;- unique(child$pid[child$vacname2 %in% c(&quot;HepB&quot;, &quot;HepBN&quot;)])
+
+length(intersect(id_measles, id_hepb))</code></pre>
+<pre><code>[1] 680366</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

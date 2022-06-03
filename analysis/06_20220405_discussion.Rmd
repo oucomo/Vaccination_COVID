@@ -3,17 +3,17 @@ title: "Discussion on 05/04/2022"
 author: "Duc Du, Thinh Ong"
 date: ' `r Sys.Date()`'
 output:
+  word_document:
+    toc: yes
   workflowr::wflow_html:
     toc: true
     theme: cosmo
-  pdf_document:
-    toc: yes
   html_document:
     theme: cerulean
     toc: yes
     toc_float: yes
     keep_md: yes
-  word_document:
+  pdf_document:
     toc: yes
 editor_options:
   chunk_output_type: inline
@@ -232,7 +232,7 @@ df_plot <- df_plot[df_plot$vacdate >= "2017-09-01",]
 
 ggplot(df_plot, aes(x = vacdate, y = pct)) +
   geom_line(stat = "identity") +
-  labs(x = "Percentage of private shot", y = "Month of receiving shot") +
+  labs(y = "Percentage of private shot", x = "Month of receiving shot") +
   theme_minimal()
 ```
 
@@ -258,6 +258,24 @@ ggplot(df_plot, aes(x = vacdate, y = pct)) +
   geom_line(stat = "identity") +
   facet_wrap(. ~ province) +
   labs(x = "Percentage of private shot", y = "Month of receiving shot") +
-  theme_minimal()
+  theme_light()
+```
+
+## Missing measles shot for children born in 2019 and 2020: vaccine Measles (at 9 month)
+```{r}
+load(file.path(allp, "hepatitisb_all.Rdata"))
+
+# Child in hepB dataset
+child <- hepatitisb_all[hepatitisb_all$province %in% publicProvinces &
+                        hepatitisb_all$year == 2019 |
+                        (hepatitisb_all$year == 2020 & hepatitisb_all$month <= 3),]
+
+
+measles_1920 <- measle_all[measle_all$province %in% publicProvinces & 
+                           measle_all$year == 2019 | (measle_all$year == 2020 & measle_all$month <= 3),]
+id_measles <- unique(measles_1920$pid)
+id_hepb <- unique(child$pid[child$vacname2 %in% c("HepB", "HepBN")])
+
+length(intersect(id_measles, id_hepb))
 ```
 
