@@ -1,0 +1,63 @@
+---
+title: "Merge and clean"
+author: "Thinh"
+date: "8/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(data.table)
+library(lubridate)
+library(stringi)
+
+data_path <- file.path("..", "data", "2022", "hanoi")
+
+## list all files
+files <- list.files(path = data_path, full.names = T, recursive = T)
+```
+
+```{r}
+for (i in c(1:length(files))) {
+  cat(i, "\n")
+
+  ## read from excel
+  dati <- as.data.table(read_excel(path = files[i], sheet = 1))
+
+  ### remove duplication
+  dati <- unique(dati, by = c("MA_DOI_TUONG", "TENTINH", "TENHUYEN", "TENXA", "NGAY_SINH", "GIOI_TINH", "TEN_VACXIN", "NGAY_TIEM"))
+
+  ## rename
+  setnames(x = dati,
+           old = c("MA_DOI_TUONG", "TENTINH", "TENHUYEN", "TENXA", "NGAY_SINH", "GIOI_TINH", "TEN_VACXIN", "NGAY_TIEM"),
+           new = c("pid", "province", "district", "commune", "dob", "sex", "vacname", "vacdate"))
+
+  ## remove accent
+  dati$province <- stri_trans_general(dati$province, "Latin-ASCII")
+  dati$district <- stri_trans_general(dati$district, "Latin-ASCII")
+  dati$commune <- stri_trans_general(dati$commune, "Latin-ASCII")
+  dati$vacname <- stri_trans_general(dati$vacname, "Latin-ASCII")
+
+  ### format date
+  dati$dob <- dmy(dati$dob)
+  dati$vacdate <- dmy(dati$vacdate)
+
+  ## add source
+  dati$file = files[i]
+
+  ## combind
+  dat <- rbindlist(l = list(dat, dati))
+}
+
+  ### additional variables
+  dat$ddif <- (dat$vacdate - dat$dob)/ddays(1)
+
+  ### children data
+  child <- unique(dat[,  .(pid, province, district, commune, dob, sex, file)])
+
+  ### vaccine data
+  vaccine <- unique(dat[,  .(pid, province, district, commune, vacname, vacdate, ddif)])
+
+```
+

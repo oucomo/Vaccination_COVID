@@ -1,0 +1,232 @@
+---
+title: "Clean data"
+author: "Thinh"
+date: "r Sys.time()"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(data.table)
+library(dplyr)
+library(stringi)
+library(lubridate)
+
+# Load data
+df <- readRDS("../data/haiduong_14_22_merged.rds")
+```
+
+Only keep useful variables and rename variables
+```{r}
+cols <- c("MA_DOI_TUONG", "TO_CHAR(D.NGAY_SINH,'DD/MM/YYYY')", "GIOI_TINH", 
+          "TEN_TINH_DANG_KY", "TEN_HUYEN_DANG_KY", "TEN_XA_DANG_KY", 
+          "TEN_VACXIN", "TO_CHAR(LST.NGAY_TIEM,'DD/MM/YYYY')", 
+          "HINH_THUC_TIEM_CHUNG", "LOAI_CO_SO_TIEM", "COSO_TIEM")
+
+cols_rn <- c("pid", "dob", "sex", 
+             "province", "district", "commune", 
+             "vacname", "vacdate",
+             "vactype", "clinic_type", "clinic_name")
+
+df <- df %>% select(all_of(cols))
+colnames(df) <- cols_rn
+```
+
+Remove Vietnamese diacritics in all string values
+```{r}
+df <- df %>% mutate_if(is.character, stri_trans_general, id = "latin-ascii")
+```
+
+# Date time variables
+
+## Date of birth
+```{r}
+df$dob <- dmy(df$dob)
+```
+
+## Vaccination date
+```{r}
+df$vacdate <- dmy(df$vacdate)
+```
+
+```{r}
+df$vacyear <- year(df$vacdate)
+df$vacmonth <- month(df$vacdate)
+table(df$vacyear)
+```
+
+Those vaccinated in 2010, 2012, 2028 must be errors
+```{r}
+df <- df[which(df$vacyear >= 2014 & df$vacyear <= 2022),]
+```
+
+
+# Remove duplication
+```{r}
+df <- df %>%
+  distinct(., pid, vacdate, vacname, .keep_all = TRUE)
+```
+
+# Vaccine
+
+## Vaccine name
+
+A reference data frame of vaccine names
+```{r}
+df_vc <- as.data.table(
+  rbind(
+    cbind(vacname = "BCG",                     vacname2 = "BCG"),
+    cbind(vacname = "BKT 0,1ml tu khoa (BCG)", vacname2 = NA),
+    cbind(vacname = "BKT 0.1ml (BCG)",         vacname2 = NA),
+    cbind(vacname = "BKT 0.5 ml",              vacname2 = NA),
+    cbind(vacname = "BKT 1 ml",                vacname2 = NA),
+    cbind(vacname = "BKT 5 ml",                vacname2 = NA),
+    cbind(vacname = "ComBE Five",              vacname2 = "DPT_HepB_Hib"),
+    cbind(vacname = "DPT-VGB-HIB (SII)",       vacname2 = "DPT_HepB_Hib"),
+    cbind(vacname = "Quinvaxem",               vacname2 = "DPT_HepB_Hib"),
+    cbind(vacname = "DPT",                     vacname2 = "DPT"),
+    cbind(vacname = "IPV",                     vacname2 = "IPV"),
+    cbind(vacname = "OPV",                     vacname2 = "OPV"),
+    
+    # Measles
+    ## Measles
+    cbind(vacname = "Soi", 
+          vacname2 = "Measles"),
+    ## Measles - rubella
+    cbind(vacname = "MR", 
+          vacname2 = "MR"),
+    cbind(vacname = "Measles and Rubella Vaccine Live, Attenuated (Freeze-Dried)",
+          vacname2 = "MR"),
+    ## Measles - mumps - rubella
+    cbind(vacname = "Measles, Mumps and Rubella Vaccine Live, Attenuated (Freeze-Dried)",
+          vacname2 = "MMR"),
+    cbind(vacname = "MMR II & Diluent inj 0.5ml",
+          vacname2 = "MMR"),
+    cbind(vacname = "MMR-II", 
+          vacname2 = "MMR"),
+    
+    # Tetanus
+    cbind(vacname = "Uon van",                 vacname2 = "Tetanus"),
+    cbind(vacname = "Vac xin uon van bach hau hap phu (Td) (Hop 10 lo 5ml)", 
+          vacname2 = "Td"),
+    cbind(vacname = "VAT (Lo 20 lieu)",        vacname2 = "Tetanus"),
+    cbind(vacname = "Viem gan B",              vacname2 = "HepBN"),
+    cbind(vacname = "Viem gan B so sinh",      vacname2 = "HepBN"),
+    cbind(vacname = "VNNB",                    vacname2 = "JEV")
+  )
+)
+
+# # Check uncleaned names
+# tmp <- df[!which(df$vacname %in% df_vc$vacname),]
+# table(tmp$vacname)
+# table(grep("soi", tmp$vacname, ignore.case = T, value = T))
+```
+
+Merge into our data
+```{r}
+df <- merge(df, df_vc,by = "vacname", all.x = T, sort = F)
+```
+
+Now can drop the original vaccination name to free up RAM and disk
+```{r}
+df$vacname <- NULL
+```
+
+## Vaccination 
+
+## Vaccination schedule
+```{r}
+vacinfo <- as.data.table(
+  rbind(
+    cbind(vacname2 = "BCG",            epi = 1, shot = 1, start = 0),
+    cbind(vacname2 = "HepBN",          epi = 1, shot = 1, start = 0),
+    cbind(vacname2 = "DPT_HepB_Hib",   epi = 1, shot = 1, start = 2),
+    cbind(vacname2 = "DPT_HepB_Hib",   epi = 1, shot = 2, start = 3),
+    cbind(vacname2 = "DPT_HepB_Hib",   epi = 1, shot = 3, start = 4),
+    cbind(vacname2 = "OPV",            epi = 1, shot = 1, start = 2),
+    cbind(vacname2 = "OPV",            epi = 1, shot = 2, start = 3),
+    cbind(vacname2 = "OPV",            epi = 1, shot = 3, start = 4),
+    cbind(vacname2 = "IPV",            epi = 1, shot = 1, start = 5),
+    cbind(vacname2 = "Measles",        epi = 1, shot = 1, start = 9),
+    cbind(vacname2 = "MMR",            epi = 0, shot = 1, start = 12),
+    cbind(vacname2 = "MR",             epi = 1, shot = 1, start = 18),
+    cbind(vacname2 = "DPT",            epi = 1, shot = 1, start = 18),
+    cbind(vacname2 = "JEV",            epi = 1, shot = 1, start = 12),
+    cbind(vacname2 = "Td",             epi = 0, shot = 1, start = 84)
+  )
+) %>%
+  mutate(epi = as.numeric(epi),
+         shot = as.numeric(shot),
+         start = as.numeric(start))
+```
+
+Order of shot
+```{r}
+# Only get data with cleaned vaccine name
+df <- df %>% 
+  filter(!is.na(vacname2))
+
+df <- df %>%
+  group_by(pid, vacname2) %>%
+  arrange(vacdate) %>%
+  mutate(shot = 1:n()) %>%
+  ungroup()
+```
+
+Add vaccination schedule
+```{r}
+df <- merge(df, vacinfo, by = c("vacname2", "shot"), all.x = T, sort = F)
+df <- df[which(!is.na(df$start)),]
+```
+
+# Add variables
+
+* `vagem`: age when receive the vaccine shot (in month), difference between vaccination date and birth date
+* `vdelay`: number of delayed months, difference between age at vaccine shot (`vagem`) and the schedule date (`start`)
+```{r}
+df <- df %>% 
+  mutate(
+    vagem = trunc((dob %--% vacdate) / months(1)),
+    vdelay = vagem - start
+  )
+```
+
+# Sex
+
+```{r}
+df$sex <- factor(df$sex, levels = c("Nu", "Nam"), labels = c("F", "M"))
+```
+
+# Public or private
+
+Translate some values to English
+```{r}
+df$vactype <- recode(df$vactype, 
+                     TCMR = "public", TCDV = "private", TCCD = "campaign")
+df$clinic_type <- recode(df$clinic_type,
+                         BV = "hospital",
+                         `Dia diem khac` = "other",
+                         DV = "private",
+                         `Khong ro` = "unknown",
+                         TCMR = "public")
+```
+
+
+# Reorder columns
+
+```{r}
+cols_rn <- grep("vacname", cols_rn, invert = T, value = T)
+cols_order <- c(cols_rn, "vacname2", "shot", "vacyear", "vacmonth", "epi", 
+                "start", "vagem", "vdelay")
+df <- df[,cols_order]
+```
+
+
+# Measles
+
+Get measles data
+```{r}
+measles <- df[which(df$vacname2 %in% c("Measles", "MR", "MMR")),]
+saveRDS(measles, "../output/measles_haiduong.rds")
+```
+
