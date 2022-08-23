@@ -1,0 +1,294 @@
+---
+title: "Hai Duong: Hep B and BCG"
+author: "Duc Du, Thinh Ong"
+date: ' 2020-01-29 (update: `r Sys.Date()`)'
+output:
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+  workflowr::wflow_html:
+    toc: true
+    theme: cosmo
+  word_document:
+    toc: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, out.width = "100%", root.dir = rprojroot::find_rstudio_root_file())
+
+library(data.table)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(ggplot2)
+library(gtsummary)
+library(ggsci)
+
+datap <- file.path("~", "Downloads", "updated_dataset")
+
+bcg <- readRDS(file.path(datap, "bcg_haiduong.rds"))
+bcg <- data.table(bcg)
+bcg <- bcg[which(bcg$shot == 1),]
+
+hepb <- readRDS(file.path(datap, "hepb_haiduong.rds"))
+hepb <- data.table(hepb)
+hepb <- hepb[which(hepb$shot == 1),]
+
+measle_all <- readRDS(file.path(datap, "measles_haiduong.rds"))
+measle_all <- data.table(measle_all)
+
+time_step <- "month"
+bcg$vacym <- floor_date(bcg$vacdate, time_step)
+hepb$vacym <- floor_date(hepb$vacdate, time_step)
+```
+
+# Hep B
+
+Number of days from Hep B vaccination to date of birth
+```{r}
+hepb$vdelay_d <- trunc((hepb$dob %--% hepb$vacdate) / days(1))
+hist(hepb$vdelay_d[hepb$vdelay_d >= 0 & hepb$vdelay_d < 30], n = 30, xlab = "Age at vaccination (days)", main = "Hep B")
+tmp <- as.data.frame.table(table(hepb$vdelay_d))
+tmp$Var1 <- as.numeric(as.character(tmp$Var1))
+tmp <- tmp[which(tmp$Var1 >= 0 & tmp$Var1 < 15),]
+tmp
+```
+
+**Only keep children vaccinated within 3 days after birth (should we?)**
+
+```{r}
+hepb <- hepb[which(hepb$vdelay_d >= 0 & hepb$vdelay_d <= 3),]
+```
+
+```{r}
+tmp <- hepb[which(hepb$vacyear == 2019),]
+
+df_plot <- tmp %>% 
+    count(vacdate)
+
+ggplot(df_plot, aes(x = vacdate, y = n)) +
+  geom_line(stat = "identity") +
+  scale_x_date(date_breaks = "1 month", labels = scales::date_format("%b")) +
+  labs(x = NULL) +
+  theme_light() +
+  ggtitle("Hep B in 2019")
+```
+
+
+```{r}
+tmp <- hepb[which(hepb$vacyear == 2020),]
+
+df_plot <- tmp %>% 
+    count(vacdate)
+
+ggplot(df_plot, aes(x = vacdate, y = n)) +
+  geom_rect(aes(xmin = ymd("2020-04-01"), xmax = ymd("2020-04-21"), ymin = -Inf, ymax = Inf), fill = "salmon2", color = NA, alpha = 0.015) +
+  geom_rect(aes(xmin = ymd("2020-08-14"), xmax = ymd("2020-08-28"), ymin = -Inf, ymax = Inf), fill = "salmon2", color = NA, alpha = 0.015) +
+  geom_line(stat = "identity") +
+  scale_x_date(date_breaks = "1 month", labels = scales::date_format("%b")) +
+  labs(x = NULL) +
+  theme_light() +
+  ggtitle("Hep B in 2020")
+```
+
+# BCG
+
+Number of days from BCG vaccination to date of birth
+```{r}
+bcg$vdelay_d <- trunc((bcg$dob %--% bcg$vacdate) / days(1))
+hist(bcg$vdelay_d[bcg$vdelay_d >= 0 & bcg$vdelay_d < 80], n = 100, xlab = "Age at vaccination (days)", main = "BCG")
+tmp <- as.data.frame.table(table(bcg$vdelay_d))
+tmp$Var1 <- as.numeric(as.character(tmp$Var1))
+tmp <- tmp[which(tmp$Var1 >= 0 & tmp$Var1 < 15),]
+tmp
+```
+
+```{r}
+tmp <- bcg[which(bcg$vacyear == 2019),]
+
+df_plot <- tmp %>% 
+    count(vacdate)
+
+ggplot(df_plot, aes(x = vacdate, y = n)) +
+  geom_line(stat = "identity") +
+  scale_x_date(date_breaks = "1 month", labels = scales::date_format("%b")) +
+  labs(x = NULL) +
+  theme_light() +
+  ggtitle("BCG in 2019")
+```
+
+
+```{r}
+tmp <- bcg[which(bcg$vacyear == 2020),]
+
+df_plot <- tmp %>% 
+    count(vacdate)
+
+ggplot(df_plot, aes(x = vacdate, y = n)) +
+  geom_rect(aes(xmin = ymd("2020-04-01"), xmax = ymd("2020-04-21"), ymin = -Inf, ymax = Inf), fill = "salmon2", color = NA, alpha = 0.015) +
+  geom_rect(aes(xmin = ymd("2020-08-14"), xmax = ymd("2020-08-28"), ymin = -Inf, ymax = Inf), fill = "salmon2", color = NA, alpha = 0.015) +
+  geom_line(stat = "identity") +
+  scale_x_date(date_breaks = "1 month", labels = scales::date_format("%b")) +
+  labs(x = NULL) +
+  theme_light() +
+  ggtitle("BCG in 2020")
+```
+
+```{r}
+bcg$vacday <- day(bcg$vacdate)
+
+nday <- unique(bcg$vacday)
+
+ggplot(bcg, aes(x = vacday)) +
+  geom_histogram() +
+  scale_x_continuous(breaks = nday) +
+  labs(x = "Monthly day of BCG vaccination") +
+  theme_minimal()
+```
+
+# Compare Hep B and BCG
+
+BCG in Hep B
+
+```{r}
+table(bcg$pid %in% hepb$pid)
+```
+
+Hep B in BCG
+
+```{r}
+table(hepb$pid %in% bcg$pid)
+```
+
+## Hep B and BCG
+
+```{r}
+df <- plyr::rbind.fill(hepb, bcg)
+
+df_plot <- df %>% 
+    count(vacyear, vacmonth, vacname2)
+
+ggplot(df_plot, aes(x = vacmonth, y = n, color = vacname2)) +
+  geom_line(stat = "identity") +
+  facet_wrap(~ vacyear) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
+  labs(x = NULL) +
+  theme_light()
+```
+
+## Hep B, BCG and Measles
+
+```{r}
+measles <- measle_all[which(measle_all$vacname2 == "Measles" & measle_all$shot == 1),]
+
+df <- plyr::rbind.fill(hepb, bcg, measles)
+
+df_plot <- df %>% 
+    count(vacyear, vacmonth, vacname2)
+
+ggplot(df_plot, aes(x = vacmonth, y = n, color = vacname2)) +
+  geom_line(stat = "identity") +
+  facet_wrap(~ vacyear) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
+  labs(x = NULL) +
+  theme_light()
+```
+
+# Vaccine coverage
+
+All children born in Jan 2019 (use Hep B)
+```{r, echo = T}
+tmp1 <- hepb %>% 
+  filter(
+    month(dob) == 1,
+    year(dob) == 2019
+  )
+
+nrow(tmp1)
+```
+
+Also all children born in Jan 2019 got the measles shot
+```{r, echo = T}
+tmp2 <- measle_all %>% 
+  filter(
+    month(dob) == 1,
+    year(dob) == 2019,
+    vacname2 == "Measles"
+  ) %>%
+  distinct(., pid, .keep_all = T)
+nrow(tmp2)
+```
+
+```{r, echo = T}
+table(tmp1$pid %in% tmp2$pid)
+2315 / 2729
+```
+
+These children in measles dataset get Measles shot in October 2019
+```{r, echo = T}
+tmp2 <- tmp2 %>%
+  filter(
+    vacmonth == 10,
+    vacyear == 2019,
+  )
+nrow(tmp2)
+```
+
+So the vaccine coverage
+```{r, echo = T}
+nrow(tmp2) / nrow(tmp1)
+```
+
+Cumulative coverage of children born in Jan - Feb 2019
+```{r, echo = T}
+tmp1 <- hepb %>% 
+  filter(
+    month(dob) %in% c(1, 2),
+    year(dob) == 2019
+  )
+
+tmp2 <- measle_all %>% 
+  filter(
+    month(dob) %in% c(1, 2),
+    year(dob) == 2019,
+    vacname2 == "Measles"
+  ) %>%
+  distinct(., pid, .keep_all = T)
+
+nrow(tmp1)
+nrow(tmp2)
+
+tmp2 <- tmp2 %>%
+  filter(
+    vacmonth %in% c(10, 11),
+    vacyear == 2019,
+  )
+
+nrow(tmp2) / nrow(tmp1)
+```
+
+Cumulative coverage of children born in Jan - Feb - March 2019
+```{r, echo = T}
+tmp1 <- hepb %>% 
+  filter(
+    month(dob) %in% c(1, 2, 3),
+    year(dob) == 2019
+  )
+
+tmp2 <- measle_all %>% 
+  filter(
+    month(dob) %in% c(1, 2, 3),
+    year(dob) == 2019,
+    vacmonth %in% c(10, 11, 12),
+    vacyear == 2019,
+    vacname2 == "Measles"
+  ) %>%
+  distinct(., pid, .keep_all = T)
+
+nrow(tmp2) / nrow(tmp1)
+```

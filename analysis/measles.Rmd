@@ -1,5 +1,5 @@
 ---
-title: "Vaccination and delays in vaccination due to COVID-19"
+title: "Hai Duong: Measles"
 author: "Duc Du, Thinh Ong"
 date: ' 2020-01-29 (update: `r Sys.Date()`)'
 output:
@@ -89,13 +89,15 @@ ggplot(df_plot, aes(x = vacmonth, y = n, color = vacname2)) +
 
 An MR vaccination campaign is triggered during this time in Hai Duong, focusing on children 1-5 year-old
 ```{r}
-tmp <- measle_all[which(measle_all$vacyear == "2019"),]
+tmp_year <- 2019
+tmp <- measle_all[which(measle_all$vacyear == tmp_year),]
 
 ggplot(tmp, aes(x = vagem)) +
   geom_histogram() +
   facet_wrap(~ vacmonth, scales = "free") +
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
-  labs(x = "Age at vaccination (months)")
+  labs(x = "Age at vaccination (months)") +
+  ggtitle(tmp_year)
 ```
 
 Distribution of delay
@@ -144,6 +146,7 @@ df_plot <- measle_all %>%
   count(vacyear, vacmonth, vactype) %>% 
   group_by(vacyear, vacmonth) %>%
   mutate(prop = n / sum(n))
+
 df_plot <- data.frame(df_plot)
 df_plot <- df_plot %>% complete(vacyear, vacmonth, vactype, fill = list(n = 0, prop = 0))
 ggplot(df_plot, aes(x = vacmonth, y = prop, fill = vactype)) +
@@ -153,6 +156,30 @@ ggplot(df_plot, aes(x = vacmonth, y = prop, fill = vactype)) +
   scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
   theme_light() +
   theme(legend.position = "bottom")
+```
+
+```{r}
+tmp_year <- 2017
+tmp <- measle_all[which(measle_all$vacyear == tmp_year),]
+
+ggplot(tmp, aes(x = vagem)) +
+  geom_histogram() +
+  facet_wrap(~ vacmonth, scales = "free") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
+  labs(x = "Age at vaccination (months)") +
+  ggtitle(tmp_year)
+```
+
+```{r}
+tmp_year <- 2018
+tmp <- measle_all[which(measle_all$vacyear == tmp_year),]
+
+ggplot(tmp, aes(x = vagem)) +
+  geom_histogram() +
+  facet_wrap(~ vacmonth, scales = "free") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
+  labs(x = "Age at vaccination (months)") +
+  ggtitle(tmp_year)
 ```
 
 ```{r}
@@ -224,7 +251,8 @@ The monthly vaccination date at public clinics is usually at the end of the mont
 
 Hai Duong had a Hai Duong city-wide lockdown from 14/8-28/8, this time looks like they only organised the vaccination day in Sep so all children scheduled in Aug miss the shot
 ```{r}
-tmp <- measle_all[which(measle_all$vacyear == 2020),]
+tmp_vacyear <- 2020
+tmp <- measle_all[which(measle_all$vacyear == tmp_vacyear),]
 
 df_plot <- tmp %>% 
     count(vacdate, vacname2)
@@ -235,7 +263,8 @@ ggplot(df_plot, aes(x = vacdate, y = n, color = vacname2)) +
   geom_line(stat = "identity") +
   scale_x_date(date_breaks = "1 month", labels = scales::date_format("%b")) +
   labs(x = NULL) +
-  theme_light()
+  theme_light() +
+  ggtitle(tmp_vacyear)
 ```
 
 ## Zoom in 2021
@@ -244,7 +273,8 @@ Hai Duong had a province-wide lockdown from 28/1/2021 - 15/2 (Directive 15), 16/
 
 Directive 16 > 15 > 19
 ```{r}
-tmp <- measle_all[which(measle_all$vacyear == 2021),]
+tmp_vacyear <- 2021
+tmp <- measle_all[which(measle_all$vacyear == tmp_vacyear),]
 
 df_plot <- tmp %>% 
     count(vacdate, vacname2)
@@ -257,7 +287,8 @@ ggplot(df_plot, aes(x = vacdate, y = n, color = vacname2)) +
   geom_line(stat = "identity") +
   scale_x_date(date_breaks = "1 month", labels = scales::date_format("%b")) +
   labs(x = NULL) +
-  theme_light()
+  theme_light() +
+  ggtitle(tmp_vacyear)
 ```
 
 ```{r}
@@ -271,4 +302,175 @@ ggplot(measle_all, aes(x = vacday)) +
   labs(x = "Monthly day of vaccination") +
   theme_minimal()
 ```
+
+# Public vs private
+
+First let decide how a shot is public or private
+
+```{r}
+table(measle_all$clinic_type)
+measle_all$type2 <- ifelse(
+  measle_all$clinic_type %in% c("unknown", "other"),
+  measle_all$vactype, 
+  ifelse(
+    measle_all$clinic_type == "hospital",
+    "private", 
+    measle_all$clinic_type
+  )
+)
+measle_all$type2 <- ifelse(measle_all$type2 == "campaign", "public", measle_all$type2)
+# table(measle_all$type2)
+```
+
+Extract children who get 2 shots
+
+```{r}
+measles_2shots <- measle_all[duplicated(measle_all$pid) | duplicated(measle_all$pid, fromLast = T),]
+
+dup_sameday <- measles_2shots[duplicated(measles_2shots[,c("pid", "vacdate")]) |
+                                duplicated(measles_2shots[,c("pid", "vacdate")], fromLast = T),
+                              c("pid", "vacdate", "vacname2", "type2")]
+dup_sameday <- dup_sameday[order(dup_sameday$pid),]
+# head(dup_sameday, 10)
+```
+
+Some received the same vaccine in the same day, filter them out and continue
+
+```{r}
+# Remove children with multiple shots of measles in the same day
+measles_2shots <- measles_2shots %>%
+  distinct(., pid, vacdate, .keep_all = T)
+
+# Now subset the one still get 2 shots
+measles_2shots <- measles_2shots[duplicated(measles_2shots$pid) | duplicated(measles_2shots$pid, fromLast = T),]
+
+# Sort by vaccination date and numbering the shot
+measles_2shots <- measles_2shots %>%
+  group_by(pid) %>%
+  arrange(vacdate) %>%
+  mutate(vtimes = 1:n(),
+         vacdate_1st = first(vacdate)) %>%
+  ungroup()
+
+# How many shots they receive
+# table(measles_2shots$vtimes)
+```
+
+Some received 3 shots, filtered them out.
+
+```{r}
+# Remove those who get the 3rd shot
+measles_2shots <- measles_2shots[measles_2shots$vtimes != 3,]
+measles_2shots <- measles_2shots[order(measles_2shots$pid),]
+
+# Prefix "shot" to vtimes to make wide data frame easier
+measles_2shots$vtimes <- paste0("shot", measles_2shots$vtimes)
+```
+
+Change dataset from long to wide format
+```{r}
+df <- measles_2shots[, c("pid", "vacdate_1st", "vtimes", "type2")]
+df <- df %>%
+  pivot_wider(., names_from = vtimes, values_from = type2)
+
+df$vyear_1st <- year(df$vacdate_1st)
+df$vmonth_1st <- month(df$vacdate_1st)
+
+# head(df)
+```
+
+Aggregate them by month
+
+```{r}
+df_type <- aggregate(pid ~ vyear_1st + vmonth_1st + shot1 + shot2, data = df, FUN = length)
+
+df_type <- df_type %>%
+  group_by(vyear_1st, vmonth_1st, shot1) %>%
+  mutate(denom = sum(pid))
+
+df_type$pct2 <- 100 * df_type$pid / df_type$denom
+
+# Take 01/2018 as an example
+# df_type %>%
+#   filter(vyear_1st == 2018 & vmonth_1st == 1) %>%
+#   print()
+```
+
+Line plot
+
+```{r}
+# Get only row that 2nd shot is private
+df_plot <- df_type[df_type$shot2 == "private",]
+
+# To plot on a date format x-axis
+df_plot$vacdate_1st <- ym(paste0(df_plot$vyear_1st, "-", df_plot$vmonth_1st))
+
+# Subset from 09/2017 to 03/2020
+df_plot <- df_plot[df_plot$vacdate_1st >= "2018-01-01" &
+                     df_plot$vacdate_1st <= "2021-11-01",]
+
+df_plot$shot1 <- factor(df_plot$shot1, levels = c("public", "private"))
+
+ggplot(df_plot, aes(x = vacdate_1st, y = pct2, group = shot1)) +
+  geom_line(aes(linetype = shot1), stat = "identity", size = 1.1) +
+  # geom_vline(xintercept=as.numeric(as.Date("2019-07-01")), color = "orange") +
+  scale_x_date(date_labels = "%b-%Y", date_breaks = "1 month") +
+  ylim(c(0, 100)) +
+  theme_minimal() +
+  labs(x = "Month of receiving 1st dose", y = "% 2nd dose in private", linetype = "1st dose in") +
+  theme(axis.text.x = element_text(angle = -45, hjust = -0.1),
+        panel.grid.minor.x = element_blank())
+```
+
+
+```{r}
+tmp <- df_plot[df_plot$vacdate_1st %in% as.Date(c("2020-01-01", "2020-08-01", "2021-02-01")),]
+tmp[order(tmp$vacdate_1st),]
+```
+
+```{r}
+tmp <- df_plot[df_plot$vacdate_1st >= "2021-03-01",]
+tmp[order(tmp$vacdate_1st),]
+```
+
+# Population level
+
+```{r}
+df <- measle_all[, c("pid", "province", "vacyear", "vacmonth", "type2")]
+df_type <- aggregate(pid ~ vacyear + vacmonth + type2, data = df, FUN = length)
+
+# Percentage of private
+df_type <- df_type %>%
+  group_by(vacyear, vacmonth) %>%
+  mutate(denom = sum(pid))
+
+df_type$pct <- 100 * df_type$pid / df_type$denom
+
+# Get only row that 2nd shot is private
+df_plot <- df_type[df_type$type2 == "private",]
+
+# To plot on a date format x-axis
+df_plot$vacdate <- ym(paste0(df_plot$vacyear, "-", df_plot$vacmonth))
+df_plot <- df_plot[df_plot$vacdate >= "2017-09-01",]
+
+ggplot(df_plot, aes(x = vacdate, y = pct)) +
+  geom_line(stat = "identity") +
+  # geom_vline(xintercept=as.numeric(as.Date("2020-04-01")), color = "orange") +
+  labs(y = "Percentage of private shot (%)", x = "Month of receiving shot") +
+  theme_minimal()
+```
+
+# Children who got 2 shots
+
+```{r}
+ggplot(measles_2shots, aes(x = vdelay)) +
+  geom_histogram() +
+  facet_wrap(~ vacname2, scales = "free")
+```
+
+```{r, echo = T}
+tmp <- measle_all[which(measle_all$vacname2 == "MMR"),]
+table(tmp$shot)
+```
+
 

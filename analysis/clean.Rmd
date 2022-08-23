@@ -1,7 +1,7 @@
 ---
 title: "Clean data"
 author: "Thinh"
-date: "r Sys.time()"
+date: "`r Sys.time()`"
 output: html_document
 ---
 
@@ -12,8 +12,10 @@ library(dplyr)
 library(stringi)
 library(lubridate)
 
+datap <- file.path("~", "Downloads", "updated_dataset")
+
 # Load data
-df <- readRDS("../data/haiduong_14_22_merged.rds")
+df <- readRDS(file.path(datap, "haiduong_14_22_merged.rds"))
 ```
 
 Only keep useful variables and rename variables
@@ -55,7 +57,7 @@ df$vacmonth <- month(df$vacdate)
 table(df$vacyear)
 ```
 
-Those vaccinated in 2010, 2012, 2028 must be errors
+Those vaccinated before 2014 and after 2022 must be errors
 ```{r}
 df <- df[which(df$vacyear >= 2014 & df$vacyear <= 2022),]
 ```
@@ -75,12 +77,15 @@ A reference data frame of vaccine names
 ```{r}
 df_vc <- as.data.table(
   rbind(
+    # BCG
     cbind(vacname = "BCG",                     vacname2 = "BCG"),
+    cbind(vacname = "BCG-TCDV",                vacname2 = "BCG"),
     cbind(vacname = "BKT 0,1ml tu khoa (BCG)", vacname2 = NA),
     cbind(vacname = "BKT 0.1ml (BCG)",         vacname2 = NA),
     cbind(vacname = "BKT 0.5 ml",              vacname2 = NA),
     cbind(vacname = "BKT 1 ml",                vacname2 = NA),
     cbind(vacname = "BKT 5 ml",                vacname2 = NA),
+    
     cbind(vacname = "ComBE Five",              vacname2 = "DPT_HepB_Hib"),
     cbind(vacname = "DPT-VGB-HIB (SII)",       vacname2 = "DPT_HepB_Hib"),
     cbind(vacname = "Quinvaxem",               vacname2 = "DPT_HepB_Hib"),
@@ -110,8 +115,20 @@ df_vc <- as.data.table(
     cbind(vacname = "Vac xin uon van bach hau hap phu (Td) (Hop 10 lo 5ml)", 
           vacname2 = "Td"),
     cbind(vacname = "VAT (Lo 20 lieu)",        vacname2 = "Tetanus"),
-    cbind(vacname = "Viem gan B",              vacname2 = "HepBN"),
-    cbind(vacname = "Viem gan B so sinh",      vacname2 = "HepBN"),
+    
+    # Hep B
+    cbind(vacname = "Viem gan B",              vacname2 = "HepB"),
+    cbind(vacname = "Viem gan B so sinh",      vacname2 = "HepB"),
+    cbind(vacname = "Heberbiovac HB 10mcg/0,5ml", vacname2 = "HepB"),
+    cbind(vacname = "Heberbiovac HB 20mcg/1ml", vacname2 = "HepB"),
+    cbind(vacname = "Hepavax-Gene TF(R) Inj 10mcg/0,5ml", vacname2 = "HepB"),
+    cbind(vacname = "Gene-HBvax (Lo 0.5ml)",   vacname2 = "HepB"),
+    cbind(vacname = "Gene-HBvax (Lo 1ml)",     vacname2 = "HepB"),
+    cbind(vacname = "Euvax B 10mcg/0,5ml",     vacname2 = "HepB"),
+    cbind(vacname = "Euvax B  20mcg/1ml",      vacname2 = "HepB"),
+    cbind(vacname = "ENGERIX-B 10mcg/0,5ml",   vacname2 = "HepB"),
+    cbind(vacname = "ENGERIX-B 20mcg/1ml",     vacname2 = "HepB"),
+    
     cbind(vacname = "VNNB",                    vacname2 = "JEV")
   )
 )
@@ -120,16 +137,12 @@ df_vc <- as.data.table(
 # tmp <- df[!which(df$vacname %in% df_vc$vacname),]
 # table(tmp$vacname)
 # table(grep("soi", tmp$vacname, ignore.case = T, value = T))
+table(df$vacname)
 ```
 
 Merge into our data
 ```{r}
 df <- merge(df, df_vc,by = "vacname", all.x = T, sort = F)
-```
-
-Now can drop the original vaccination name to free up RAM and disk
-```{r}
-df$vacname <- NULL
 ```
 
 ## Vaccination 
@@ -139,7 +152,7 @@ df$vacname <- NULL
 vacinfo <- as.data.table(
   rbind(
     cbind(vacname2 = "BCG",            epi = 1, shot = 1, start = 0),
-    cbind(vacname2 = "HepBN",          epi = 1, shot = 1, start = 0),
+    cbind(vacname2 = "HepB",          epi = 1, shot = 1, start = 0),
     cbind(vacname2 = "DPT_HepB_Hib",   epi = 1, shot = 1, start = 2),
     cbind(vacname2 = "DPT_HepB_Hib",   epi = 1, shot = 2, start = 3),
     cbind(vacname2 = "DPT_HepB_Hib",   epi = 1, shot = 3, start = 4),
@@ -186,7 +199,7 @@ df <- df[which(!is.na(df$start)),]
 ```{r}
 df <- df %>% 
   mutate(
-    vagem = trunc((dob %--% vacdate) / months(1)),
+    vagem = ((vacdate - dob) / dyears(1)) * 12,
     vdelay = vagem - start
   )
 ```
@@ -216,9 +229,24 @@ df$clinic_type <- recode(df$clinic_type,
 
 ```{r}
 cols_rn <- grep("vacname", cols_rn, invert = T, value = T)
-cols_order <- c(cols_rn, "vacname2", "shot", "vacyear", "vacmonth", "epi", 
+cols_order <- c(cols_rn, "vacname", "vacname2", "shot", "vacyear", "vacmonth", "epi",
                 "start", "vagem", "vdelay")
 df <- df[,cols_order]
+```
+
+# BCG
+
+```{r}
+bcg <- df[which(df$vacname2 == "BCG"),]
+saveRDS(bcg, file.path(datap, "bcg_haiduong.rds"))
+```
+
+
+# Hep B
+
+```{r}
+hepb <- df[which(df$vacname2 == "HepB"),]
+saveRDS(hepb, file.path(datap, "hepb_haiduong.rds"))
 ```
 
 
@@ -227,6 +255,6 @@ df <- df[,cols_order]
 Get measles data
 ```{r}
 measles <- df[which(df$vacname2 %in% c("Measles", "MR", "MMR")),]
-saveRDS(measles, "../output/measles_haiduong.rds")
+# saveRDS(measles, file.path(datap, "measles_haiduong.rds"))
 ```
 

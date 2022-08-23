@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Thinh" />
+
+
+<title>Clean data</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Vaccination_COVID</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/oucomo/Vaccination_COVID">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Clean data</h1>
+<h4 class="author">Thinh</h4>
+<h4 class="date">2022-08-15 13:28:03</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-08-15
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Vaccination_COVID/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version 1.7.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210126code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210126)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210126code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210126)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreed52958b860b0b7b836336e34ba295bc11ef623cbtargetblankd52958ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/d52958b860b0b7b836336e34ba295bc11ef623cb" target="_blank">d52958b</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreed52958b860b0b7b836336e34ba295bc11ef623cbtargetblankd52958ba" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/d52958b860b0b7b836336e34ba295bc11ef623cb" target="_blank">d52958b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.DS_Store
+    Ignored:    analysis/.Rhistory
+    Ignored:    code/.DS_Store
+
+Unstaged changes:
+    Modified:   analysis/clean.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/clean.Rmd</code>) and HTML (<code>docs/clean.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/analysis/clean.Rmd" target="_blank">d52958b</a>
+</td>
+<td>
+thinhong
+</td>
+<td>
+2022-08-15
+</td>
+<td>
+analyse new data 2014 - 2022 Hai Duong
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>Only keep useful variables and rename variables</p>
+<pre class="r"><code>cols &lt;- c(&quot;MA_DOI_TUONG&quot;, &quot;TO_CHAR(D.NGAY_SINH,&#39;DD/MM/YYYY&#39;)&quot;, &quot;GIOI_TINH&quot;, 
+          &quot;TEN_TINH_DANG_KY&quot;, &quot;TEN_HUYEN_DANG_KY&quot;, &quot;TEN_XA_DANG_KY&quot;, 
+          &quot;TEN_VACXIN&quot;, &quot;TO_CHAR(LST.NGAY_TIEM,&#39;DD/MM/YYYY&#39;)&quot;, 
+          &quot;HINH_THUC_TIEM_CHUNG&quot;, &quot;LOAI_CO_SO_TIEM&quot;, &quot;COSO_TIEM&quot;)
+
+cols_rn &lt;- c(&quot;pid&quot;, &quot;dob&quot;, &quot;sex&quot;, 
+             &quot;province&quot;, &quot;district&quot;, &quot;commune&quot;, 
+             &quot;vacname&quot;, &quot;vacdate&quot;,
+             &quot;vactype&quot;, &quot;clinic_type&quot;, &quot;clinic_name&quot;)
+
+df &lt;- df %&gt;% select(all_of(cols))
+colnames(df) &lt;- cols_rn</code></pre>
+<p>Remove Vietnamese diacritics in all string values</p>
+<pre class="r"><code>df &lt;- df %&gt;% mutate_if(is.character, stri_trans_general, id = &quot;latin-ascii&quot;)</code></pre>
+<div id="date-time-variables" class="section level1">
+<h1>Date time variables</h1>
+<div id="date-of-birth" class="section level2">
+<h2>Date of birth</h2>
+<pre class="r"><code>df$dob &lt;- dmy(df$dob)</code></pre>
+</div>
+<div id="vaccination-date" class="section level2">
+<h2>Vaccination date</h2>
+<pre class="r"><code>df$vacdate &lt;- dmy(df$vacdate)</code></pre>
+<pre class="r"><code>df$vacyear &lt;- year(df$vacdate)
+df$vacmonth &lt;- month(df$vacdate)
+table(df$vacyear)</code></pre>
+<pre><code>
+  2000   2001   2002   2003   2004   2005   2006   2007   2008   2009   2010 
+     3      2      5      6      2      6      5      7      5      3      5 
+  2011   2012   2013   2014   2015   2016   2017   2018   2019   2020   2021 
+     4      3      2  11742 180800 347515 429675 458079 593763 543588 566285 
+  2022   2028 
+272351      4 </code></pre>
+<p>Those vaccinated before 2014 and after 2022 must be errors</p>
+<pre class="r"><code>df &lt;- df[which(df$vacyear &gt;= 2014 &amp; df$vacyear &lt;= 2022),]</code></pre>
+</div>
+</div>
+<div id="remove-duplication" class="section level1">
+<h1>Remove duplication</h1>
+<pre class="r"><code>df &lt;- df %&gt;%
+  distinct(., pid, vacdate, vacname, .keep_all = TRUE)</code></pre>
+</div>
+<div id="vaccine" class="section level1">
+<h1>Vaccine</h1>
+<div id="vaccine-name" class="section level2">
+<h2>Vaccine name</h2>
+<p>A reference data frame of vaccine names</p>
+<pre class="r"><code>df_vc &lt;- as.data.table(
+  rbind(
+    cbind(vacname = &quot;BCG&quot;,                     vacname2 = &quot;BCG&quot;),
+    cbind(vacname = &quot;BKT 0,1ml tu khoa (BCG)&quot;, vacname2 = NA),
+    cbind(vacname = &quot;BKT 0.1ml (BCG)&quot;,         vacname2 = NA),
+    cbind(vacname = &quot;BKT 0.5 ml&quot;,              vacname2 = NA),
+    cbind(vacname = &quot;BKT 1 ml&quot;,                vacname2 = NA),
+    cbind(vacname = &quot;BKT 5 ml&quot;,                vacname2 = NA),
+    cbind(vacname = &quot;ComBE Five&quot;,              vacname2 = &quot;DPT_HepB_Hib&quot;),
+    cbind(vacname = &quot;DPT-VGB-HIB (SII)&quot;,       vacname2 = &quot;DPT_HepB_Hib&quot;),
+    cbind(vacname = &quot;Quinvaxem&quot;,               vacname2 = &quot;DPT_HepB_Hib&quot;),
+    cbind(vacname = &quot;DPT&quot;,                     vacname2 = &quot;DPT&quot;),
+    cbind(vacname = &quot;IPV&quot;,                     vacname2 = &quot;IPV&quot;),
+    cbind(vacname = &quot;OPV&quot;,                     vacname2 = &quot;OPV&quot;),
+    
+    # Measles
+    ## Measles
+    cbind(vacname = &quot;Soi&quot;, 
+          vacname2 = &quot;Measles&quot;),
+    ## Measles - rubella
+    cbind(vacname = &quot;MR&quot;, 
+          vacname2 = &quot;MR&quot;),
+    cbind(vacname = &quot;Measles and Rubella Vaccine Live, Attenuated (Freeze-Dried)&quot;,
+          vacname2 = &quot;MR&quot;),
+    ## Measles - mumps - rubella
+    cbind(vacname = &quot;Measles, Mumps and Rubella Vaccine Live, Attenuated (Freeze-Dried)&quot;,
+          vacname2 = &quot;MMR&quot;),
+    cbind(vacname = &quot;MMR II &amp; Diluent inj 0.5ml&quot;,
+          vacname2 = &quot;MMR&quot;),
+    cbind(vacname = &quot;MMR-II&quot;, 
+          vacname2 = &quot;MMR&quot;),
+    
+    # Tetanus
+    cbind(vacname = &quot;Uon van&quot;,                 vacname2 = &quot;Tetanus&quot;),
+    cbind(vacname = &quot;Vac xin uon van bach hau hap phu (Td) (Hop 10 lo 5ml)&quot;, 
+          vacname2 = &quot;Td&quot;),
+    cbind(vacname = &quot;VAT (Lo 20 lieu)&quot;,        vacname2 = &quot;Tetanus&quot;),
+    
+    # Hep B
+    cbind(vacname = &quot;Viem gan B&quot;,              vacname2 = &quot;HepBN&quot;),
+    cbind(vacname = &quot;Viem gan B so sinh&quot;,      vacname2 = &quot;HepBN&quot;),
+    
+    
+    cbind(vacname = &quot;VNNB&quot;,                    vacname2 = &quot;JEV&quot;)
+  )
+)
+
+# Check uncleaned names
+tmp &lt;- df[!which(df$vacname %in% df_vc$vacname),]
+table(tmp$vacname)</code></pre>
+<pre><code>
+                                          Abhayrab 0.1ml 
+                                                       2 
+                                          Abhayrab 0.2ml 
+                                                       2 
+                                          Abhayrab 0.5ml 
+                                                     874 
+                                                 ACT-HIB 
+                                                       6 
+                                                  Adacel 
+                                                     133 
+                                             Avaxim 160U 
+                                                     207 
+                                              Avaxim 80U 
+                                                   11075 
+                                                BCG-TCDV 
+                                                    1356 
+                                                Boostrix 
+                                                     248 
+                                                Cervarix 
+                                                      11 
+                                          Cervarix 0.5ml 
+                                                       1 
+                                         DPT (Lo 2 lieu) 
+                                                      78 
+                                                   DTCOQ 
+                                                       1 
+                                   ENGERIX-B 10mcg/0,5ml 
+                                                    5614 
+                                     ENGERIX-B 20mcg/1ml 
+                                                     133 
+                                      Euvax B  20mcg/1ml 
+                                                     138 
+                                     Euvax B 10mcg/0,5ml 
+                                                    4198 
+                                          Fluarix 0.25ml 
+                                                       3 
+                                           Fluarix 0.5ml 
+                                                      23 
+                                                Gardasil 
+                                                      41 
+                                              Gardasil 9 
+                                                       1 
+                               GC FLU Pre-filled Syringe 
+                                                    8802 
+              GC FLU Quadrivalent pre-filled syringe inj 
+                                                    3983 
+                                   Gene-HBvax (Lo 0.5ml) 
+                                                    3572 
+                                     Gene-HBvax (Lo 1ml) 
+                                                    1224 
+                                                   HAVAX 
+                                                    6774 
+                                                  HAVRIX 
+                                                       7 
+                                                HBVaxPRO 
+                                                       1 
+                              Heberbiovac HB 10mcg/0,5ml 
+                                                    7739 
+                                Heberbiovac HB 20mcg/1ml 
+                                                      74 
+                                           Hemapo 2000IU 
+                                                       2 
+                                            HEPA- B- VAC 
+                                                       4 
+                                  HEPABIG 100.I.U./0,5ml 
+                                                     207 
+                      Hepavax-Gene TF(R) Inj 10mcg/0,5ml 
+                                                     668 
+                        Hepavax-Gene TF(R) Inj 20mcg/1ml 
+                                                      13 
+                                                 Hexavac 
+                                                      59 
+                                                 Hexaxim 
+                                                  129519 
+                                                 Hiberix 
+                                                       8 
+                                      HT Uon Van 1500 IU 
+                                                       2 
+                                                Immubron 
+                                                      84 
+                                   ImmunoHbs - 180 IU/ml 
+                                                     887 
+                                                  Imojev 
+                                                   23345 
+                                Imovax Polio (Lo 1 lieu) 
+                                                       1 
+                               Imovax Polio (Lo 10 lieu) 
+                                                       1 
+                                                 Indirab 
+                                                     224 
+                                           Infanrix Hexa 
+                                                  121100 
+                                        INFANRIX-IPV/Hib 
+                                                     843 
+                                              Inflexal V 
+                                                       4 
+                                Influvac (Hop 1 xy lanh) 
+                                                   22744 
+                                      Influvac 2005/2006 
+                                                      39 
+                                      Influvac 2014/2015 
+                                                     101 
+                                      Influvac 2018/2019 
+                                                    1191 
+                                      Influvac 2019/2020 
+                                                     158 
+                                      Influvac 2020/2021 
+                                                    4404 
+                                Influvac Tetra 2021/2022 
+                                                    2577 
+                                               IVACFLU-S 
+                                                       3 
+                       Japanese Encephalitis vaccine-GCC 
+                                                      17 
+                                              JE vaccine 
+                                                       3 
+                                       Jebevax (Lo 1 ml) 
+                                                     197 
+                                       Jebevax (Lo 5 ml) 
+                                                       4 
+                                         JEEV 3mcg/0,5ml 
+                                                     973 
+                                         JEEV 6mcg/0,5ml 
+                                                     385 
+                                 Jevax (Lo 1 lieu 0.5ml) 
+                                                    4804 
+                                   Jevax (Lo 1 lieu 1ml) 
+                                                    8865 
+                                   Jevax (Lo 5 lieu 5ml) 
+                                                     448 
+                    Khang huyet thanh viem gan B Fovepta 
+                                                      74 
+                                                MENACTRA 
+                                                   13175 
+                                                Mengo-BC 
+                                                     691 
+                                             Meningo A+C 
+                                                     205 
+                             Morcvax (Lo 1 lieu - 1.5ml) 
+                                                    4751 
+                             Morcvax (Lo 5 lieu - 7.5ml) 
+                                                      86 
+                                           Mumps vaccine 
+                                                       1 
+                                                   MVVAC 
+                                                    8701 
+                                                  OKAVAX 
+                                                       1 
+                                                  Orcvax 
+                                                     122 
+                                                 Pavivac 
+                                                       1 
+                                                Pentaxim 
+                                                   12239 
+                                               PNEUMO 23 
+                                                       3 
+                                               PNEUMO 24 
+                                                       6 
+                        Polysaccharide meningococcal A+C 
+                                                      15 
+                                             Prevenar 13 
+                                                   33085 
+                                                 Priorix 
+                                                       2 
+                                               Quimi-Hib 
+                                                   18281 
+                                         r-Hbvax (0.5ml) 
+                                                     339 
+                                           r-Hbvax (1ml) 
+                                                       2 
+                                                Rota Teq 
+                                                   39526 
+                                           Rotarix 1.5ml 
+                                                   40237 
+                                               ROTARIXTM 
+                                                    4940 
+                                              Rotavin-M1 
+                                                   40490 
+                                                 Rubella 
+                                                    2049 
+                                         Rubella vaccine 
+                                                       4 
+                                              SAR 1000IU 
+                                                     129 
+                                                 SAR 2ml 
+                                                       1 
+                                              SAT 1500IU 
+                                                     331 
+                                                Stamaril 
+                                                       1 
+                                               Synflorix 
+                                                  110802 
+                                                      Ta 
+                                                    3897 
+                                         TETANUS vaccine 
+                                                       1 
+                                                 Tetavax 
+                                                       2 
+                               TETRACT - HIB (Lo 1 lieu) 
+                                                      85 
+                              TETRACT - HIB (Lo 10 lieu) 
+                                                       2 
+                                                Tetraxim 
+                                                    5605 
+                            Thuong han (Typhim Vi 10 ml) 
+                                                      88 
+                                                Tresivac 
+                                                       1 
+                                Trimovax Merieux (R.O.R) 
+                                                       2 
+                                            TRITANRIX-HB 
+                                                       2 
+                                                Trivivac 
+                                                       4 
+                                                 Twinrix 
+                                                    2208 
+                                                TYPHERIX 
+                                                       2 
+                            Typhim Vi (Lo 1 lieu/0.5 ml) 
+                                                    2404 
+                                        Typhoid vi 0.5ml 
+                                                     229 
+                                              UV-BH (Td) 
+                                                      21 
+                                        VA - MENGOC - BC 
+                                                   46318 
+         Vac xin thuong han vi Polysaccharide (Lo 0.5ml) 
+                                                     446 
+Vac xin uon van bach hau hap phu (Td) (Hop 20 ong 0.5ml) 
+                                                       1 
+                Vac xin uon van hap phu (TT) (Lo 1 lieu) 
+                                                      48 
+               Vac xin uon van hap phu (TT) (Lo 20 lieu) 
+                                                       4 
+                                               Varicella 
+                                                    6500 
+                                                VARILRIX 
+                                                    1615 
+                                                 Varivax 
+                                                   18487 
+                             Varivax &amp; Diluent Inj 0.5ml 
+                                                    5770 
+                                        VAT (ong 1 lieu) 
+                                                     114 
+                                         Vaxigrip 0.25ml 
+                                                   25476 
+                                          VAXIGRIP 0.5ml 
+                                                    6536 
+                                          Vaxigrip Tetra 
+                                                       4 
+                                    Vaxigrip Tetra 0.5ml 
+                                                   17524 
+                                           Verorab 0.1ml 
+                                                       5 
+                                           Verorab 0.5ml 
+                                                    1741 
+                                                 VIVAXIM 
+                                                       1 
+                                            Zerotyph cap 
+                                                       4 </code></pre>
+<pre class="r"><code># table(grep(&quot;soi&quot;, tmp$vacname, ignore.case = T, value = T))</code></pre>
+<p>Merge into our data</p>
+<pre class="r"><code>df &lt;- merge(df, df_vc,by = &quot;vacname&quot;, all.x = T, sort = F)</code></pre>
+<p>Now can drop the original vaccination name to free up RAM and disk</p>
+<pre class="r"><code>df$vacname &lt;- NULL</code></pre>
+</div>
+<div id="vaccination" class="section level2">
+<h2>Vaccination</h2>
+</div>
+<div id="vaccination-schedule" class="section level2">
+<h2>Vaccination schedule</h2>
+<pre class="r"><code>vacinfo &lt;- as.data.table(
+  rbind(
+    cbind(vacname2 = &quot;BCG&quot;,            epi = 1, shot = 1, start = 0),
+    cbind(vacname2 = &quot;HepBN&quot;,          epi = 1, shot = 1, start = 0),
+    cbind(vacname2 = &quot;DPT_HepB_Hib&quot;,   epi = 1, shot = 1, start = 2),
+    cbind(vacname2 = &quot;DPT_HepB_Hib&quot;,   epi = 1, shot = 2, start = 3),
+    cbind(vacname2 = &quot;DPT_HepB_Hib&quot;,   epi = 1, shot = 3, start = 4),
+    cbind(vacname2 = &quot;OPV&quot;,            epi = 1, shot = 1, start = 2),
+    cbind(vacname2 = &quot;OPV&quot;,            epi = 1, shot = 2, start = 3),
+    cbind(vacname2 = &quot;OPV&quot;,            epi = 1, shot = 3, start = 4),
+    cbind(vacname2 = &quot;IPV&quot;,            epi = 1, shot = 1, start = 5),
+    cbind(vacname2 = &quot;Measles&quot;,        epi = 1, shot = 1, start = 9),
+    cbind(vacname2 = &quot;MMR&quot;,            epi = 0, shot = 1, start = 12),
+    cbind(vacname2 = &quot;MR&quot;,             epi = 1, shot = 1, start = 18),
+    cbind(vacname2 = &quot;DPT&quot;,            epi = 1, shot = 1, start = 18),
+    cbind(vacname2 = &quot;JEV&quot;,            epi = 1, shot = 1, start = 12),
+    cbind(vacname2 = &quot;Td&quot;,             epi = 0, shot = 1, start = 84)
+  )
+) %&gt;%
+  mutate(epi = as.numeric(epi),
+         shot = as.numeric(shot),
+         start = as.numeric(start))</code></pre>
+<p>Order of shot</p>
+<pre class="r"><code># Only get data with cleaned vaccine name
+df &lt;- df %&gt;% 
+  filter(!is.na(vacname2))
+
+df &lt;- df %&gt;%
+  group_by(pid, vacname2) %&gt;%
+  arrange(vacdate) %&gt;%
+  mutate(shot = 1:n()) %&gt;%
+  ungroup()</code></pre>
+<p>Add vaccination schedule</p>
+<pre class="r"><code>df &lt;- merge(df, vacinfo, by = c(&quot;vacname2&quot;, &quot;shot&quot;), all.x = T, sort = F)
+df &lt;- df[which(!is.na(df$start)),]</code></pre>
+</div>
+</div>
+<div id="add-variables" class="section level1">
+<h1>Add variables</h1>
+<ul>
+<li><code>vagem</code>: age when receive the vaccine shot (in month), difference between vaccination date and birth date</li>
+<li><code>vdelay</code>: number of delayed months, difference between age at vaccine shot (<code>vagem</code>) and the schedule date (<code>start</code>)</li>
+</ul>
+<pre class="r"><code>df &lt;- df %&gt;% 
+  mutate(
+    vagem = trunc((dob %--% vacdate) / months(1)),
+    vdelay = vagem - start
+  )</code></pre>
+</div>
+<div id="sex" class="section level1">
+<h1>Sex</h1>
+<pre class="r"><code>df$sex &lt;- factor(df$sex, levels = c(&quot;Nu&quot;, &quot;Nam&quot;), labels = c(&quot;F&quot;, &quot;M&quot;))</code></pre>
+</div>
+<div id="public-or-private" class="section level1">
+<h1>Public or private</h1>
+<p>Translate some values to English</p>
+<pre class="r"><code>df$vactype &lt;- recode(df$vactype, 
+                     TCMR = &quot;public&quot;, TCDV = &quot;private&quot;, TCCD = &quot;campaign&quot;)
+df$clinic_type &lt;- recode(df$clinic_type,
+                         BV = &quot;hospital&quot;,
+                         `Dia diem khac` = &quot;other&quot;,
+                         DV = &quot;private&quot;,
+                         `Khong ro` = &quot;unknown&quot;,
+                         TCMR = &quot;public&quot;)</code></pre>
+</div>
+<div id="reorder-columns" class="section level1">
+<h1>Reorder columns</h1>
+<pre class="r"><code>cols_rn &lt;- grep(&quot;vacname&quot;, cols_rn, invert = T, value = T)
+cols_order &lt;- c(cols_rn, &quot;vacname2&quot;, &quot;shot&quot;, &quot;vacyear&quot;, &quot;vacmonth&quot;, &quot;epi&quot;, 
+                &quot;start&quot;, &quot;vagem&quot;, &quot;vdelay&quot;)
+df &lt;- df[,cols_order]</code></pre>
+</div>
+<div id="hep-b" class="section level1">
+<h1>Hep B</h1>
+<pre class="r"><code># measles &lt;- df[which(df$vacname2 %in% c(&quot;Measles&quot;, &quot;MR&quot;, &quot;MMR&quot;)),]</code></pre>
+</div>
+<div id="tuberculosis" class="section level1">
+<h1>Tuberculosis</h1>
+</div>
+<div id="measles" class="section level1">
+<h1>Measles</h1>
+<p>Get measles data</p>
+<pre class="r"><code>measles &lt;- df[which(df$vacname2 %in% c(&quot;Measles&quot;, &quot;MR&quot;, &quot;MMR&quot;)),]
+# saveRDS(measles, file.path(datap, &quot;measles_haiduong.rds&quot;))</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.1 (2021-08-10)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] lubridate_1.8.0   stringi_1.7.6     dplyr_1.0.8       data.table_1.14.2
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.8.3     pillar_1.7.0     compiler_4.1.1   bslib_0.3.1     
+ [5] later_1.3.0      jquerylib_0.1.4  git2r_0.29.0     workflowr_1.7.0 
+ [9] tools_4.1.1      digest_0.6.29    jsonlite_1.7.3   evaluate_0.14   
+[13] lifecycle_1.0.1  tibble_3.1.6     pkgconfig_2.0.3  rlang_1.0.3     
+[17] DBI_1.1.2        cli_3.3.0        rstudioapi_0.13  yaml_2.2.1      
+[21] xfun_0.29        fastmap_1.1.0    stringr_1.4.0    knitr_1.37      
+[25] generics_0.1.1   fs_1.5.2         vctrs_0.3.8      sass_0.4.0      
+[29] tidyselect_1.1.1 rprojroot_2.0.2  glue_1.6.2       R6_2.5.1        
+[33] fansi_1.0.2      rmarkdown_2.11   purrr_0.3.4      magrittr_2.0.2  
+[37] whisker_0.4      promises_1.2.0.1 ellipsis_0.3.2   htmltools_0.5.2 
+[41] assertthat_0.2.1 httpuv_1.6.5     utf8_1.2.2       crayon_1.5.0    </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+---
+title: "Check data"
+author: "Thinh"
+date: "8/18/2022"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message = F, dpi = 300, out.width = "100%")
+
+library(lubridate)
+library(data.table)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(gtsummary)
+
+datap <- file.path("~", "Downloads", "updated_dataset")
+measle_all <- readRDS(file.path(datap, "measles_haiduong_unrefactor.rds"))
+measle_all <- data.table(measle_all)
+```
+
+# TCCD
+
+Các vấn đề trong data:
+
+* Trong 3 năm 2016, 2017 và 2018, hơn 95% mũi tiêm sởi ở Hải Dương là tiêm chiến dịch. Từ 2020 đến nay rất ít mũi tiêm là tiêm chiến dịch.
+* Từ năm 2018 về trước, rất ít tiêm dịch vụ ở Hải Dương (<30 mũi). Số mũi tiêm dịch vụ tăng vọt vào năm 2020 với 1959 mũi.
+
+```{r}
+tbl_summary(measle_all, by = vactype, include = c(vacyear),
+            digits = all_categorical() ~ c(0, 1), percent = "row")
+```
+
+Biểu đồ thể hiện tỉ lệ tiêm chiến dịch theo thời gian (màu tím). Tháng 12/2018 tỉ lệ TCCD vẫn chiếm 90% (màu tím chiếm phần lớn) nhưng thay đổi đột ngột khi sang tháng 1/2019 là TMCR chiếm > 95%.
+
+```{r}
+df_plot <- measle_all %>% 
+  count(vacyear, vacmonth, vactype) %>% 
+  group_by(vacyear, vacmonth) %>%
+  mutate(prop = n / sum(n))
+
+df_plot <- data.frame(df_plot)
+df_plot <- df_plot %>% complete(vacyear, vacmonth, vactype, fill = list(n = 0, prop = 0))
+ggplot(df_plot, aes(x = vacmonth, y = prop, fill = vactype)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ vacyear) +
+  scale_fill_viridis_d() +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
+  theme_light() +
+  theme(legend.position = "bottom")
+```
+
+# Tiêm MMR trong năm 2021
+
+Có một đợi tiêm MMR cao bất thường vào ngày 18/7/2021 (khoảng 1600 mũi). Các mũi này có hình thức tiêm (biến HINH_THUC_TIEM_CHUNG) là 50% TCDV, 50% TCMR nhưng cơ sở tiêm (biến LOAI_CO_SO_TIEM) thì hơn 90% là TCMR.
+
+```{r}
+tmp <- measle_all[which(measle_all$vacyear == 2021),]
+
+df_plot <- tmp %>% 
+    count(vacdate, vacname2)
+
+ggplot(df_plot, aes(x = vacdate, y = n, color = vacname2)) +
+  geom_rect(aes(xmin = ymd("2021-01-28"), xmax = ymd("2021-02-15"), ymin = -Inf, ymax = Inf), fill = "lightpink", color = NA, alpha = 0.015) +
+  geom_rect(aes(xmin = ymd("2021-02-16"), xmax = ymd("2021-03-02"), ymin = -Inf, ymax = Inf), fill = "salmon2", color = NA, alpha = 0.015) +
+  geom_rect(aes(xmin = ymd("2021-03-03"), xmax = ymd("2021-03-17"), ymin = -Inf, ymax = Inf), fill = "lightpink", color = NA, alpha = 0.015) +
+  geom_rect(aes(xmin = ymd("2021-03-18"), xmax = ymd("2021-03-31"), ymin = -Inf, ymax = Inf), fill = "grey90", color = NA, alpha = 0.025) +
+  geom_line(stat = "identity") +
+  scale_x_date(date_breaks = "1 month", labels = scales::date_format("%b")) +
+  labs(x = "Measles vaccination in 2021") +
+  theme_light()
+```
+
+```{r}
+tmp <- measle_all[which(measle_all$vacyear == 2021 & measle_all$vacmonth == 7 & measle_all$vacname2 == "MMR"),]
+
+df_plot <- tmp %>% 
+    count(vacdate, vacname2)
+
+ggplot(df_plot, aes(x = vacdate, y = n)) + 
+  geom_bar(stat = "identity") +
+  labs(x = "July 2021") +
+  scale_x_date(breaks = "1 day", date_labels = "%d")
+```
+
+```{r}
+tmp <- measle_all[which(measle_all$vacdate == "2021-07-18" & measle_all$vacname2 == "MMR"),]
+tbl_summary(tmp, by = vacname2, include = c(vactype, clinic_type),
+            digits = all_categorical() ~ c(0, 1))
+```
+
