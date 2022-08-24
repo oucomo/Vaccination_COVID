@@ -12,7 +12,7 @@
 <meta name="author" content="Duc Du, Thinh Ong" />
 
 
-<title>Hai Duong: Measles</title>
+<title>Hai Duong: Hep B and BCG</title>
 
 <script src="site_libs/header-attrs-2.15/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -365,7 +365,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Hai Duong: Measles</h1>
+<h1 class="title toc-ignore">Hai Duong: Hep B and BCG</h1>
 <h4 class="author">Duc Du, Thinh Ong</h4>
 <h4 class="date">2020-01-29 (update: 2022-08-23)</h4>
 
@@ -516,7 +516,6 @@ Unstaged changes:
     Deleted:    analysis/hepb_bcg_files/figure-html/unnamed-chunk-7-1.png
     Deleted:    analysis/hepb_bcg_files/figure-html/unnamed-chunk-8-1.png
     Deleted:    analysis/hepb_bcg_files/figure-html/unnamed-chunk-9-1.png
-    Modified:   analysis/measles.Rmd
     Deleted:    analysis/measles_files/figure-html/unnamed-chunk-10-1.png
     Deleted:    analysis/measles_files/figure-html/unnamed-chunk-11-1.png
     Deleted:    analysis/measles_files/figure-html/unnamed-chunk-12-1.png
@@ -581,74 +580,14 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/measles.Rmd</code>) and HTML (<code>docs/measles.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/analysis/measles.Rmd" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-<td>
-analyse new data 2014 - 2022 Hai Duong
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/oucomo/Vaccination_COVID/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/measles.html" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-<td>
-analyse new data 2014 - 2022 Hai Duong
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
 </div>
-<pre class="r"><code>knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, out.width = &quot;100%&quot;)
+<pre class="r"><code>knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, out.width = &quot;100%&quot;, root.dir = rprojroot::find_rstudio_root_file())
 
 library(data.table)
 library(dplyr)</code></pre>
@@ -683,600 +622,169 @@ library(gtsummary)</code></pre>
 
 datap &lt;- file.path(&quot;~&quot;, &quot;Downloads&quot;, &quot;updated_dataset&quot;)
 
-covidvc &lt;- readRDS(file.path(datap, &quot;Combined_VAC_COVID19_2022-02-17.rds&quot;))
+bcg &lt;- readRDS(file.path(datap, &quot;bcg_haiduong.rds&quot;))
+bcg &lt;- data.table(bcg)
+bcg &lt;- bcg[which(bcg$shot == 1),]
+
+hepb &lt;- readRDS(file.path(datap, &quot;hepb_haiduong.rds&quot;))
+hepb &lt;- data.table(hepb)
+hepb &lt;- hepb[which(hepb$shot == 1),]
+
 measle_all &lt;- readRDS(file.path(datap, &quot;measles_haiduong.rds&quot;))
 measle_all &lt;- data.table(measle_all)
 
-time_step &lt;- &quot;month&quot;</code></pre>
+time_step &lt;- &quot;month&quot;
+bcg$vacym &lt;- floor_date(bcg$vacdate, time_step)
+hepb$vacym &lt;- floor_date(hepb$vacdate, time_step)</code></pre>
+<div id="hep-b" class="section level1">
+<h1>Hep B</h1>
+<p>Number of days from Hep B vaccination to date of birth <img src="figure/hepb_bcg.Rmd/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre><code>    Var1  Freq
+212    0 96114
+213    1 93316
+214    2  8599
+215    3  2099
+216    4   907
+217    5   520
+218    6   331
+219    7   177
+220    8   114
+221    9    98
+222   10   199
+223   11   121
+224   12    62
+225   13    41
+226   14    53</code></pre>
+<p><strong>Only keep children vaccinated within 3 days after birth (should we?)</strong></p>
+<p><img src="figure/hepb_bcg.Rmd/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="figure/hepb_bcg.Rmd/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="bcg" class="section level1">
+<h1>BCG</h1>
+<p>Number of days from BCG vaccination to date of birth <img src="figure/hepb_bcg.Rmd/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre><code>    Var1 Freq
+137    0  861
+138    1 1368
+139    2 2127
+140    3 2398
+141    4 3966
+142    5 3687
+143    6 3617
+144    7 4160
+145    8 4379
+146    9 4746
+147   10 5069
+148   11 5362
+149   12 5188
+150   13 5550
+151   14 5764</code></pre>
+<p><img src="figure/hepb_bcg.Rmd/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="figure/hepb_bcg.Rmd/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="figure/hepb_bcg.Rmd/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="compare-hep-b-and-bcg" class="section level1">
+<h1>Compare Hep B and BCG</h1>
+<p>BCG in Hep B</p>
 <pre><code>
-     1      2      3 
-229316 159469  15882 </code></pre>
+ FALSE   TRUE 
+ 48813 190988 </code></pre>
+<p>Hep B in BCG</p>
 <pre><code>
-     1 
-404667 </code></pre>
-<p><img src="figure/measles.Rmd/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
-Past versions of unnamed-chunk-3-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-3-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-3-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
+ FALSE   TRUE 
+  9140 190988 </code></pre>
+<div id="hep-b-and-bcg" class="section level2">
+<h2>Hep B and BCG</h2>
+<p><img src="figure/hepb_bcg.Rmd/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="hep-b-bcg-and-measles" class="section level2">
+<h2>Hep B, BCG and Measles</h2>
+<p><img src="figure/hepb_bcg.Rmd/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /></p>
 </div>
 </div>
-<ul>
-<li>High peak of MR shots in Nov 2019</li>
-<li>No disruption in Apr 2020</li>
-<li>Disruptions in Aug 2020 and Feb 2021</li>
-</ul>
-<div id="vaccination-campaign-in-nov-2019" class="section level1">
-<h1>Vaccination campaign in Nov 2019</h1>
-<p>An MR vaccination campaign is triggered during this time in Hai Duong, focusing on children 1-5 year-old <img src="figure/measles.Rmd/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
-Past versions of unnamed-chunk-4-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-4-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Distribution of delay <img src="figure/measles.Rmd/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
-Past versions of unnamed-chunk-5-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-5-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-5-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>We have new variables informing whether a shot is given from a vaccination campaign</p>
+<div id="vaccine-coverage" class="section level1">
+<h1>Vaccine coverage</h1>
+<p>All children born in Jan 2019 (use Hep B)</p>
+<pre class="r"><code>tmp1 &lt;- hepb %&gt;% 
+  filter(
+    month(dob) == 1,
+    year(dob) == 2019
+  )
+
+nrow(tmp1)</code></pre>
+<pre><code>[1] 2730</code></pre>
+<p>Also all children born in Jan 2019 got the measles shot</p>
+<pre class="r"><code>tmp2 &lt;- measle_all %&gt;% 
+  filter(
+    month(dob) == 1,
+    year(dob) == 2019,
+    vacname2 == &quot;Measles&quot;
+  ) %&gt;%
+  distinct(., pid, .keep_all = T)
+nrow(tmp2)</code></pre>
+<pre><code>[1] 2729</code></pre>
+<pre class="r"><code>table(tmp1$pid %in% tmp2$pid)</code></pre>
 <pre><code>
-campaign  private   public 
-  180426    12070   212171 </code></pre>
-<p><img src="figure/measles.Rmd/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
-Past versions of unnamed-chunk-6-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-6-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-6-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-hospital    other  private   public  unknown 
-     389     2171    36149   353342    12616 </code></pre>
-<p><img src="figure/measles.Rmd/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
-Past versions of unnamed-chunk-7-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-7-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-7-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>The proportion of campaign shots <img src="figure/measles.Rmd/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
-Past versions of unnamed-chunk-8-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-8-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-8-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/measles.Rmd/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
-Past versions of unnamed-chunk-9-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-9-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-9-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/measles.Rmd/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
-Past versions of unnamed-chunk-10-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-10-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/measles.Rmd/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
-Past versions of unnamed-chunk-11-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-11-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-11-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="no-disruption-in-apr-2020" class="section level1">
-<h1>No disruption in Apr 2020</h1>
-<p><img src="figure/measles.Rmd/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
-Past versions of unnamed-chunk-12-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-12-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-12-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Zoom in 4/2020: The national lockdown was from 1/4 to 21/4. They compensate all the measles shots at 25/4 =&gt; no difference in delay <img src="figure/measles.Rmd/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
-Past versions of unnamed-chunk-13-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-13-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-13-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="disruptions-in-aug-2020-and-feb-2021" class="section level1">
-<h1>Disruptions in Aug 2020 and Feb 2021</h1>
-<p><img src="figure/measles.Rmd/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
-Past versions of unnamed-chunk-14-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-14-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-14-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div id="zoom-in-2020" class="section level2">
-<h2>Zoom in 2020</h2>
-<p>The monthly vaccination date at public clinics is usually at the end of the month. In Mar 2020: right before lockdown they vaccinate children and right after lockdown they came back to vaccinate children</p>
-<p>Hai Duong had a Hai Duong city-wide lockdown from 14/8-28/8, this time looks like they only organised the vaccination day in Sep so all children scheduled in Aug miss the shot <img src="figure/measles.Rmd/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
-Past versions of unnamed-chunk-15-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-15-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/oucomo/Vaccination_COVID/blob/d52958b860b0b7b836336e34ba295bc11ef623cb/docs/figure/measles.Rmd/unnamed-chunk-15-1.png" target="_blank">d52958b</a>
-</td>
-<td>
-thinhong
-</td>
-<td>
-2022-08-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="zoom-in-2021" class="section level2">
-<h2>Zoom in 2021</h2>
-<p>Hai Duong had a province-wide lockdown from 28/1/2021 - 15/2 (Directive 15), 16/2 - 2/3 (Directive 16), 3/3 - 17/3 (Directive 15), 18/3 - 31/3 (Directive 19)</p>
-<p>Directive 16 &gt; 15 &gt; 19 <img src="figure/measles.Rmd/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<p><img src="figure/measles.Rmd/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="public-vs-private" class="section level1">
-<h1>Public vs private</h1>
-<p>First let decide how a shot is public or private</p>
-<pre><code>
-hospital    other  private   public  unknown 
-     389     2171    36149   353342    12616 </code></pre>
-<p>Extract children who get 2 shots</p>
-<p>Some received the same vaccine in the same day, filter them out and continue</p>
-<p>Some received 3 shots, filtered them out.</p>
-<p>Change dataset from long to wide format</p>
-<p>Aggregate them by month</p>
-<p>Line plot</p>
-<p><img src="figure/measles.Rmd/unnamed-chunk-24-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<pre><code># A tibble: 6 × 8
-# Groups:   vyear_1st, vmonth_1st, shot1 [6]
-  vyear_1st vmonth_1st shot1   shot2     pid denom  pct2 vacdate_1st
-      &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;date&gt;     
-1      2020          1 private private    11    26  42.3 2020-01-01 
-2      2020          1 public  private    51   106  48.1 2020-01-01 
-3      2020          8 private private    33    46  71.7 2020-08-01 
-4      2020          8 public  private    56   132  42.4 2020-08-01 
-5      2021          2 private private    11    17  64.7 2021-02-01 
-6      2021          2 public  private    32    68  47.1 2021-02-01 </code></pre>
-<pre><code># A tibble: 18 × 8
-# Groups:   vyear_1st, vmonth_1st, shot1 [18]
-   vyear_1st vmonth_1st shot1   shot2     pid denom  pct2 vacdate_1st
-       &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;date&gt;     
- 1      2021          3 private private    31    62  50   2021-03-01 
- 2      2021          3 public  private   445  2897  15.4 2021-03-01 
- 3      2021          4 private private    25    54  46.3 2021-04-01 
- 4      2021          4 public  private   304  1711  17.8 2021-04-01 
- 5      2021          5 private private    18    50  36   2021-05-01 
- 6      2021          5 public  private   266  1664  16.0 2021-05-01 
- 7      2021          6 private private    29    44  65.9 2021-06-01 
- 8      2021          6 public  private   354  2065  17.1 2021-06-01 
- 9      2021          7 private private    26    48  54.2 2021-07-01 
-10      2021          7 public  private   364  2030  17.9 2021-07-01 
-11      2021          8 private private    25    35  71.4 2021-08-01 
-12      2021          8 public  private   372  1697  21.9 2021-08-01 
-13      2021          9 private private    11    27  40.7 2021-09-01 
-14      2021          9 public  private   258  1281  20.1 2021-09-01 
-15      2021         10 private private    17    28  60.7 2021-10-01 
-16      2021         10 public  private   237   694  34.1 2021-10-01 
-17      2021         11 private private    10    14  71.4 2021-11-01 
-18      2021         11 public  private   156   276  56.5 2021-11-01 </code></pre>
-</div>
-<div id="population-level" class="section level1">
-<h1>Population level</h1>
-<p><img src="figure/measles.Rmd/unnamed-chunk-27-1.png" width="100%" style="display: block; margin: auto;" /></p>
-</div>
-<div id="children-who-got-2-shots" class="section level1">
-<h1>Children who got 2 shots</h1>
-<p><img src="figure/measles.Rmd/unnamed-chunk-28-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>tmp &lt;- measle_all[which(measle_all$vacname2 == &quot;MMR&quot;),]
-table(tmp$shot)</code></pre>
-<pre><code>
-    1 
-49723 </code></pre>
+FALSE  TRUE 
+  415  2315 </code></pre>
+<pre class="r"><code>2315 / 2729</code></pre>
+<pre><code>[1] 0.8482961</code></pre>
+<p>These children in measles dataset get Measles shot in October 2019</p>
+<pre class="r"><code>tmp2 &lt;- tmp2 %&gt;%
+  filter(
+    vacmonth == 10,
+    vacyear == 2019,
+  )
+nrow(tmp2)</code></pre>
+<pre><code>[1] 1360</code></pre>
+<p>So the vaccine coverage</p>
+<pre class="r"><code>nrow(tmp2) / nrow(tmp1)</code></pre>
+<pre><code>[1] 0.4981685</code></pre>
+<p>Cumulative coverage of children born in Jan - Feb 2019</p>
+<pre class="r"><code>tmp1 &lt;- hepb %&gt;% 
+  filter(
+    month(dob) %in% c(1, 2),
+    year(dob) == 2019
+  )
+
+tmp2 &lt;- measle_all %&gt;% 
+  filter(
+    month(dob) %in% c(1, 2),
+    year(dob) == 2019,
+    vacname2 == &quot;Measles&quot;
+  ) %&gt;%
+  distinct(., pid, .keep_all = T)
+
+nrow(tmp1)</code></pre>
+<pre><code>[1] 4847</code></pre>
+<pre class="r"><code>nrow(tmp2)</code></pre>
+<pre><code>[1] 4773</code></pre>
+<pre class="r"><code>tmp2 &lt;- tmp2 %&gt;%
+  filter(
+    vacmonth %in% c(10, 11),
+    vacyear == 2019,
+  )
+
+nrow(tmp2) / nrow(tmp1)</code></pre>
+<pre><code>[1] 0.6769136</code></pre>
+<p>Cumulative coverage of children born in Jan - Feb - March 2019</p>
+<pre class="r"><code>tmp1 &lt;- hepb %&gt;% 
+  filter(
+    month(dob) %in% c(1, 2, 3),
+    year(dob) == 2019
+  )
+
+tmp2 &lt;- measle_all %&gt;% 
+  filter(
+    month(dob) %in% c(1, 2, 3),
+    year(dob) == 2019,
+    vacmonth %in% c(10, 11, 12),
+    vacyear == 2019,
+    vacname2 == &quot;Measles&quot;
+  ) %&gt;%
+  distinct(., pid, .keep_all = T)
+
+nrow(tmp2) / nrow(tmp1)</code></pre>
+<pre><code>[1] 0.7470621</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1305,10 +813,10 @@ other attached packages:
 loaded via a namespace (and not attached):
  [1] tidyselect_1.1.2    xfun_0.32           bslib_0.4.0        
  [4] purrr_0.3.4         colorspace_2.0-3    vctrs_0.4.1        
- [7] generics_0.1.3      viridisLite_0.4.0   htmltools_0.5.3    
-[10] yaml_2.3.5          utf8_1.2.2          rlang_1.0.4        
-[13] jquerylib_0.1.4     later_1.3.0         pillar_1.8.1       
-[16] glue_1.6.2          withr_2.5.0         DBI_1.1.3          
+ [7] generics_0.1.3      htmltools_0.5.3     yaml_2.3.5         
+[10] utf8_1.2.2          rlang_1.0.4         jquerylib_0.1.4    
+[13] later_1.3.0         pillar_1.8.1        glue_1.6.2         
+[16] withr_2.5.0         DBI_1.1.3           plyr_1.8.7         
 [19] lifecycle_1.0.1     stringr_1.4.1       munsell_0.5.0      
 [22] gtable_0.3.0        workflowr_1.7.0     evaluate_0.16      
 [25] labeling_0.4.2      knitr_1.39          fastmap_1.1.0      
@@ -1318,10 +826,10 @@ loaded via a namespace (and not attached):
 [37] fs_1.5.2            digest_0.6.29       stringi_1.7.8      
 [40] rprojroot_2.0.3     grid_4.1.1          cli_3.3.0          
 [43] tools_4.1.1         magrittr_2.0.3      sass_0.4.2         
-[46] tibble_3.1.8        whisker_0.4         pkgconfig_2.0.3    
-[49] ellipsis_0.3.2      broom.helpers_1.8.0 assertthat_0.2.1   
-[52] gt_0.6.0            rmarkdown_2.15      rstudioapi_0.13    
-[55] R6_2.5.1            git2r_0.30.1        compiler_4.1.1     </code></pre>
+[46] tibble_3.1.8        crayon_1.5.1        pkgconfig_2.0.3    
+[49] broom.helpers_1.8.0 assertthat_0.2.1    gt_0.6.0           
+[52] rmarkdown_2.15      rstudioapi_0.13     R6_2.5.1           
+[55] git2r_0.30.1        compiler_4.1.1     </code></pre>
 </div>
 </div>
 

@@ -28,6 +28,7 @@ library(lubridate)
 library(ggplot2)
 library(gtsummary)
 library(ggsci)
+library(plotly)
 
 datap <- file.path("~", "Downloads", "updated_dataset")
 
@@ -199,96 +200,3 @@ ggplot(df_plot, aes(x = vacmonth, y = n, color = vacname2)) +
   theme_light()
 ```
 
-# Vaccine coverage
-
-All children born in Jan 2019 (use Hep B)
-```{r, echo = T}
-tmp1 <- hepb %>% 
-  filter(
-    month(dob) == 1,
-    year(dob) == 2019
-  )
-
-nrow(tmp1)
-```
-
-Also all children born in Jan 2019 got the measles shot
-```{r, echo = T}
-tmp2 <- measle_all %>% 
-  filter(
-    month(dob) == 1,
-    year(dob) == 2019,
-    vacname2 == "Measles"
-  ) %>%
-  distinct(., pid, .keep_all = T)
-nrow(tmp2)
-```
-
-```{r, echo = T}
-table(tmp1$pid %in% tmp2$pid)
-2315 / 2729
-```
-
-These children in measles dataset get Measles shot in October 2019
-```{r, echo = T}
-tmp2 <- tmp2 %>%
-  filter(
-    vacmonth == 10,
-    vacyear == 2019,
-  )
-nrow(tmp2)
-```
-
-So the vaccine coverage
-```{r, echo = T}
-nrow(tmp2) / nrow(tmp1)
-```
-
-Cumulative coverage of children born in Jan - Feb 2019
-```{r, echo = T}
-tmp1 <- hepb %>% 
-  filter(
-    month(dob) %in% c(1, 2),
-    year(dob) == 2019
-  )
-
-tmp2 <- measle_all %>% 
-  filter(
-    month(dob) %in% c(1, 2),
-    year(dob) == 2019,
-    vacname2 == "Measles"
-  ) %>%
-  distinct(., pid, .keep_all = T)
-
-nrow(tmp1)
-nrow(tmp2)
-
-tmp2 <- tmp2 %>%
-  filter(
-    vacmonth %in% c(10, 11),
-    vacyear == 2019,
-  )
-
-nrow(tmp2) / nrow(tmp1)
-```
-
-Cumulative coverage of children born in Jan - Feb - March 2019
-```{r, echo = T}
-tmp1 <- hepb %>% 
-  filter(
-    month(dob) %in% c(1, 2, 3),
-    year(dob) == 2019
-  )
-
-tmp2 <- measle_all %>% 
-  filter(
-    month(dob) %in% c(1, 2, 3),
-    year(dob) == 2019,
-    vacmonth %in% c(10, 11, 12),
-    vacyear == 2019,
-    vacname2 == "Measles"
-  ) %>%
-  distinct(., pid, .keep_all = T)
-
-nrow(tmp2) / nrow(tmp1)
-```
