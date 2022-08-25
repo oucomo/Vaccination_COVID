@@ -19,7 +19,7 @@ editor_options:
 ---
 
 ```{r}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, out.width = "100%")
+knitr::opts_chunk$set(echo = T, warning = F, message = F, out.width = "100%")
 
 library(data.table)
 library(dplyr)
@@ -339,6 +339,7 @@ measle_all$dob_ym <- floor_date(measle_all$dob, time_step)
 measle_all$vac_ym <- floor_date(measle_all$vacdate, time_step)
 ```
 
+# Children born in 2019 received Measles
 ```{r}
 yr <- 2019
 
@@ -405,7 +406,141 @@ plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
 
 ```
 
+# Children born in 2019 received Measles or MR
+```{r}
+yr <- 2019
 
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:12) {
+    
+    # Measles vaccine: 9 month after month of birth
+    start_shots <- cohort + months(9)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% c("Measles", "MR")
+      ) %>%
+      distinct(., pid, .keep_all = T) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + 8, 
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- factor(df_plot$cohort)
+
+plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+        type = "scatter", mode = "lines",
+        hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                           "Cutoff month: ", df_plot$month_cov, "<br>",
+                           "Coverage: ", df_plot$cov),
+        hoverinfo = "text")
+
+```
+
+# Children born in 2019 received Measles or MR or MMR
+```{r}
+yr <- 2019
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:12) {
+    
+    # Measles vaccine: 9 month after month of birth
+    start_shots <- cohort + months(9)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% c("Measles", "MR", "MMR")
+      ) %>%
+      distinct(., pid, .keep_all = T) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + 8, 
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- factor(df_plot$cohort)
+
+plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+        type = "scatter", mode = "lines",
+        hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                           "Cutoff month: ", df_plot$month_cov, "<br>",
+                           "Coverage: ", df_plot$cov),
+        hoverinfo = "text")
+
+```
+
+# Children born in 2020 received Measles
 ```{r}
 yr <- 2020
 start_yr <- ym(paste0(yr, "-01"))
@@ -436,6 +571,122 @@ for (i in 1:length(range_yr)) {
         vac_ym >= start_shots,
         vac_ym <= end_shots,
         vacname2 %in% c("Measles")
+      ) %>%
+      distinct(., pid, .keep_all = T) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + 8, 
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- factor(df_plot$cohort)
+
+plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+        type = "scatter", mode = "lines",
+        hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                           "Cutoff month: ", df_plot$month_cov, "<br>",
+                           "Coverage: ", df_plot$cov),
+        hoverinfo = "text")
+
+```
+
+# Children born in 2020 received Measles or MR
+```{r}
+yr <- 2020
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  cohort <- range_yr[i]
+  
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:12) {
+    start_shots <- cohort + months(9)
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% c("Measles", "MR")
+      ) %>%
+      distinct(., pid, .keep_all = T) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + 8, 
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- factor(df_plot$cohort)
+
+plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+        type = "scatter", mode = "lines",
+        hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                           "Cutoff month: ", df_plot$month_cov, "<br>",
+                           "Coverage: ", df_plot$cov),
+        hoverinfo = "text")
+
+```
+
+# Children born in 2020 received Measles or MR or MMR
+```{r}
+yr <- 2020
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  cohort <- range_yr[i]
+  
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:12) {
+    start_shots <- cohort + months(9)
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% c("Measles", "MR", "MMR")
       ) %>%
       distinct(., pid, .keep_all = T) %>%
       nrow()
