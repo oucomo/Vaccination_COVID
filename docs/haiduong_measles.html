@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Duc Du, Thinh Ong" />
+
+
+<title>Hai Duong: Measles</title>
+
+<script src="site_libs/header-attrs-2.15/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Vaccination_COVID</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/oucomo/Vaccination_COVID">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Hai Duong: Measles</h1>
+<h4 class="author">Duc Du, Thinh Ong</h4>
+<h4 class="date">2020-01-29 (update: 2022-08-25)</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-08-25
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Vaccination_COVID/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version 1.7.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210126code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210126)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210126code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210126)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreea6e8ed985c0bc79ea651de9f7c9188752dc64760targetblanka6e8ed9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/oucomo/Vaccination_COVID/tree/a6e8ed985c0bc79ea651de9f7c9188752dc64760" target="_blank">a6e8ed9</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomoucomoVaccinationCOVIDtreea6e8ed985c0bc79ea651de9f7c9188752dc64760targetblanka6e8ed9a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/oucomo/Vaccination_COVID/tree/a6e8ed985c0bc79ea651de9f7c9188752dc64760" target="_blank">a6e8ed9</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.DS_Store
+    Ignored:    analysis/.Rhistory
+    Ignored:    analysis/figure/
+    Ignored:    code/.DS_Store
+
+Untracked files:
+    Untracked:  analysis/haiduong_measles.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, out.width = &quot;100%&quot;)
+
+library(data.table)
+library(dplyr)</code></pre>
+<pre><code>Warning: package &#39;dplyr&#39; was built under R version 4.1.2</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:data.table&#39;:
+
+    between, first, last</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(tidyr)</code></pre>
+<pre><code>Warning: package &#39;tidyr&#39; was built under R version 4.1.2</code></pre>
+<pre class="r"><code>library(lubridate)</code></pre>
+<pre><code>
+Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:data.table&#39;:
+
+    hour, isoweek, mday, minute, month, quarter, second, wday, week,
+    yday, year</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(gtsummary)</code></pre>
+<pre><code>Warning: package &#39;gtsummary&#39; was built under R version 4.1.2</code></pre>
+<pre class="r"><code>library(ggsci)
+library(plotly)</code></pre>
+<pre><code>
+Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggplot2&#39;:
+
+    last_plot</code></pre>
+<pre><code>The following object is masked from &#39;package:stats&#39;:
+
+    filter</code></pre>
+<pre><code>The following object is masked from &#39;package:graphics&#39;:
+
+    layout</code></pre>
+<pre class="r"><code>datap &lt;- file.path(&quot;~&quot;, &quot;Downloads&quot;, &quot;updated_dataset&quot;)
+
+covidvc &lt;- readRDS(file.path(datap, &quot;Combined_VAC_COVID19_2022-02-17.rds&quot;))
+measle_all &lt;- readRDS(file.path(datap, &quot;measles_haiduong.rds&quot;))
+measle_all &lt;- data.table(measle_all)
+
+hepb &lt;- readRDS(file.path(datap, &quot;hepb_haiduong.rds&quot;))
+hepb &lt;- data.table(hepb)
+hepb &lt;- hepb[which(hepb$shot == 1),]
+
+time_step &lt;- &quot;month&quot;
+measle_all$vacym &lt;- floor_date(measle_all$vacdate, time_step)
+measle_all$vacname2 &lt;- factor(measle_all$vacname2, levels = c(&quot;Measles&quot;, &quot;MR&quot;, &quot;MMR&quot;))</code></pre>
+<div id="measles-and-covid-19-vaccination-per-month" class="section level1">
+<h1>Measles and COVID-19 vaccination per month</h1>
+<p><img src="figure/haiduong_measles.Rmd/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /> * High peak of MR shots in Nov 2019 * No disruption in Apr 2020 * Disruptions in Aug 2020 and Feb 2021</p>
+</div>
+<div id="vaccination-campaign-in-nov-2019" class="section level1">
+<h1>Vaccination campaign in Nov 2019</h1>
+<p>An MR vaccination campaign is triggered during this time in Hai Duong, focusing on children 1-5 year-old <img src="figure/haiduong_measles.Rmd/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /> # No disruption in Apr 2020 but in Aug 2020 and Feb 2021</p>
+<p>The monthly vaccination date at public clinics is usually at the end of the month. In Mar 2020: right before lockdown they vaccinate children and right after lockdown they came back to vaccinate children</p>
+<p>Hai Duong had a Hai Duong city-wide lockdown from 14/8-28/8, this time looks like they only organised the vaccination day in Sep so all children scheduled in Aug miss the shot <img src="figure/haiduong_measles.Rmd/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div id="zoom-in-2021" class="section level2">
+<h2>Zoom in 2021</h2>
+<p>Hai Duong had a province-wide lockdown from 28/1/2021 - 15/2 (Directive 15), 16/2 - 2/3 (Directive 16), 3/3 - 17/3 (Directive 15), 18/3 - 31/3 (Directive 19)</p>
+<p>Directive 16 &gt; 15 &gt; 19 <img src="figure/haiduong_measles.Rmd/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="public-vs-private" class="section level1">
+<h1>Public vs private</h1>
+<p>First let decide how a shot is public or private</p>
+<pre><code>
+hospital    other  private   public  unknown 
+     389     2171    36149   353342    12616 </code></pre>
+<p>Extract children who get 2 shots</p>
+<p>Some received the same vaccine in the same day, filter them out and continue</p>
+<p>Some received 3 shots, filtered them out.</p>
+<p>Change dataset from long to wide format</p>
+<p>Aggregate them by month</p>
+<p>Line plot</p>
+<p><img src="figure/haiduong_measles.Rmd/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre><code># A tibble: 6 × 10
+    pid denom low_ci high_ci vyear_1st vmonth_1st shot1   shot2  pct2 vacdate_…¹
+  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt; &lt;dbl&gt; &lt;date&gt;    
+1    11    26   23.4    63.1      2020          1 private priv…  42.3 2020-01-01
+2    51   106   38.3    58.0      2020          1 public  priv…  48.1 2020-01-01
+3    33    46   56.5    84.0      2020          8 private priv…  71.7 2020-08-01
+4    56   132   33.9    51.3      2020          8 public  priv…  42.4 2020-08-01
+5    11    17   38.3    85.8      2021          2 private priv…  64.7 2021-02-01
+6    32    68   34.8    59.6      2021          2 public  priv…  47.1 2021-02-01
+# … with abbreviated variable name ¹​vacdate_1st</code></pre>
+<pre><code># A tibble: 18 × 10
+     pid denom low_ci high_ci vyear_1st vmonth_1st shot1  shot2  pct2 vacdate_…¹
+   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt; &lt;dbl&gt; &lt;date&gt;    
+ 1    31    62   37.0    63.0      2021          3 priva… priv…  50   2021-03-01
+ 2   445  2897   14.1    16.7      2021          3 public priv…  15.4 2021-03-01
+ 3    25    54   32.6    60.4      2021          4 priva… priv…  46.3 2021-04-01
+ 4   304  1711   16.0    19.7      2021          4 public priv…  17.8 2021-04-01
+ 5    18    50   22.9    50.8      2021          5 priva… priv…  36   2021-05-01
+ 6   266  1664   14.3    17.8      2021          5 public priv…  16.0 2021-05-01
+ 7    29    44   50.1    79.5      2021          6 priva… priv…  65.9 2021-06-01
+ 8   354  2065   15.5    18.8      2021          6 public priv…  17.1 2021-06-01
+ 9    26    48   39.2    68.6      2021          7 priva… priv…  54.2 2021-07-01
+10   364  2030   16.3    19.7      2021          7 public priv…  17.9 2021-07-01
+11    25    35   53.7    85.4      2021          8 priva… priv…  71.4 2021-08-01
+12   372  1697   20.0    24.0      2021          8 public priv…  21.9 2021-08-01
+13    11    27   22.4    61.2      2021          9 priva… priv…  40.7 2021-09-01
+14   258  1281   18.0    22.4      2021          9 public priv…  20.1 2021-09-01
+15    17    28   40.6    78.5      2021         10 priva… priv…  60.7 2021-10-01
+16   237   694   30.6    37.8      2021         10 public priv…  34.1 2021-10-01
+17    10    14   41.9    91.6      2021         11 priva… priv…  71.4 2021-11-01
+18   156   276   50.4    62.5      2021         11 public priv…  56.5 2021-11-01
+# … with abbreviated variable name ¹​vacdate_1st</code></pre>
+</div>
+<div id="population-level" class="section level1">
+<h1>Population level</h1>
+<p><img src="figure/haiduong_measles.Rmd/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="children-who-got-2-shots" class="section level1">
+<h1>Children who got 2 shots</h1>
+<p><img src="figure/haiduong_measles.Rmd/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>tmp &lt;- measle_all[which(measle_all$vacname2 == &quot;MMR&quot;),]
+table(tmp$shot)</code></pre>
+<pre><code>
+    1 
+49723 </code></pre>
+<pre class="r"><code>hepb$dob_ym &lt;- floor_date(hepb$dob, time_step)
+measle_all$dob_ym &lt;- floor_date(measle_all$dob, time_step)
+measle_all$vac_ym &lt;- floor_date(measle_all$vacdate, time_step)</code></pre>
+<div id="htmlwidget-8fdbcfe7322d6daad86f" style="width:100%;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8fdbcfe7322d6daad86f">{"x":{"visdat":{"10edb143d03de":["function () ","plotlyVisDat"]},"cur_data":"10edb143d03de","attrs":{"10edb143d03de":{"x":{},"y":{},"mode":"lines","hovertext":["Cohort: 2019-01-01<br>Cutoff month: 2019-10-01<br>Coverage: 0.472714633298575","Cohort: 2019-01-01<br>Cutoff month: 2019-11-01<br>Coverage: 0.758428919012861","Cohort: 2019-01-01<br>Cutoff month: 2019-12-01<br>Coverage: 0.862704205769899","Cohort: 2019-01-01<br>Cutoff month: 2020-01-01<br>Coverage: 0.871046228710462","Cohort: 2019-01-01<br>Cutoff month: 2020-02-01<br>Coverage: 0.905457073340285","Cohort: 2019-01-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.921098366353841","Cohort: 2019-01-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.925616962113312","Cohort: 2019-01-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.927702467848453","Cohort: 2019-01-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.928745220716024","Cohort: 2019-01-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.930135557872784","Cohort: 2019-01-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.930483142161974","Cohort: 2019-01-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.931873479318735","Cohort: 2019-02-01<br>Cutoff month: 2019-11-01<br>Coverage: 0.492753623188406","Cohort: 2019-02-01<br>Cutoff month: 2019-12-01<br>Coverage: 0.760869565217391","Cohort: 2019-02-01<br>Cutoff month: 2020-01-01<br>Coverage: 0.775815217391304","Cohort: 2019-02-01<br>Cutoff month: 2020-02-01<br>Coverage: 0.864130434782609","Cohort: 2019-02-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.890851449275362","Cohort: 2019-02-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.903532608695652","Cohort: 2019-02-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.908061594202899","Cohort: 2019-02-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.91213768115942","Cohort: 2019-02-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.914855072463768","Cohort: 2019-02-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.914855072463768","Cohort: 2019-02-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.914855072463768","Cohort: 2019-02-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.915307971014493","Cohort: 2019-03-01<br>Cutoff month: 2019-12-01<br>Coverage: 0.481543624161074","Cohort: 2019-03-01<br>Cutoff month: 2020-01-01<br>Coverage: 0.51258389261745","Cohort: 2019-03-01<br>Cutoff month: 2020-02-01<br>Coverage: 0.834731543624161","Cohort: 2019-03-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.905201342281879","Cohort: 2019-03-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.921979865771812","Cohort: 2019-03-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.928691275167785","Cohort: 2019-03-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.933724832214765","Cohort: 2019-03-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.934563758389262","Cohort: 2019-03-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.934563758389262","Cohort: 2019-03-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.935402684563758","Cohort: 2019-03-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.935402684563758","Cohort: 2019-03-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.9375","Cohort: 2019-04-01<br>Cutoff month: 2020-01-01<br>Coverage: 0.0271786022433132","Cohort: 2019-04-01<br>Cutoff month: 2020-02-01<br>Coverage: 0.695427092320966","Cohort: 2019-04-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.879637618636756","Cohort: 2019-04-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.917601380500431","Cohort: 2019-04-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.929249352890423","Cohort: 2019-04-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.937877480586713","Cohort: 2019-04-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.9404659188956","Cohort: 2019-04-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.940897325280414","Cohort: 2019-04-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.943054357204487","Cohort: 2019-04-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.94434857635893","Cohort: 2019-04-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.946074201898188","Cohort: 2019-04-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.946074201898188","Cohort: 2019-05-01<br>Cutoff month: 2020-02-01<br>Coverage: 0.516525023607177","Cohort: 2019-05-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.830972615675165","Cohort: 2019-05-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.916902738432483","Cohort: 2019-05-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.940509915014164","Cohort: 2019-05-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.952785646836638","Cohort: 2019-05-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.957979225684608","Cohort: 2019-05-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.958923512747875","Cohort: 2019-05-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.962228517469311","Cohort: 2019-05-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.963172804532578","Cohort: 2019-05-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.963644948064212","Cohort: 2019-05-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.964117091595845","Cohort: 2019-05-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.964117091595845","Cohort: 2019-06-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.56151832460733","Cohort: 2019-06-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.839877835951134","Cohort: 2019-06-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.913176265270506","Cohort: 2019-06-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.933682373472949","Cohort: 2019-06-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.943280977312391","Cohort: 2019-06-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.944153577661431","Cohort: 2019-06-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.948516579406632","Cohort: 2019-06-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.949825479930192","Cohort: 2019-06-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.951570680628272","Cohort: 2019-06-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.951570680628272","Cohort: 2019-06-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.951570680628272","Cohort: 2019-06-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.951570680628272","Cohort: 2019-07-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.564475118053033","Cohort: 2019-07-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.800581184162732","Cohort: 2019-07-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.903741373047585","Cohort: 2019-07-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.92916818016709","Cohort: 2019-07-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.932437341082455","Cohort: 2019-07-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.9397021431166","Cohort: 2019-07-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.942608063930258","Cohort: 2019-07-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.943334544133672","Cohort: 2019-07-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.94369778423538","Cohort: 2019-07-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.94369778423538","Cohort: 2019-07-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.94369778423538","Cohort: 2019-07-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.94369778423538","Cohort: 2019-08-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.4847801578354","Cohort: 2019-08-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.798947763998497","Cohort: 2019-08-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.892145809845923","Cohort: 2019-08-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.896655392709508","Cohort: 2019-08-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.915821119879744","Cohort: 2019-08-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.918827508455468","Cohort: 2019-08-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.922209695603157","Cohort: 2019-08-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.923337091319053","Cohort: 2019-08-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.924464487034949","Cohort: 2019-08-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.924464487034949","Cohort: 2019-08-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.924464487034949","Cohort: 2019-08-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.924840285606915","Cohort: 2019-09-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.545103545103545","Cohort: 2019-09-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.805545805545806","Cohort: 2019-09-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.815724815724816","Cohort: 2019-09-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.865917865917866","Cohort: 2019-09-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.876447876447876","Cohort: 2019-09-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.880659880659881","Cohort: 2019-09-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.882414882414882","Cohort: 2019-09-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.883116883116883","Cohort: 2019-09-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.883116883116883","Cohort: 2019-09-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.884520884520885","Cohort: 2019-09-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.885924885924886","Cohort: 2019-09-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.886626886626887","Cohort: 2019-10-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.530816868180478","Cohort: 2019-10-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.554113830728399","Cohort: 2019-10-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.801828369212622","Cohort: 2019-10-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.851076378649366","Cohort: 2019-10-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.867295782954881","Cohort: 2019-10-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.872603951636685","Cohort: 2019-10-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.876142730757889","Cohort: 2019-10-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.876142730757889","Cohort: 2019-10-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.87732232379829","Cohort: 2019-10-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.878796815098791","Cohort: 2019-10-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.879091713358891","Cohort: 2019-10-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.879091713358891","Cohort: 2019-11-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.0315855969677827","Cohort: 2019-11-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.614971572962729","Cohort: 2019-11-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.764687302590019","Cohort: 2019-11-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.802905874921036","Cohort: 2019-11-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.816171825647505","Cohort: 2019-11-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.82122552116235","Cohort: 2019-11-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.82122552116235","Cohort: 2019-11-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.82406822488945","Cohort: 2019-11-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.827226784586229","Cohort: 2019-11-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.827858496525584","Cohort: 2019-11-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.828806064434618","Cohort: 2019-11-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.829437776373973","Cohort: 2019-12-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.498587570621469","Cohort: 2019-12-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.725635593220339","Cohort: 2019-12-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.807556497175141","Cohort: 2019-12-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.833333333333333","Cohort: 2019-12-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.843573446327684","Cohort: 2019-12-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.843926553672316","Cohort: 2019-12-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.84816384180791","Cohort: 2019-12-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.849576271186441","Cohort: 2019-12-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.849929378531073","Cohort: 2019-12-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.850282485875706","Cohort: 2019-12-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.850988700564972","Cohort: 2019-12-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.850988700564972"],"hoverinfo":"text","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"n_month"},"yaxis":{"domain":[0,1],"automargin":true,"title":"cov"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.472714633298575,0.758428919012861,0.862704205769899,0.871046228710462,0.905457073340285,0.921098366353841,0.925616962113312,0.927702467848453,0.928745220716024,0.930135557872784,0.930483142161974,0.931873479318735],"mode":"lines","hovertext":["Cohort: 2019-01-01<br>Cutoff month: 2019-10-01<br>Coverage: 0.472714633298575","Cohort: 2019-01-01<br>Cutoff month: 2019-11-01<br>Coverage: 0.758428919012861","Cohort: 2019-01-01<br>Cutoff month: 2019-12-01<br>Coverage: 0.862704205769899","Cohort: 2019-01-01<br>Cutoff month: 2020-01-01<br>Coverage: 0.871046228710462","Cohort: 2019-01-01<br>Cutoff month: 2020-02-01<br>Coverage: 0.905457073340285","Cohort: 2019-01-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.921098366353841","Cohort: 2019-01-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.925616962113312","Cohort: 2019-01-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.927702467848453","Cohort: 2019-01-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.928745220716024","Cohort: 2019-01-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.930135557872784","Cohort: 2019-01-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.930483142161974","Cohort: 2019-01-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.931873479318735"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-01-01","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.492753623188406,0.760869565217391,0.775815217391304,0.864130434782609,0.890851449275362,0.903532608695652,0.908061594202899,0.91213768115942,0.914855072463768,0.914855072463768,0.914855072463768,0.915307971014493],"mode":"lines","hovertext":["Cohort: 2019-02-01<br>Cutoff month: 2019-11-01<br>Coverage: 0.492753623188406","Cohort: 2019-02-01<br>Cutoff month: 2019-12-01<br>Coverage: 0.760869565217391","Cohort: 2019-02-01<br>Cutoff month: 2020-01-01<br>Coverage: 0.775815217391304","Cohort: 2019-02-01<br>Cutoff month: 2020-02-01<br>Coverage: 0.864130434782609","Cohort: 2019-02-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.890851449275362","Cohort: 2019-02-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.903532608695652","Cohort: 2019-02-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.908061594202899","Cohort: 2019-02-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.91213768115942","Cohort: 2019-02-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.914855072463768","Cohort: 2019-02-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.914855072463768","Cohort: 2019-02-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.914855072463768","Cohort: 2019-02-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.915307971014493"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-02-01","marker":{"color":"rgba(211,164,122,1)","line":{"color":"rgba(211,164,122,1)"}},"textfont":{"color":"rgba(211,164,122,1)"},"error_y":{"color":"rgba(211,164,122,1)"},"error_x":{"color":"rgba(211,164,122,1)"},"line":{"color":"rgba(211,164,122,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.481543624161074,0.51258389261745,0.834731543624161,0.905201342281879,0.921979865771812,0.928691275167785,0.933724832214765,0.934563758389262,0.934563758389262,0.935402684563758,0.935402684563758,0.9375],"mode":"lines","hovertext":["Cohort: 2019-03-01<br>Cutoff month: 2019-12-01<br>Coverage: 0.481543624161074","Cohort: 2019-03-01<br>Cutoff month: 2020-01-01<br>Coverage: 0.51258389261745","Cohort: 2019-03-01<br>Cutoff month: 2020-02-01<br>Coverage: 0.834731543624161","Cohort: 2019-03-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.905201342281879","Cohort: 2019-03-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.921979865771812","Cohort: 2019-03-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.928691275167785","Cohort: 2019-03-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.933724832214765","Cohort: 2019-03-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.934563758389262","Cohort: 2019-03-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.934563758389262","Cohort: 2019-03-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.935402684563758","Cohort: 2019-03-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.935402684563758","Cohort: 2019-03-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.9375"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-03-01","marker":{"color":"rgba(229,147,127,1)","line":{"color":"rgba(229,147,127,1)"}},"textfont":{"color":"rgba(229,147,127,1)"},"error_y":{"color":"rgba(229,147,127,1)"},"error_x":{"color":"rgba(229,147,127,1)"},"line":{"color":"rgba(229,147,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.0271786022433132,0.695427092320966,0.879637618636756,0.917601380500431,0.929249352890423,0.937877480586713,0.9404659188956,0.940897325280414,0.943054357204487,0.94434857635893,0.946074201898188,0.946074201898188],"mode":"lines","hovertext":["Cohort: 2019-04-01<br>Cutoff month: 2020-01-01<br>Coverage: 0.0271786022433132","Cohort: 2019-04-01<br>Cutoff month: 2020-02-01<br>Coverage: 0.695427092320966","Cohort: 2019-04-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.879637618636756","Cohort: 2019-04-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.917601380500431","Cohort: 2019-04-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.929249352890423","Cohort: 2019-04-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.937877480586713","Cohort: 2019-04-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.9404659188956","Cohort: 2019-04-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.940897325280414","Cohort: 2019-04-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.943054357204487","Cohort: 2019-04-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.94434857635893","Cohort: 2019-04-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.946074201898188","Cohort: 2019-04-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.946074201898188"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-04-01","marker":{"color":"rgba(156,159,194,1)","line":{"color":"rgba(156,159,194,1)"}},"textfont":{"color":"rgba(156,159,194,1)"},"error_y":{"color":"rgba(156,159,194,1)"},"error_x":{"color":"rgba(156,159,194,1)"},"line":{"color":"rgba(156,159,194,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.516525023607177,0.830972615675165,0.916902738432483,0.940509915014164,0.952785646836638,0.957979225684608,0.958923512747875,0.962228517469311,0.963172804532578,0.963644948064212,0.964117091595845,0.964117091595845],"mode":"lines","hovertext":["Cohort: 2019-05-01<br>Cutoff month: 2020-02-01<br>Coverage: 0.516525023607177","Cohort: 2019-05-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.830972615675165","Cohort: 2019-05-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.916902738432483","Cohort: 2019-05-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.940509915014164","Cohort: 2019-05-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.952785646836638","Cohort: 2019-05-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.957979225684608","Cohort: 2019-05-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.958923512747875","Cohort: 2019-05-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.962228517469311","Cohort: 2019-05-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.963172804532578","Cohort: 2019-05-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.963644948064212","Cohort: 2019-05-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.964117091595845","Cohort: 2019-05-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.964117091595845"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-05-01","marker":{"color":"rgba(194,150,199,1)","line":{"color":"rgba(194,150,199,1)"}},"textfont":{"color":"rgba(194,150,199,1)"},"error_y":{"color":"rgba(194,150,199,1)"},"error_x":{"color":"rgba(194,150,199,1)"},"line":{"color":"rgba(194,150,199,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.56151832460733,0.839877835951134,0.913176265270506,0.933682373472949,0.943280977312391,0.944153577661431,0.948516579406632,0.949825479930192,0.951570680628272,0.951570680628272,0.951570680628272,0.951570680628272],"mode":"lines","hovertext":["Cohort: 2019-06-01<br>Cutoff month: 2020-03-01<br>Coverage: 0.56151832460733","Cohort: 2019-06-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.839877835951134","Cohort: 2019-06-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.913176265270506","Cohort: 2019-06-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.933682373472949","Cohort: 2019-06-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.943280977312391","Cohort: 2019-06-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.944153577661431","Cohort: 2019-06-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.948516579406632","Cohort: 2019-06-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.949825479930192","Cohort: 2019-06-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.951570680628272","Cohort: 2019-06-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.951570680628272","Cohort: 2019-06-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.951570680628272","Cohort: 2019-06-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.951570680628272"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-06-01","marker":{"color":"rgba(223,155,177,1)","line":{"color":"rgba(223,155,177,1)"}},"textfont":{"color":"rgba(223,155,177,1)"},"error_y":{"color":"rgba(223,155,177,1)"},"error_x":{"color":"rgba(223,155,177,1)"},"line":{"color":"rgba(223,155,177,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.564475118053033,0.800581184162732,0.903741373047585,0.92916818016709,0.932437341082455,0.9397021431166,0.942608063930258,0.943334544133672,0.94369778423538,0.94369778423538,0.94369778423538,0.94369778423538],"mode":"lines","hovertext":["Cohort: 2019-07-01<br>Cutoff month: 2020-04-01<br>Coverage: 0.564475118053033","Cohort: 2019-07-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.800581184162732","Cohort: 2019-07-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.903741373047585","Cohort: 2019-07-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.92916818016709","Cohort: 2019-07-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.932437341082455","Cohort: 2019-07-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.9397021431166","Cohort: 2019-07-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.942608063930258","Cohort: 2019-07-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.943334544133672","Cohort: 2019-07-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.94369778423538","Cohort: 2019-07-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.94369778423538","Cohort: 2019-07-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.94369778423538","Cohort: 2019-07-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.94369778423538"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-07-01","marker":{"color":"rgba(182,204,108,1)","line":{"color":"rgba(182,204,108,1)"}},"textfont":{"color":"rgba(182,204,108,1)"},"error_y":{"color":"rgba(182,204,108,1)"},"error_x":{"color":"rgba(182,204,108,1)"},"line":{"color":"rgba(182,204,108,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.4847801578354,0.798947763998497,0.892145809845923,0.896655392709508,0.915821119879744,0.918827508455468,0.922209695603157,0.923337091319053,0.924464487034949,0.924464487034949,0.924464487034949,0.924840285606915],"mode":"lines","hovertext":["Cohort: 2019-08-01<br>Cutoff month: 2020-05-01<br>Coverage: 0.4847801578354","Cohort: 2019-08-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.798947763998497","Cohort: 2019-08-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.892145809845923","Cohort: 2019-08-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.896655392709508","Cohort: 2019-08-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.915821119879744","Cohort: 2019-08-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.918827508455468","Cohort: 2019-08-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.922209695603157","Cohort: 2019-08-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.923337091319053","Cohort: 2019-08-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.924464487034949","Cohort: 2019-08-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.924464487034949","Cohort: 2019-08-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.924464487034949","Cohort: 2019-08-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.924840285606915"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-08-01","marker":{"color":"rgba(209,217,69,1)","line":{"color":"rgba(209,217,69,1)"}},"textfont":{"color":"rgba(209,217,69,1)"},"error_y":{"color":"rgba(209,217,69,1)"},"error_x":{"color":"rgba(209,217,69,1)"},"line":{"color":"rgba(209,217,69,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.545103545103545,0.805545805545806,0.815724815724816,0.865917865917866,0.876447876447876,0.880659880659881,0.882414882414882,0.883116883116883,0.883116883116883,0.884520884520885,0.885924885924886,0.886626886626887],"mode":"lines","hovertext":["Cohort: 2019-09-01<br>Cutoff month: 2020-06-01<br>Coverage: 0.545103545103545","Cohort: 2019-09-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.805545805545806","Cohort: 2019-09-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.815724815724816","Cohort: 2019-09-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.865917865917866","Cohort: 2019-09-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.876447876447876","Cohort: 2019-09-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.880659880659881","Cohort: 2019-09-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.882414882414882","Cohort: 2019-09-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.883116883116883","Cohort: 2019-09-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.883116883116883","Cohort: 2019-09-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.884520884520885","Cohort: 2019-09-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.885924885924886","Cohort: 2019-09-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.886626886626887"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-09-01","marker":{"color":"rgba(253,215,61,1)","line":{"color":"rgba(253,215,61,1)"}},"textfont":{"color":"rgba(253,215,61,1)"},"error_y":{"color":"rgba(253,215,61,1)"},"error_x":{"color":"rgba(253,215,61,1)"},"line":{"color":"rgba(253,215,61,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.530816868180478,0.554113830728399,0.801828369212622,0.851076378649366,0.867295782954881,0.872603951636685,0.876142730757889,0.876142730757889,0.87732232379829,0.878796815098791,0.879091713358891,0.879091713358891],"mode":"lines","hovertext":["Cohort: 2019-10-01<br>Cutoff month: 2020-07-01<br>Coverage: 0.530816868180478","Cohort: 2019-10-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.554113830728399","Cohort: 2019-10-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.801828369212622","Cohort: 2019-10-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.851076378649366","Cohort: 2019-10-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.867295782954881","Cohort: 2019-10-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.872603951636685","Cohort: 2019-10-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.876142730757889","Cohort: 2019-10-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.876142730757889","Cohort: 2019-10-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.87732232379829","Cohort: 2019-10-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.878796815098791","Cohort: 2019-10-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.879091713358891","Cohort: 2019-10-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.879091713358891"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-10-01","marker":{"color":"rgba(237,202,125,1)","line":{"color":"rgba(237,202,125,1)"}},"textfont":{"color":"rgba(237,202,125,1)"},"error_y":{"color":"rgba(237,202,125,1)"},"error_x":{"color":"rgba(237,202,125,1)"},"line":{"color":"rgba(237,202,125,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.0315855969677827,0.614971572962729,0.764687302590019,0.802905874921036,0.816171825647505,0.82122552116235,0.82122552116235,0.82406822488945,0.827226784586229,0.827858496525584,0.828806064434618,0.829437776373973],"mode":"lines","hovertext":["Cohort: 2019-11-01<br>Cutoff month: 2020-08-01<br>Coverage: 0.0315855969677827","Cohort: 2019-11-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.614971572962729","Cohort: 2019-11-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.764687302590019","Cohort: 2019-11-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.802905874921036","Cohort: 2019-11-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.816171825647505","Cohort: 2019-11-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.82122552116235","Cohort: 2019-11-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.82122552116235","Cohort: 2019-11-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.82406822488945","Cohort: 2019-11-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.827226784586229","Cohort: 2019-11-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.827858496525584","Cohort: 2019-11-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.828806064434618","Cohort: 2019-11-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.829437776373973"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-11-01","marker":{"color":"rgba(212,190,160,1)","line":{"color":"rgba(212,190,160,1)"}},"textfont":{"color":"rgba(212,190,160,1)"},"error_y":{"color":"rgba(212,190,160,1)"},"error_x":{"color":"rgba(212,190,160,1)"},"line":{"color":"rgba(212,190,160,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.498587570621469,0.725635593220339,0.807556497175141,0.833333333333333,0.843573446327684,0.843926553672316,0.84816384180791,0.849576271186441,0.849929378531073,0.850282485875706,0.850988700564972,0.850988700564972],"mode":"lines","hovertext":["Cohort: 2019-12-01<br>Cutoff month: 2020-09-01<br>Coverage: 0.498587570621469","Cohort: 2019-12-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.725635593220339","Cohort: 2019-12-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.807556497175141","Cohort: 2019-12-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.833333333333333","Cohort: 2019-12-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.843573446327684","Cohort: 2019-12-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.843926553672316","Cohort: 2019-12-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.84816384180791","Cohort: 2019-12-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.849576271186441","Cohort: 2019-12-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.849929378531073","Cohort: 2019-12-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.850282485875706","Cohort: 2019-12-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.850988700564972","Cohort: 2019-12-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.850988700564972"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2019-12-01","marker":{"color":"rgba(179,179,179,1)","line":{"color":"rgba(179,179,179,1)"}},"textfont":{"color":"rgba(179,179,179,1)"},"error_y":{"color":"rgba(179,179,179,1)"},"error_x":{"color":"rgba(179,179,179,1)"},"line":{"color":"rgba(179,179,179,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-91be900832cc8eba9999" style="width:100%;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-91be900832cc8eba9999">{"x":{"visdat":{"10edb7e8e6fcd":["function () ","plotlyVisDat"]},"cur_data":"10edb7e8e6fcd","attrs":{"10edb7e8e6fcd":{"x":{},"y":{},"mode":"lines","hovertext":["Cohort: 2020-01-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.417888012025554","Cohort: 2020-01-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.659526493799324","Cohort: 2020-01-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.760992108229989","Cohort: 2020-01-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.81022172115746","Cohort: 2020-01-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.81097331830139","Cohort: 2020-01-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.826756858323938","Cohort: 2020-01-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.829763246899662","Cohort: 2020-01-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.832018038331454","Cohort: 2020-01-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.833521232619316","Cohort: 2020-01-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.834272829763247","Cohort: 2020-01-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.834272829763247","Cohort: 2020-01-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.835400225479143","Cohort: 2020-02-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.43515037593985","Cohort: 2020-02-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.68937969924812","Cohort: 2020-02-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.792763157894737","Cohort: 2020-02-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.796992481203007","Cohort: 2020-02-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.820958646616541","Cohort: 2020-02-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.830357142857143","Cohort: 2020-02-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.833646616541353","Cohort: 2020-02-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.838815789473684","Cohort: 2020-02-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.840695488721805","Cohort: 2020-02-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.841165413533835","Cohort: 2020-02-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.841635338345865","Cohort: 2020-02-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.843045112781955","Cohort: 2020-03-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.402422611036339","Cohort: 2020-03-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.671152983400628","Cohort: 2020-03-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.676087931807986","Cohort: 2020-03-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.764019739793629","Cohort: 2020-03-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.780170480035891","Cohort: 2020-03-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.786451323463436","Cohort: 2020-03-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.791386271870794","Cohort: 2020-03-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.793629430237775","Cohort: 2020-03-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.794078061911171","Cohort: 2020-03-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.794526693584567","Cohort: 2020-03-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.795872588604756","Cohort: 2020-03-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.796769851951548","Cohort: 2020-04-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.416591115140526","Cohort: 2020-04-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.435630099728015","Cohort: 2020-04-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.723481414324569","Cohort: 2020-04-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.769718948322756","Cohort: 2020-04-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.78467815049864","Cohort: 2020-04-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.793291024478694","Cohort: 2020-04-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.796917497733454","Cohort: 2020-04-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.797824116047144","Cohort: 2020-04-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.800090661831369","Cohort: 2020-04-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.800997280145059","Cohort: 2020-04-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.802357207615594","Cohort: 2020-04-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.802810516772439","Cohort: 2020-05-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.0207253886010363","Cohort: 2020-05-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.58160621761658","Cohort: 2020-05-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.723229706390328","Cohort: 2020-05-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.75993091537133","Cohort: 2020-05-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.778929188255613","Cohort: 2020-05-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.785837651122625","Cohort: 2020-05-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.789723661485319","Cohort: 2020-05-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.790155440414508","Cohort: 2020-05-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.792746113989637","Cohort: 2020-05-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.793177892918826","Cohort: 2020-05-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.794041450777202","Cohort: 2020-05-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.79447322970639","Cohort: 2020-06-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.454433497536946","Cohort: 2020-06-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.674466338259442","Cohort: 2020-06-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.760262725779967","Cohort: 2020-06-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.789408866995074","Cohort: 2020-06-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.798029556650246","Cohort: 2020-06-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.803366174055829","Cohort: 2020-06-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.805829228243021","Cohort: 2020-06-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.808292282430213","Cohort: 2020-06-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.80952380952381","Cohort: 2020-06-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.809934318555008","Cohort: 2020-06-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.810344827586207","Cohort: 2020-06-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.810755336617406","Cohort: 2020-07-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.383059900801221","Cohort: 2020-07-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.628767645936665","Cohort: 2020-07-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.734070965280427","Cohort: 2020-07-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.76001526135063","Cohort: 2020-07-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.769172071728348","Cohort: 2020-07-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.774895078214422","Cohort: 2020-07-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.77756581457459","Cohort: 2020-07-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.778710415871805","Cohort: 2020-07-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.778710415871805","Cohort: 2020-07-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.779091949637543","Cohort: 2020-07-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.779473483403281","Cohort: 2020-07-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.77985501716902","Cohort: 2020-08-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.383535660091047","Cohort: 2020-08-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.674886191198786","Cohort: 2020-08-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.751517450682853","Cohort: 2020-08-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.77845220030349","Cohort: 2020-08-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.786418816388467","Cohort: 2020-08-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.792488619119879","Cohort: 2020-08-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.794006069802731","Cohort: 2020-08-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.795144157814871","Cohort: 2020-08-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.795144157814871","Cohort: 2020-08-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.795144157814871","Cohort: 2020-08-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.795902883156297","Cohort: 2020-08-01<br>Cutoff month: 2022-04-01<br>Coverage: 0.796282245827011","Cohort: 2020-09-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.505247918928701","Cohort: 2020-09-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.725298588490771","Cohort: 2020-09-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.788273615635179","Cohort: 2020-09-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.807455664133189","Cohort: 2020-09-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.812884545783569","Cohort: 2020-09-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.816865725660514","Cohort: 2020-09-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.818675352877307","Cohort: 2020-09-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.819399203764025","Cohort: 2020-09-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.819399203764025","Cohort: 2020-09-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.821208830980818","Cohort: 2020-09-01<br>Cutoff month: 2022-04-01<br>Coverage: 0.821208830980818","Cohort: 2020-09-01<br>Cutoff month: 2022-05-01<br>Coverage: 0.822294607310894","Cohort: 2020-10-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.52157943067034","Cohort: 2020-10-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.736455463728191","Cohort: 2020-10-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.795531068258341","Cohort: 2020-10-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.810529537802265","Cohort: 2020-10-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.815733088460361","Cohort: 2020-10-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.816651362105908","Cohort: 2020-10-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.819406183042547","Cohort: 2020-10-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.819712274257729","Cohort: 2020-10-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.820324456688093","Cohort: 2020-10-01<br>Cutoff month: 2022-04-01<br>Coverage: 0.821242730333639","Cohort: 2020-10-01<br>Cutoff month: 2022-05-01<br>Coverage: 0.821854912764004","Cohort: 2020-10-01<br>Cutoff month: 2022-06-01<br>Coverage: 0.824303642485461","Cohort: 2020-11-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.507719928186715","Cohort: 2020-11-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.712028725314183","Cohort: 2020-11-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.764811490125673","Cohort: 2020-11-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.77737881508079","Cohort: 2020-11-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.781687612208259","Cohort: 2020-11-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.783842010771993","Cohort: 2020-11-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.784201077199282","Cohort: 2020-11-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.78491921005386","Cohort: 2020-11-01<br>Cutoff month: 2022-04-01<br>Coverage: 0.78491921005386","Cohort: 2020-11-01<br>Cutoff month: 2022-05-01<br>Coverage: 0.785637342908438","Cohort: 2020-11-01<br>Cutoff month: 2022-06-01<br>Coverage: 0.785996409335727","Cohort: 2020-11-01<br>Cutoff month: 2022-07-01<br>Coverage: 0.785996409335727","Cohort: 2020-12-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.512874630645842","Cohort: 2020-12-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.728577458843394","Cohort: 2020-12-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.773322076825665","Cohort: 2020-12-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.78682988602786","Cohort: 2020-12-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.79273955255382","Cohort: 2020-12-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.793583790628957","Cohort: 2020-12-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.796116504854369","Cohort: 2020-12-01<br>Cutoff month: 2022-04-01<br>Coverage: 0.797804981004643","Cohort: 2020-12-01<br>Cutoff month: 2022-05-01<br>Coverage: 0.79864921907978","Cohort: 2020-12-01<br>Cutoff month: 2022-06-01<br>Coverage: 0.79864921907978","Cohort: 2020-12-01<br>Cutoff month: 2022-07-01<br>Coverage: 0.799071338117349","Cohort: 2020-12-01<br>Cutoff month: 2022-08-01<br>Coverage: 0.799071338117349"],"hoverinfo":"text","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"n_month"},"yaxis":{"domain":[0,1],"automargin":true,"title":"cov"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.417888012025554,0.659526493799324,0.760992108229989,0.81022172115746,0.81097331830139,0.826756858323938,0.829763246899662,0.832018038331454,0.833521232619316,0.834272829763247,0.834272829763247,0.835400225479143],"mode":"lines","hovertext":["Cohort: 2020-01-01<br>Cutoff month: 2020-10-01<br>Coverage: 0.417888012025554","Cohort: 2020-01-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.659526493799324","Cohort: 2020-01-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.760992108229989","Cohort: 2020-01-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.81022172115746","Cohort: 2020-01-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.81097331830139","Cohort: 2020-01-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.826756858323938","Cohort: 2020-01-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.829763246899662","Cohort: 2020-01-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.832018038331454","Cohort: 2020-01-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.833521232619316","Cohort: 2020-01-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.834272829763247","Cohort: 2020-01-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.834272829763247","Cohort: 2020-01-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.835400225479143"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-01-01","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.43515037593985,0.68937969924812,0.792763157894737,0.796992481203007,0.820958646616541,0.830357142857143,0.833646616541353,0.838815789473684,0.840695488721805,0.841165413533835,0.841635338345865,0.843045112781955],"mode":"lines","hovertext":["Cohort: 2020-02-01<br>Cutoff month: 2020-11-01<br>Coverage: 0.43515037593985","Cohort: 2020-02-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.68937969924812","Cohort: 2020-02-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.792763157894737","Cohort: 2020-02-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.796992481203007","Cohort: 2020-02-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.820958646616541","Cohort: 2020-02-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.830357142857143","Cohort: 2020-02-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.833646616541353","Cohort: 2020-02-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.838815789473684","Cohort: 2020-02-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.840695488721805","Cohort: 2020-02-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.841165413533835","Cohort: 2020-02-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.841635338345865","Cohort: 2020-02-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.843045112781955"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-02-01","marker":{"color":"rgba(211,164,122,1)","line":{"color":"rgba(211,164,122,1)"}},"textfont":{"color":"rgba(211,164,122,1)"},"error_y":{"color":"rgba(211,164,122,1)"},"error_x":{"color":"rgba(211,164,122,1)"},"line":{"color":"rgba(211,164,122,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.402422611036339,0.671152983400628,0.676087931807986,0.764019739793629,0.780170480035891,0.786451323463436,0.791386271870794,0.793629430237775,0.794078061911171,0.794526693584567,0.795872588604756,0.796769851951548],"mode":"lines","hovertext":["Cohort: 2020-03-01<br>Cutoff month: 2020-12-01<br>Coverage: 0.402422611036339","Cohort: 2020-03-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.671152983400628","Cohort: 2020-03-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.676087931807986","Cohort: 2020-03-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.764019739793629","Cohort: 2020-03-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.780170480035891","Cohort: 2020-03-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.786451323463436","Cohort: 2020-03-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.791386271870794","Cohort: 2020-03-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.793629430237775","Cohort: 2020-03-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.794078061911171","Cohort: 2020-03-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.794526693584567","Cohort: 2020-03-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.795872588604756","Cohort: 2020-03-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.796769851951548"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-03-01","marker":{"color":"rgba(229,147,127,1)","line":{"color":"rgba(229,147,127,1)"}},"textfont":{"color":"rgba(229,147,127,1)"},"error_y":{"color":"rgba(229,147,127,1)"},"error_x":{"color":"rgba(229,147,127,1)"},"line":{"color":"rgba(229,147,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.416591115140526,0.435630099728015,0.723481414324569,0.769718948322756,0.78467815049864,0.793291024478694,0.796917497733454,0.797824116047144,0.800090661831369,0.800997280145059,0.802357207615594,0.802810516772439],"mode":"lines","hovertext":["Cohort: 2020-04-01<br>Cutoff month: 2021-01-01<br>Coverage: 0.416591115140526","Cohort: 2020-04-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.435630099728015","Cohort: 2020-04-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.723481414324569","Cohort: 2020-04-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.769718948322756","Cohort: 2020-04-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.78467815049864","Cohort: 2020-04-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.793291024478694","Cohort: 2020-04-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.796917497733454","Cohort: 2020-04-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.797824116047144","Cohort: 2020-04-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.800090661831369","Cohort: 2020-04-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.800997280145059","Cohort: 2020-04-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.802357207615594","Cohort: 2020-04-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.802810516772439"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-04-01","marker":{"color":"rgba(156,159,194,1)","line":{"color":"rgba(156,159,194,1)"}},"textfont":{"color":"rgba(156,159,194,1)"},"error_y":{"color":"rgba(156,159,194,1)"},"error_x":{"color":"rgba(156,159,194,1)"},"line":{"color":"rgba(156,159,194,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.0207253886010363,0.58160621761658,0.723229706390328,0.75993091537133,0.778929188255613,0.785837651122625,0.789723661485319,0.790155440414508,0.792746113989637,0.793177892918826,0.794041450777202,0.79447322970639],"mode":"lines","hovertext":["Cohort: 2020-05-01<br>Cutoff month: 2021-02-01<br>Coverage: 0.0207253886010363","Cohort: 2020-05-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.58160621761658","Cohort: 2020-05-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.723229706390328","Cohort: 2020-05-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.75993091537133","Cohort: 2020-05-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.778929188255613","Cohort: 2020-05-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.785837651122625","Cohort: 2020-05-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.789723661485319","Cohort: 2020-05-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.790155440414508","Cohort: 2020-05-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.792746113989637","Cohort: 2020-05-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.793177892918826","Cohort: 2020-05-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.794041450777202","Cohort: 2020-05-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.79447322970639"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-05-01","marker":{"color":"rgba(194,150,199,1)","line":{"color":"rgba(194,150,199,1)"}},"textfont":{"color":"rgba(194,150,199,1)"},"error_y":{"color":"rgba(194,150,199,1)"},"error_x":{"color":"rgba(194,150,199,1)"},"line":{"color":"rgba(194,150,199,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.454433497536946,0.674466338259442,0.760262725779967,0.789408866995074,0.798029556650246,0.803366174055829,0.805829228243021,0.808292282430213,0.80952380952381,0.809934318555008,0.810344827586207,0.810755336617406],"mode":"lines","hovertext":["Cohort: 2020-06-01<br>Cutoff month: 2021-03-01<br>Coverage: 0.454433497536946","Cohort: 2020-06-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.674466338259442","Cohort: 2020-06-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.760262725779967","Cohort: 2020-06-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.789408866995074","Cohort: 2020-06-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.798029556650246","Cohort: 2020-06-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.803366174055829","Cohort: 2020-06-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.805829228243021","Cohort: 2020-06-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.808292282430213","Cohort: 2020-06-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.80952380952381","Cohort: 2020-06-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.809934318555008","Cohort: 2020-06-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.810344827586207","Cohort: 2020-06-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.810755336617406"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-06-01","marker":{"color":"rgba(223,155,177,1)","line":{"color":"rgba(223,155,177,1)"}},"textfont":{"color":"rgba(223,155,177,1)"},"error_y":{"color":"rgba(223,155,177,1)"},"error_x":{"color":"rgba(223,155,177,1)"},"line":{"color":"rgba(223,155,177,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.383059900801221,0.628767645936665,0.734070965280427,0.76001526135063,0.769172071728348,0.774895078214422,0.77756581457459,0.778710415871805,0.778710415871805,0.779091949637543,0.779473483403281,0.77985501716902],"mode":"lines","hovertext":["Cohort: 2020-07-01<br>Cutoff month: 2021-04-01<br>Coverage: 0.383059900801221","Cohort: 2020-07-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.628767645936665","Cohort: 2020-07-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.734070965280427","Cohort: 2020-07-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.76001526135063","Cohort: 2020-07-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.769172071728348","Cohort: 2020-07-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.774895078214422","Cohort: 2020-07-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.77756581457459","Cohort: 2020-07-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.778710415871805","Cohort: 2020-07-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.778710415871805","Cohort: 2020-07-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.779091949637543","Cohort: 2020-07-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.779473483403281","Cohort: 2020-07-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.77985501716902"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-07-01","marker":{"color":"rgba(182,204,108,1)","line":{"color":"rgba(182,204,108,1)"}},"textfont":{"color":"rgba(182,204,108,1)"},"error_y":{"color":"rgba(182,204,108,1)"},"error_x":{"color":"rgba(182,204,108,1)"},"line":{"color":"rgba(182,204,108,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.383535660091047,0.674886191198786,0.751517450682853,0.77845220030349,0.786418816388467,0.792488619119879,0.794006069802731,0.795144157814871,0.795144157814871,0.795144157814871,0.795902883156297,0.796282245827011],"mode":"lines","hovertext":["Cohort: 2020-08-01<br>Cutoff month: 2021-05-01<br>Coverage: 0.383535660091047","Cohort: 2020-08-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.674886191198786","Cohort: 2020-08-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.751517450682853","Cohort: 2020-08-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.77845220030349","Cohort: 2020-08-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.786418816388467","Cohort: 2020-08-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.792488619119879","Cohort: 2020-08-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.794006069802731","Cohort: 2020-08-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.795144157814871","Cohort: 2020-08-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.795144157814871","Cohort: 2020-08-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.795144157814871","Cohort: 2020-08-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.795902883156297","Cohort: 2020-08-01<br>Cutoff month: 2022-04-01<br>Coverage: 0.796282245827011"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-08-01","marker":{"color":"rgba(209,217,69,1)","line":{"color":"rgba(209,217,69,1)"}},"textfont":{"color":"rgba(209,217,69,1)"},"error_y":{"color":"rgba(209,217,69,1)"},"error_x":{"color":"rgba(209,217,69,1)"},"line":{"color":"rgba(209,217,69,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.505247918928701,0.725298588490771,0.788273615635179,0.807455664133189,0.812884545783569,0.816865725660514,0.818675352877307,0.819399203764025,0.819399203764025,0.821208830980818,0.821208830980818,0.822294607310894],"mode":"lines","hovertext":["Cohort: 2020-09-01<br>Cutoff month: 2021-06-01<br>Coverage: 0.505247918928701","Cohort: 2020-09-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.725298588490771","Cohort: 2020-09-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.788273615635179","Cohort: 2020-09-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.807455664133189","Cohort: 2020-09-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.812884545783569","Cohort: 2020-09-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.816865725660514","Cohort: 2020-09-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.818675352877307","Cohort: 2020-09-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.819399203764025","Cohort: 2020-09-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.819399203764025","Cohort: 2020-09-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.821208830980818","Cohort: 2020-09-01<br>Cutoff month: 2022-04-01<br>Coverage: 0.821208830980818","Cohort: 2020-09-01<br>Cutoff month: 2022-05-01<br>Coverage: 0.822294607310894"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-09-01","marker":{"color":"rgba(253,215,61,1)","line":{"color":"rgba(253,215,61,1)"}},"textfont":{"color":"rgba(253,215,61,1)"},"error_y":{"color":"rgba(253,215,61,1)"},"error_x":{"color":"rgba(253,215,61,1)"},"line":{"color":"rgba(253,215,61,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.52157943067034,0.736455463728191,0.795531068258341,0.810529537802265,0.815733088460361,0.816651362105908,0.819406183042547,0.819712274257729,0.820324456688093,0.821242730333639,0.821854912764004,0.824303642485461],"mode":"lines","hovertext":["Cohort: 2020-10-01<br>Cutoff month: 2021-07-01<br>Coverage: 0.52157943067034","Cohort: 2020-10-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.736455463728191","Cohort: 2020-10-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.795531068258341","Cohort: 2020-10-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.810529537802265","Cohort: 2020-10-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.815733088460361","Cohort: 2020-10-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.816651362105908","Cohort: 2020-10-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.819406183042547","Cohort: 2020-10-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.819712274257729","Cohort: 2020-10-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.820324456688093","Cohort: 2020-10-01<br>Cutoff month: 2022-04-01<br>Coverage: 0.821242730333639","Cohort: 2020-10-01<br>Cutoff month: 2022-05-01<br>Coverage: 0.821854912764004","Cohort: 2020-10-01<br>Cutoff month: 2022-06-01<br>Coverage: 0.824303642485461"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-10-01","marker":{"color":"rgba(237,202,125,1)","line":{"color":"rgba(237,202,125,1)"}},"textfont":{"color":"rgba(237,202,125,1)"},"error_y":{"color":"rgba(237,202,125,1)"},"error_x":{"color":"rgba(237,202,125,1)"},"line":{"color":"rgba(237,202,125,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.507719928186715,0.712028725314183,0.764811490125673,0.77737881508079,0.781687612208259,0.783842010771993,0.784201077199282,0.78491921005386,0.78491921005386,0.785637342908438,0.785996409335727,0.785996409335727],"mode":"lines","hovertext":["Cohort: 2020-11-01<br>Cutoff month: 2021-08-01<br>Coverage: 0.507719928186715","Cohort: 2020-11-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.712028725314183","Cohort: 2020-11-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.764811490125673","Cohort: 2020-11-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.77737881508079","Cohort: 2020-11-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.781687612208259","Cohort: 2020-11-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.783842010771993","Cohort: 2020-11-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.784201077199282","Cohort: 2020-11-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.78491921005386","Cohort: 2020-11-01<br>Cutoff month: 2022-04-01<br>Coverage: 0.78491921005386","Cohort: 2020-11-01<br>Cutoff month: 2022-05-01<br>Coverage: 0.785637342908438","Cohort: 2020-11-01<br>Cutoff month: 2022-06-01<br>Coverage: 0.785996409335727","Cohort: 2020-11-01<br>Cutoff month: 2022-07-01<br>Coverage: 0.785996409335727"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-11-01","marker":{"color":"rgba(212,190,160,1)","line":{"color":"rgba(212,190,160,1)"}},"textfont":{"color":"rgba(212,190,160,1)"},"error_y":{"color":"rgba(212,190,160,1)"},"error_x":{"color":"rgba(212,190,160,1)"},"line":{"color":"rgba(212,190,160,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9,10,11,12,13,14,15,16,17,18,19,20],"y":[0.512874630645842,0.728577458843394,0.773322076825665,0.78682988602786,0.79273955255382,0.793583790628957,0.796116504854369,0.797804981004643,0.79864921907978,0.79864921907978,0.799071338117349,0.799071338117349],"mode":"lines","hovertext":["Cohort: 2020-12-01<br>Cutoff month: 2021-09-01<br>Coverage: 0.512874630645842","Cohort: 2020-12-01<br>Cutoff month: 2021-10-01<br>Coverage: 0.728577458843394","Cohort: 2020-12-01<br>Cutoff month: 2021-11-01<br>Coverage: 0.773322076825665","Cohort: 2020-12-01<br>Cutoff month: 2021-12-01<br>Coverage: 0.78682988602786","Cohort: 2020-12-01<br>Cutoff month: 2022-01-01<br>Coverage: 0.79273955255382","Cohort: 2020-12-01<br>Cutoff month: 2022-02-01<br>Coverage: 0.793583790628957","Cohort: 2020-12-01<br>Cutoff month: 2022-03-01<br>Coverage: 0.796116504854369","Cohort: 2020-12-01<br>Cutoff month: 2022-04-01<br>Coverage: 0.797804981004643","Cohort: 2020-12-01<br>Cutoff month: 2022-05-01<br>Coverage: 0.79864921907978","Cohort: 2020-12-01<br>Cutoff month: 2022-06-01<br>Coverage: 0.79864921907978","Cohort: 2020-12-01<br>Cutoff month: 2022-07-01<br>Coverage: 0.799071338117349","Cohort: 2020-12-01<br>Cutoff month: 2022-08-01<br>Coverage: 0.799071338117349"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text"],"type":"scatter","name":"2020-12-01","marker":{"color":"rgba(179,179,179,1)","line":{"color":"rgba(179,179,179,1)"}},"textfont":{"color":"rgba(179,179,179,1)"},"error_y":{"color":"rgba(179,179,179,1)"},"error_x":{"color":"rgba(179,179,179,1)"},"line":{"color":"rgba(179,179,179,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre><code>R version 4.1.1 (2021-08-10)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] plotly_4.10.0     ggsci_2.9         gtsummary_1.6.1   ggplot2_3.3.5    
+[5] lubridate_1.8.0   tidyr_1.2.0       dplyr_1.0.9       data.table_1.14.2
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.9          assertthat_0.2.1    rprojroot_2.0.3    
+ [4] digest_0.6.29       utf8_1.2.2          R6_2.5.1           
+ [7] evaluate_0.16       httr_1.4.4          highr_0.9          
+[10] pillar_1.8.1        rlang_1.0.4         lazyeval_0.2.2     
+[13] rstudioapi_0.13     jquerylib_0.1.4     rmarkdown_2.15     
+[16] labeling_0.4.2      stringr_1.4.1       htmlwidgets_1.5.4  
+[19] munsell_0.5.0       compiler_4.1.1      httpuv_1.6.5       
+[22] xfun_0.32           pkgconfig_2.0.3     htmltools_0.5.3    
+[25] tidyselect_1.1.2    tibble_3.1.8        workflowr_1.7.0    
+[28] fansi_1.0.3         viridisLite_0.4.0   crayon_1.5.1       
+[31] withr_2.5.0         later_1.3.0         grid_4.1.1         
+[34] jsonlite_1.8.0      gtable_0.3.0        lifecycle_1.0.1    
+[37] DBI_1.1.3           git2r_0.30.1        magrittr_2.0.3     
+[40] scales_1.2.1        cli_3.3.0           stringi_1.7.8      
+[43] cachem_1.0.6        farver_2.1.0        broom.helpers_1.8.0
+[46] fs_1.5.2            promises_1.2.0.1    bslib_0.4.0        
+[49] ellipsis_0.3.2      generics_0.1.3      vctrs_0.4.1        
+[52] RColorBrewer_1.1-2  tools_4.1.1         glue_1.6.2         
+[55] purrr_0.3.4         crosstalk_1.2.0     fastmap_1.1.0      
+[58] yaml_2.3.5          colorspace_2.0-3    gt_0.6.0           
+[61] knitr_1.39          sass_0.4.2         </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
