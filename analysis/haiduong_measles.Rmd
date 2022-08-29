@@ -3,15 +3,15 @@ title: "Hai Duong: Measles"
 author: "Duc Du, Thinh Ong"
 date: ' 2020-01-29 (update: `r Sys.Date()`)'
 output:
+  workflowr::wflow_html:
+    toc: true
+    theme: cosmo
+  pdf_document:
+    toc: yes
   html_document:
     theme: cerulean
     toc: yes
     toc_float: yes
-  pdf_document:
-    toc: yes
-  workflowr::wflow_html:
-    toc: true
-    theme: cosmo
   word_document:
     toc: yes
 editor_options:
@@ -19,7 +19,7 @@ editor_options:
 ---
 
 ```{r}
-knitr::opts_chunk$set(echo = T, warning = F, message = F, out.width = "100%")
+knitr::opts_chunk$set(echo = F, warning = F, message = F, out.width = "100%")
 
 library(data.table)
 library(dplyr)
@@ -31,6 +31,7 @@ library(ggsci)
 library(plotly)
 
 datap <- file.path("~", "Downloads", "updated_dataset")
+dtoutp <- file.path("~", "Dropbox", "github", "vaccine_registry_data", "haiduong")
 
 covidvc <- readRDS(file.path(datap, "Combined_VAC_COVID19_2022-02-17.rds"))
 measle_all <- readRDS(file.path(datap, "measles_haiduong.rds"))
@@ -43,17 +44,6 @@ hepb <- hepb[which(hepb$shot == 1),]
 time_step <- "month"
 measle_all$vacym <- floor_date(measle_all$vacdate, time_step)
 measle_all$vacname2 <- factor(measle_all$vacname2, levels = c("Measles", "MR", "MMR"))
-```
-
-```{r}
-# measle_all <- measle_all %>%
-#   group_by(pid) %>%
-#   arrange(vacdate) %>%
-#   mutate(shot_any = 1:n()) %>%
-#   ungroup()
-# 
-# table(measle_all$shot_any)
-# table(measle_all$shot)
 ```
 
 # Measles and COVID-19 vaccination per month
@@ -89,8 +79,6 @@ ggplot(df_plot, aes(x = vacmonth, y = n, color = vacname2)) +
 * No disruption in Apr 2020
 * Disruptions in Aug 2020 and Feb 2021
 
-
-
 # Vaccination campaign in Nov 2019
 
 An MR vaccination campaign is triggered during this time in Hai Duong, focusing on children 1-5 year-old
@@ -117,6 +105,8 @@ tmp <- measle_all[which(measle_all$vacyear == tmp_vacyear),]
 df_plot <- tmp %>% 
     count(vacdate, vacname2)
 
+write.csv(df_plot, file.path(dtoutp, "measles_shots_2020.csv"), quote = F, row.names = F)
+
 ggplot(df_plot, aes(x = vacdate, y = n, color = vacname2)) +
   geom_rect(aes(xmin = ymd("2020-04-01"), xmax = ymd("2020-04-21"), ymin = -Inf, ymax = Inf), fill = "grey90", color = NA, alpha = 0.3) +
   geom_rect(aes(xmin = ymd("2020-08-14"), xmax = ymd("2020-08-28"), ymin = -Inf, ymax = Inf), fill = "grey90", color = NA, alpha = 0.3) +
@@ -138,6 +128,8 @@ tmp <- measle_all[which(measle_all$vacyear == tmp_vacyear),]
 
 df_plot <- tmp %>% 
     count(vacdate, vacname2)
+
+write.csv(df_plot, file.path(dtoutp, "measles_shots_2021.csv"), quote = F, row.names = F)
 
 ggplot(df_plot, aes(x = vacdate, y = n, color = vacname2)) +
   geom_rect(aes(xmin = ymd("2021-01-28"), xmax = ymd("2021-02-15"), ymin = -Inf, ymax = Inf), fill = "grey90", color = NA, alpha = 0.5) +
@@ -268,6 +260,8 @@ df_plot <- df_plot[df_plot$vacdate_1st >= "2018-01-01" &
 
 df_plot$shot1 <- factor(df_plot$shot1, levels = c("public", "private"))
 
+write.csv(df_plot, file.path(dtoutp, "switch_private_2shots.csv"), quote = F, row.names = F)
+
 ggplot(df_plot, aes(x = vacdate_1st, y = pct2, group = shot1)) +
   geom_line(aes(linetype = shot1), stat = "identity", size = 1.1) +
   geom_ribbon(aes(ymin = low_ci, ymax = high_ci, fill = shot1), alpha = 0.25) +
@@ -304,14 +298,14 @@ df_type <- df_type %>%
 
 df_type$pct <- 100 * df_type$pid / df_type$denom
 
-
-
 # Get only row that 2nd shot is private
 df_plot <- df_type[df_type$type2 == "private",]
 
 # To plot on a date format x-axis
 df_plot$vacdate <- ym(paste0(df_plot$vacyear, "-", df_plot$vacmonth))
 df_plot <- df_plot[df_plot$vacdate >= "2017-09-01",]
+
+write.csv(df_plot, file.path(dtoutp, "switch_private_poplevel.csv"), quote = F, row.names = F)
 
 ggplot(df_plot, aes(x = vacdate, y = pct)) +
   geom_line(stat = "identity") +
@@ -329,19 +323,31 @@ ggplot(measles_2shots, aes(x = vdelay)) +
 ```
 
 ```{r, echo = T}
-tmp <- measle_all[which(measle_all$vacname2 == "MMR"),]
-table(tmp$shot)
-```
-
-```{r, echo = T}
 hepb$dob_ym <- floor_date(hepb$dob, time_step)
 measle_all$dob_ym <- floor_date(measle_all$dob, time_step)
 measle_all$vac_ym <- floor_date(measle_all$vacdate, time_step)
 ```
 
-# Children born in 2019 received Measles
+# Vaccine coverage
+
+# Cohort 2017
+
 ```{r}
-yr <- 2019
+# Set year
+yr <- 2017
+```
+
+## At least 1 shot
+
+```{r}
+# The first shot should be Measles and its schedule is 9 months, so set this start threshold at 8 month
+start_at <- 8
+```
+
+### Measles
+
+```{r}
+vcnames <- c("Measles")
 
 # Make a vector contains 12 months in the year of interest
 start_yr <- ym(paste0(yr, "-01"))
@@ -364,10 +370,10 @@ for (i in 1:length(range_yr)) {
     ) %>% 
     nrow()
   
-  for (j in 1:12) {
+  for (j in 1:13) {
     
-    # Measles vaccine: 9 month after month of birth
-    start_shots <- cohort + months(9)
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
     
     # The range to get cumulative vaccine coverage
     end_shots <- start_shots + months(j - 1)
@@ -378,15 +384,17 @@ for (i in 1:length(range_yr)) {
         # Month of vaccination between start and end
         vac_ym >= start_shots,
         vac_ym <= end_shots,
-        vacname2 %in% c("Measles")
+        vacname2 %in% vcnames
       ) %>%
-      distinct(., pid, .keep_all = T) %>%
+      distinct(., pid, .keep_all = F) %>%
       nrow()
     
     l[[j]] <- data.frame(
       cohort = cohort, 
       month_cov = end_shots,
-      n_month = j + 8, 
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
       cov = shots / kids
       )
   }
@@ -395,20 +403,35 @@ for (i in 1:length(range_yr)) {
 }
 
 df_plot <- do.call(rbind, d)
-df_plot$cohort <- factor(df_plot$cohort)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
 
-plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
-        type = "scatter", mode = "lines",
-        hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
-                           "Cutoff month: ", df_plot$month_cov, "<br>",
-                           "Coverage: ", df_plot$cov),
-        hoverinfo = "text")
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
 
 ```
 
-# Children born in 2019 received Measles or MR
+### Measles or MR
+
 ```{r}
-yr <- 2019
+vcnames <- c("Measles", "MR")
 
 # Make a vector contains 12 months in the year of interest
 start_yr <- ym(paste0(yr, "-01"))
@@ -431,10 +454,10 @@ for (i in 1:length(range_yr)) {
     ) %>% 
     nrow()
   
-  for (j in 1:12) {
+  for (j in 1:13) {
     
-    # Measles vaccine: 9 month after month of birth
-    start_shots <- cohort + months(9)
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
     
     # The range to get cumulative vaccine coverage
     end_shots <- start_shots + months(j - 1)
@@ -445,15 +468,17 @@ for (i in 1:length(range_yr)) {
         # Month of vaccination between start and end
         vac_ym >= start_shots,
         vac_ym <= end_shots,
-        vacname2 %in% c("Measles", "MR")
+        vacname2 %in% vcnames
       ) %>%
-      distinct(., pid, .keep_all = T) %>%
+      distinct(., pid, .keep_all = F) %>%
       nrow()
     
     l[[j]] <- data.frame(
       cohort = cohort, 
       month_cov = end_shots,
-      n_month = j + 8, 
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
       cov = shots / kids
       )
   }
@@ -462,20 +487,35 @@ for (i in 1:length(range_yr)) {
 }
 
 df_plot <- do.call(rbind, d)
-df_plot$cohort <- factor(df_plot$cohort)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
 
-plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
-        type = "scatter", mode = "lines",
-        hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
-                           "Cutoff month: ", df_plot$month_cov, "<br>",
-                           "Coverage: ", df_plot$cov),
-        hoverinfo = "text")
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
 
 ```
 
-# Children born in 2019 received Measles or MR or MMR
+### Measles or MR or MMR
+
 ```{r}
-yr <- 2019
+vcnames <- c("Measles", "MR", "MMR")
 
 # Make a vector contains 12 months in the year of interest
 start_yr <- ym(paste0(yr, "-01"))
@@ -498,10 +538,10 @@ for (i in 1:length(range_yr)) {
     ) %>% 
     nrow()
   
-  for (j in 1:12) {
+  for (j in 1:13) {
     
-    # Measles vaccine: 9 month after month of birth
-    start_shots <- cohort + months(9)
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
     
     # The range to get cumulative vaccine coverage
     end_shots <- start_shots + months(j - 1)
@@ -512,15 +552,17 @@ for (i in 1:length(range_yr)) {
         # Month of vaccination between start and end
         vac_ym >= start_shots,
         vac_ym <= end_shots,
-        vacname2 %in% c("Measles", "MR", "MMR")
+        vacname2 %in% vcnames
       ) %>%
-      distinct(., pid, .keep_all = T) %>%
+      distinct(., pid, .keep_all = F) %>%
       nrow()
     
     l[[j]] <- data.frame(
       cohort = cohort, 
       month_cov = end_shots,
-      n_month = j + 8, 
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
       cov = shots / kids
       )
   }
@@ -529,23 +571,51 @@ for (i in 1:length(range_yr)) {
 }
 
 df_plot <- do.call(rbind, d)
-df_plot$cohort <- factor(df_plot$cohort)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
 
-plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
-        type = "scatter", mode = "lines",
-        hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
-                           "Cutoff month: ", df_plot$month_cov, "<br>",
-                           "Coverage: ", df_plot$cov),
-        hoverinfo = "text")
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
 
 ```
 
-# Children born in 2020 received Measles
+## 2 shots
+
 ```{r}
-yr <- 2020
+# How many shots each children received?
+measle_all <- measle_all %>%
+  group_by(pid) %>%
+  arrange(vacdate) %>%
+  mutate(shot_any = 1:n()) %>%
+  ungroup()
+```
+
+### Public vaccines only (Measles, MR)
+
+```{r}
+start_at <- 15
+vcnames <- c("Measles", "MR")
+
+# Make a vector contains 12 months in the year of interest
 start_yr <- ym(paste0(yr, "-01"))
 end_yr <- ym(paste0(yr, "-12"))
-
 range_yr <- seq(start_yr, end_yr, "months")
 
 d <- list()
@@ -553,32 +623,43 @@ d <- list()
 for (i in 1:length(range_yr)) {
   
   l <- list()
+  
+  # Get the month of birth of this cohort
   cohort <- range_yr[i]
   
+  # Number of kids taken from Hep B
   kids <- hepb %>% 
     filter(
       dob_ym == cohort
     ) %>% 
     nrow()
   
-  for (j in 1:12) {
-    start_shots <- cohort + months(9)
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
     end_shots <- start_shots + months(j - 1)
   
     shots <- measle_all %>% 
       filter(
         dob_ym == cohort,
+        # Month of vaccination between start and end
         vac_ym >= start_shots,
         vac_ym <= end_shots,
-        vacname2 %in% c("Measles")
+        vacname2 %in% vcnames,
+        shot_any == 2
       ) %>%
-      distinct(., pid, .keep_all = T) %>%
+      distinct(., pid, .keep_all = F) %>%
       nrow()
     
     l[[j]] <- data.frame(
       cohort = cohort, 
       month_cov = end_shots,
-      n_month = j + 8, 
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
       cov = shots / kids
       )
   }
@@ -587,23 +668,38 @@ for (i in 1:length(range_yr)) {
 }
 
 df_plot <- do.call(rbind, d)
-df_plot$cohort <- factor(df_plot$cohort)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
 
-plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
-        type = "scatter", mode = "lines",
-        hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
-                           "Cutoff month: ", df_plot$month_cov, "<br>",
-                           "Coverage: ", df_plot$cov),
-        hoverinfo = "text")
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_2shots_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
 
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
 ```
 
-# Children born in 2020 received Measles or MR
+### Any vaccine (Measles, MR, MMR)
+
 ```{r}
-yr <- 2020
+start_at <- 9
+
+# Make a vector contains 12 months in the year of interest
 start_yr <- ym(paste0(yr, "-01"))
 end_yr <- ym(paste0(yr, "-12"))
-
 range_yr <- seq(start_yr, end_yr, "months")
 
 d <- list()
@@ -611,32 +707,42 @@ d <- list()
 for (i in 1:length(range_yr)) {
   
   l <- list()
+  
+  # Get the month of birth of this cohort
   cohort <- range_yr[i]
   
+  # Number of kids taken from Hep B
   kids <- hepb %>% 
     filter(
       dob_ym == cohort
     ) %>% 
     nrow()
   
-  for (j in 1:12) {
-    start_shots <- cohort + months(9)
+  for (j in 1:18) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
     end_shots <- start_shots + months(j - 1)
   
     shots <- measle_all %>% 
       filter(
         dob_ym == cohort,
+        # Month of vaccination between start and end
         vac_ym >= start_shots,
         vac_ym <= end_shots,
-        vacname2 %in% c("Measles", "MR")
+        shot_any == 2
       ) %>%
-      distinct(., pid, .keep_all = T) %>%
+      distinct(., pid, .keep_all = F) %>%
       nrow()
     
     l[[j]] <- data.frame(
       cohort = cohort, 
       month_cov = end_shots,
-      n_month = j + 8, 
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
       cov = shots / kids
       )
   }
@@ -645,23 +751,53 @@ for (i in 1:length(range_yr)) {
 }
 
 df_plot <- do.call(rbind, d)
-df_plot$cohort <- factor(df_plot$cohort)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
 
-plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
-        type = "scatter", mode = "lines",
-        hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
-                           "Cutoff month: ", df_plot$month_cov, "<br>",
-                           "Coverage: ", df_plot$cov),
-        hoverinfo = "text")
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_2shots_coverage_any.csv")), quote = F, row.names = F)
 
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
 ```
 
-# Children born in 2020 received Measles or MR or MMR
+
+# Cohort 2018
+
 ```{r}
-yr <- 2020
+# Set year
+yr <- 2018
+```
+
+## At least 1 shot
+
+```{r}
+# The first shot should be Measles and its schedule is 9 months, so set this start threshold at 8 month
+start_at <- 8
+```
+
+### Measles
+
+```{r}
+vcnames <- c("Measles")
+
+# Make a vector contains 12 months in the year of interest
 start_yr <- ym(paste0(yr, "-01"))
 end_yr <- ym(paste0(yr, "-12"))
-
 range_yr <- seq(start_yr, end_yr, "months")
 
 d <- list()
@@ -669,32 +805,42 @@ d <- list()
 for (i in 1:length(range_yr)) {
   
   l <- list()
+  
+  # Get the month of birth of this cohort
   cohort <- range_yr[i]
   
+  # Number of kids taken from Hep B
   kids <- hepb %>% 
     filter(
       dob_ym == cohort
     ) %>% 
     nrow()
   
-  for (j in 1:12) {
-    start_shots <- cohort + months(9)
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
     end_shots <- start_shots + months(j - 1)
   
     shots <- measle_all %>% 
       filter(
         dob_ym == cohort,
+        # Month of vaccination between start and end
         vac_ym >= start_shots,
         vac_ym <= end_shots,
-        vacname2 %in% c("Measles", "MR", "MMR")
+        vacname2 %in% vcnames
       ) %>%
-      distinct(., pid, .keep_all = T) %>%
+      distinct(., pid, .keep_all = F) %>%
       nrow()
     
     l[[j]] <- data.frame(
       cohort = cohort, 
       month_cov = end_shots,
-      n_month = j + 8, 
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
       cov = shots / kids
       )
   }
@@ -703,13 +849,1266 @@ for (i in 1:length(range_yr)) {
 }
 
 df_plot <- do.call(rbind, d)
-df_plot$cohort <- factor(df_plot$cohort)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
 
-plot_ly(df_plot, x = ~n_month, y = ~cov, color = ~cohort,
-        type = "scatter", mode = "lines",
-        hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
-                           "Cutoff month: ", df_plot$month_cov, "<br>",
-                           "Coverage: ", df_plot$cov),
-        hoverinfo = "text")
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
 
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+
+```
+
+### Measles or MR
+
+```{r}
+vcnames <- c("Measles", "MR")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+
+```
+
+### Measles or MR or MMR
+
+```{r}
+vcnames <- c("Measles", "MR", "MMR")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+
+```
+
+## 2 shots
+
+```{r}
+# How many shots each children received?
+measle_all <- measle_all %>%
+  group_by(pid) %>%
+  arrange(vacdate) %>%
+  mutate(shot_any = 1:n()) %>%
+  ungroup()
+```
+
+### Public vaccines only (Measles, MR)
+
+```{r}
+start_at <- 15
+vcnames <- c("Measles", "MR")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames,
+        shot_any == 2
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_2shots_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+```
+
+### Any vaccine (Measles, MR, MMR)
+
+```{r}
+start_at <- 9
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:18) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        shot_any == 2
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_2shots_coverage_any.csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+```
+
+
+# Cohort 2019
+
+```{r}
+# Set year
+yr <- 2019
+```
+
+## At least 1 shot
+
+```{r}
+# The first shot should be Measles and its schedule is 9 months, so set this start threshold at 8 month
+start_at <- 8
+```
+
+### Measles
+
+```{r}
+vcnames <- c("Measles")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+
+```
+
+### Measles or MR
+
+```{r}
+vcnames <- c("Measles", "MR")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+
+```
+
+### Measles or MR or MMR
+
+```{r}
+vcnames <- c("Measles", "MR", "MMR")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+
+```
+
+## 2 shots
+
+```{r}
+# How many shots each children received?
+measle_all <- measle_all %>%
+  group_by(pid) %>%
+  arrange(vacdate) %>%
+  mutate(shot_any = 1:n()) %>%
+  ungroup()
+```
+
+### Public vaccines only (Measles, MR)
+
+```{r}
+start_at <- 15
+vcnames <- c("Measles", "MR")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames,
+        shot_any == 2
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_2shots_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+```
+
+### Any vaccine (Measles, MR, MMR)
+
+```{r}
+start_at <- 9
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:18) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        shot_any == 2
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_2shots_coverage_any.csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+```
+
+
+# Cohort 2020
+
+```{r}
+# Set year
+yr <- 2020
+```
+
+## At least 1 shot
+
+```{r}
+# The first shot should be Measles and its schedule is 9 months, so set this start threshold at 8 month
+start_at <- 8
+```
+
+### Measles
+
+```{r}
+vcnames <- c("Measles")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+
+```
+
+### Measles or MR
+
+```{r}
+vcnames <- c("Measles", "MR")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+
+```
+
+### Measles or MR or MMR
+
+```{r}
+vcnames <- c("Measles", "MR", "MMR")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+
+```
+
+## 2 shots
+
+```{r}
+# How many shots each children received?
+measle_all <- measle_all %>%
+  group_by(pid) %>%
+  arrange(vacdate) %>%
+  mutate(shot_any = 1:n()) %>%
+  ungroup()
+```
+
+### Public vaccines only (Measles, MR)
+
+```{r}
+start_at <- 15
+vcnames <- c("Measles", "MR")
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:13) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        vacname2 %in% vcnames,
+        shot_any == 2
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_2shots_coverage_", paste0(vcnames, collapse = "_"), ".csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
+```
+
+### Any vaccine (Measles, MR, MMR)
+
+```{r}
+start_at <- 9
+
+# Make a vector contains 12 months in the year of interest
+start_yr <- ym(paste0(yr, "-01"))
+end_yr <- ym(paste0(yr, "-12"))
+range_yr <- seq(start_yr, end_yr, "months")
+
+d <- list()
+
+for (i in 1:length(range_yr)) {
+  
+  l <- list()
+  
+  # Get the month of birth of this cohort
+  cohort <- range_yr[i]
+  
+  # Number of kids taken from Hep B
+  kids <- hepb %>% 
+    filter(
+      dob_ym == cohort
+    ) %>% 
+    nrow()
+  
+  for (j in 1:18) {
+    
+    # Schedule for the 1st shot is defined by variable start_at
+    start_shots <- cohort + months(start_at)
+    
+    # The range to get cumulative vaccine coverage
+    end_shots <- start_shots + months(j - 1)
+  
+    shots <- measle_all %>% 
+      filter(
+        dob_ym == cohort,
+        # Month of vaccination between start and end
+        vac_ym >= start_shots,
+        vac_ym <= end_shots,
+        shot_any == 2
+      ) %>%
+      distinct(., pid, .keep_all = F) %>%
+      nrow()
+    
+    l[[j]] <- data.frame(
+      cohort = cohort, 
+      month_cov = end_shots,
+      n_month = j + start_at - 1, 
+      n_hepb = kids,
+      n_measles = shots,
+      cov = shots / kids
+      )
+  }
+  
+  d[[i]] <- do.call(rbind, l)
+}
+
+df_plot <- do.call(rbind, d)
+df_plot$cohort <- format(df_plot$cohort, format = "%b-%Y")
+df_plot$cohort <- reorder(df_plot$cohort, my(df_plot$cohort))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+write.csv(df_plot, file.path(dtoutp, paste0(yr, "_2shots_coverage_any.csv")), quote = F, row.names = F)
+
+plot_ly(
+  df_plot, x = ~n_month, y = ~cov, color = ~cohort,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Cohort: ", df_plot$cohort, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months from dob: ", df_plot$n_month, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month) - 1, max(df_plot$n_month) + 1),
+      title = "Number of months from date of birth (months)"),
+    yaxis = list(
+      range = c(0, 1.1),
+      title = "Vaccine coverage")
+  )
 ```
