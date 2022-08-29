@@ -266,7 +266,7 @@ ggplot(df_plot, aes(x = vacdate_1st, y = pct2, group = shot1)) +
   geom_line(aes(linetype = shot1), stat = "identity", size = 1.1) +
   geom_ribbon(aes(ymin = low_ci, ymax = high_ci, fill = shot1), alpha = 0.25) +
   # geom_vline(xintercept=as.numeric(as.Date("2019-07-01")), color = "orange") +
-  scale_x_date(date_labels = "%b-%Y", date_breaks = "1 month") +
+  scale_x_date(date_labels = "%b-%Y", date_breaks = "3 months") +
   ylim(c(0, 100)) +
   theme_minimal() +
   labs(x = "Month of receiving 1st dose", y = "% 2nd dose in private", linetype = "1st dose in") +
