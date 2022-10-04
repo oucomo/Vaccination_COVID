@@ -243,43 +243,7 @@ df_cov <- vaccov(kids = kids, measle_all = measle_all,
                  vcnames = c("Measles"), 
                  schedule = 9, 
                  months_follow = 13,
-                 yrs = c(2017, 2018, 2019, 2020))
-```
-
-### 2017
-
-```{r}
-# Set year
-yr <- 2017
-
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
-
-# Format df_plot for plot display
-df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
-df_plot$schedule_date <- reorder(df_plot$schedule_date, my(df_plot$schedule_date))
-df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
-
-plot_ly(
-  df_plot, x = ~n_month_delay, y = ~cov, color = ~schedule_date,
-  type = "scatter", mode = "lines",
-  hovertext = paste0("Schedule date: ", df_plot$schedule_date, "<br>",
-                     "Cutoff month: ", df_plot$month_cov, "<br>",
-                     "No. months delayed from schedule: ", df_plot$n_month_delay, "<br>",
-                     "Coverage: ", df_plot$cov),
-  hoverinfo = "text") %>%
-  layout(
-    xaxis = list(
-      range = c(min(df_plot$n_month_delay) - 1, max(df_plot$n_month_delay) + 1),
-      title = "Number of months delayed from schedule (months)"
-    ),
-    yaxis = list(
-      range = c(0, max(df_plot$cov) + 0.1),
-      title = "Vaccine coverage"
-    ),
-    legend = list(
-      title = list(text = "Schedule")
-    )
-  )
+                 yrs = c(2017, 2018, 2019, 2020, 2021))
 ```
 
 ### 2018
@@ -288,7 +252,7 @@ plot_ly(
 # Set year
 yr <- 2018
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -324,7 +288,7 @@ plot_ly(
 # Set year
 yr <- 2019
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -360,7 +324,43 @@ plot_ly(
 # Set year
 yr <- 2020
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
+
+# Format df_plot for plot display
+df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
+df_plot$schedule_date <- reorder(df_plot$schedule_date, my(df_plot$schedule_date))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+plot_ly(
+  df_plot, x = ~n_month_delay, y = ~cov, color = ~schedule_date,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Schedule date: ", df_plot$schedule_date, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months delayed from schedule: ", df_plot$n_month_delay, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month_delay) - 1, max(df_plot$n_month_delay) + 1),
+      title = "Number of months delayed from schedule (months)"
+    ),
+    yaxis = list(
+      range = c(0, max(df_plot$cov) + 0.1),
+      title = "Vaccine coverage"
+    ),
+    legend = list(
+      title = list(text = "Schedule")
+    )
+  )
+```
+
+### 2021
+
+```{r}
+# Set year
+yr <- 2021
+
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -442,43 +442,7 @@ df_cov <- vaccov(kids = kids, measle_all = measle_all,
                  vcnames = c("Measles", "MR"), 
                  schedule = 9,
                  months_follow = 13,
-                 yrs = c(2017, 2018, 2019, 2020))
-```
-
-### 2017
-
-```{r}
-# Set year
-yr <- 2017
-
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
-
-# Format df_plot for plot display
-df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
-df_plot$schedule_date <- reorder(df_plot$schedule_date, my(df_plot$schedule_date))
-df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
-
-plot_ly(
-  df_plot, x = ~n_month_delay, y = ~cov, color = ~schedule_date,
-  type = "scatter", mode = "lines",
-  hovertext = paste0("Schedule date: ", df_plot$schedule_date, "<br>",
-                     "Cutoff month: ", df_plot$month_cov, "<br>",
-                     "No. months delayed from schedule: ", df_plot$n_month_delay, "<br>",
-                     "Coverage: ", df_plot$cov),
-  hoverinfo = "text") %>%
-  layout(
-    xaxis = list(
-      range = c(min(df_plot$n_month_delay) - 1, max(df_plot$n_month_delay) + 1),
-      title = "Number of months delayed from schedule (months)"
-    ),
-    yaxis = list(
-      range = c(0, max(df_plot$cov) + 0.1),
-      title = "Vaccine coverage"
-    ),
-    legend = list(
-      title = list(text = "Schedule")
-    )
-  )
+                 yrs = c(2017, 2018, 2019, 2020, 2021))
 ```
 
 ### 2018
@@ -487,7 +451,7 @@ plot_ly(
 # Set year
 yr <- 2018
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -523,7 +487,7 @@ plot_ly(
 # Set year
 yr <- 2019
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -559,7 +523,7 @@ plot_ly(
 # Set year
 yr <- 2020
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -588,6 +552,43 @@ plot_ly(
     )
   )
 ```
+
+### 2021
+
+```{r}
+# Set year
+yr <- 2021
+
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
+
+# Format df_plot for plot display
+df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
+df_plot$schedule_date <- reorder(df_plot$schedule_date, my(df_plot$schedule_date))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+plot_ly(
+  df_plot, x = ~n_month_delay, y = ~cov, color = ~schedule_date,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Schedule date: ", df_plot$schedule_date, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months delayed from schedule: ", df_plot$n_month_delay, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month_delay) - 1, max(df_plot$n_month_delay) + 1),
+      title = "Number of months delayed from schedule (months)"
+    ),
+    yaxis = list(
+      range = c(0, max(df_plot$cov) + 0.1),
+      title = "Vaccine coverage"
+    ),
+    legend = list(
+      title = list(text = "Schedule")
+    )
+  )
+```
+
 
 ### Compare cohorts between years
 
@@ -640,43 +641,7 @@ df_cov <- vaccov(kids = kids, measle_all = measle_all,
                  vcnames = c("Measles", "MR", "MMR"), 
                  schedule = 9,
                  months_follow = 13,
-                 yrs = c(2017, 2018, 2019, 2020))
-```
-
-### 2017
-
-```{r}
-# Set year
-yr <- 2017
-
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
-
-# Format df_plot for plot display
-df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
-df_plot$schedule_date <- reorder(df_plot$schedule_date, my(df_plot$schedule_date))
-df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
-
-plot_ly(
-  df_plot, x = ~n_month_delay, y = ~cov, color = ~schedule_date,
-  type = "scatter", mode = "lines",
-  hovertext = paste0("Schedule date: ", df_plot$schedule_date, "<br>",
-                     "Cutoff month: ", df_plot$month_cov, "<br>",
-                     "No. months delayed from schedule: ", df_plot$n_month_delay, "<br>",
-                     "Coverage: ", df_plot$cov),
-  hoverinfo = "text") %>%
-  layout(
-    xaxis = list(
-      range = c(min(df_plot$n_month_delay) - 1, max(df_plot$n_month_delay) + 1),
-      title = "Number of months delayed from schedule (months)"
-    ),
-    yaxis = list(
-      range = c(0, max(df_plot$cov) + 0.1),
-      title = "Vaccine coverage"
-    ),
-    legend = list(
-      title = list(text = "Schedule")
-    )
-  )
+                 yrs = c(2017, 2018, 2019, 2020, 2021))
 ```
 
 ### 2018
@@ -685,7 +650,7 @@ plot_ly(
 # Set year
 yr <- 2018
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -721,7 +686,7 @@ plot_ly(
 # Set year
 yr <- 2019
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -757,7 +722,43 @@ plot_ly(
 # Set year
 yr <- 2020
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
+
+# Format df_plot for plot display
+df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
+df_plot$schedule_date <- reorder(df_plot$schedule_date, my(df_plot$schedule_date))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+plot_ly(
+  df_plot, x = ~n_month_delay, y = ~cov, color = ~schedule_date,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Schedule date: ", df_plot$schedule_date, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months delayed from schedule: ", df_plot$n_month_delay, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month_delay) - 1, max(df_plot$n_month_delay) + 1),
+      title = "Number of months delayed from schedule (months)"
+    ),
+    yaxis = list(
+      range = c(0, max(df_plot$cov) + 0.1),
+      title = "Vaccine coverage"
+    ),
+    legend = list(
+      title = list(text = "Schedule")
+    )
+  )
+```
+
+### 2021
+
+```{r}
+# Set year
+yr <- 2021
+
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -844,49 +845,13 @@ df_cov <- vaccov_2shots(kids = kids, measle_all = measle_all,
                         yrs = c(2017, 2018, 2019, 2020))
 ```
 
-### 2017
-
-```{r}
-# Set year
-yr <- 2017
-
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
-
-# Format df_plot for plot display
-df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
-df_plot$schedule_date <- reorder(df_plot$schedule_date, my(df_plot$schedule_date))
-df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
-
-plot_ly(
-  df_plot, x = ~n_month_delay, y = ~cov, color = ~schedule_date,
-  type = "scatter", mode = "lines",
-  hovertext = paste0("Schedule date: ", df_plot$schedule_date, "<br>",
-                     "Cutoff month: ", df_plot$month_cov, "<br>",
-                     "No. months delayed from schedule: ", df_plot$n_month_delay, "<br>",
-                     "Coverage: ", df_plot$cov),
-  hoverinfo = "text") %>%
-  layout(
-    xaxis = list(
-      range = c(min(df_plot$n_month_delay) - 1, max(df_plot$n_month_delay) + 1),
-      title = "Number of months delayed from schedule (months)"
-    ),
-    yaxis = list(
-      range = c(0, max(df_plot$cov) + 0.1),
-      title = "Vaccine coverage"
-    ),
-    legend = list(
-      title = list(text = "Schedule")
-    )
-  )
-```
-
 ### 2018
 
 ```{r}
 # Set year
 yr <- 2018
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -922,7 +887,7 @@ plot_ly(
 # Set year
 yr <- 2019
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -958,7 +923,43 @@ plot_ly(
 # Set year
 yr <- 2020
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
+
+# Format df_plot for plot display
+df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
+df_plot$schedule_date <- reorder(df_plot$schedule_date, my(df_plot$schedule_date))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+plot_ly(
+  df_plot, x = ~n_month_delay, y = ~cov, color = ~schedule_date,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Schedule date: ", df_plot$schedule_date, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months delayed from schedule: ", df_plot$n_month_delay, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month_delay) - 1, max(df_plot$n_month_delay) + 1),
+      title = "Number of months delayed from schedule (months)"
+    ),
+    yaxis = list(
+      range = c(0, max(df_plot$cov) + 0.1),
+      title = "Vaccine coverage"
+    ),
+    legend = list(
+      title = list(text = "Schedule")
+    )
+  )
+```
+
+### 2021
+
+```{r}
+# Set year
+yr <- 2020
+
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -1042,49 +1043,13 @@ df_cov <- vaccov_2shots(kids = kids, measle_all = measle_all,
                         yrs = c(2017, 2018, 2019, 2020))
 ```
 
-### 2017
-
-```{r}
-# Set year
-yr <- 2017
-
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
-
-# Format df_plot for plot display
-df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
-df_plot$schedule_date <- reorder(df_plot$schedule_date, my(df_plot$schedule_date))
-df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
-
-plot_ly(
-  df_plot, x = ~n_month_delay, y = ~cov, color = ~schedule_date,
-  type = "scatter", mode = "lines",
-  hovertext = paste0("Schedule date: ", df_plot$schedule_date, "<br>",
-                     "Cutoff month: ", df_plot$month_cov, "<br>",
-                     "No. months delayed from schedule: ", df_plot$n_month_delay, "<br>",
-                     "Coverage: ", df_plot$cov),
-  hoverinfo = "text") %>%
-  layout(
-    xaxis = list(
-      range = c(min(df_plot$n_month_delay) - 1, max(df_plot$n_month_delay) + 1),
-      title = "Number of months delayed from schedule (months)"
-    ),
-    yaxis = list(
-      range = c(0, max(df_plot$cov) + 0.1),
-      title = "Vaccine coverage"
-    ),
-    legend = list(
-      title = list(text = "Schedule")
-    )
-  )
-```
-
 ### 2018
 
 ```{r}
 # Set year
 yr <- 2018
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -1120,7 +1085,7 @@ plot_ly(
 # Set year
 yr <- 2019
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
@@ -1156,7 +1121,43 @@ plot_ly(
 # Set year
 yr <- 2020
 
-df_plot <- df_cov[which(year(df_cov$cohort) == yr),]
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
+
+# Format df_plot for plot display
+df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
+df_plot$schedule_date <- reorder(df_plot$schedule_date, my(df_plot$schedule_date))
+df_plot$month_cov <- format(df_plot$month_cov, format = "%b-%Y")
+
+plot_ly(
+  df_plot, x = ~n_month_delay, y = ~cov, color = ~schedule_date,
+  type = "scatter", mode = "lines",
+  hovertext = paste0("Schedule date: ", df_plot$schedule_date, "<br>",
+                     "Cutoff month: ", df_plot$month_cov, "<br>",
+                     "No. months delayed from schedule: ", df_plot$n_month_delay, "<br>",
+                     "Coverage: ", df_plot$cov),
+  hoverinfo = "text") %>%
+  layout(
+    xaxis = list(
+      range = c(min(df_plot$n_month_delay) - 1, max(df_plot$n_month_delay) + 1),
+      title = "Number of months delayed from schedule (months)"
+    ),
+    yaxis = list(
+      range = c(0, max(df_plot$cov) + 0.1),
+      title = "Vaccine coverage"
+    ),
+    legend = list(
+      title = list(text = "Schedule")
+    )
+  )
+```
+
+### 2021
+
+```{r}
+# Set year
+yr <- 2021
+
+df_plot <- df_cov[which(year(df_cov$schedule_date) == yr),]
 
 # Format df_plot for plot display
 df_plot$schedule_date <- format(df_plot$schedule_date, format = "%b-%Y")
