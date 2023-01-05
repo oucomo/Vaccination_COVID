@@ -110,4 +110,3 @@ vnm2_add <- SpatialPolygonsDataFrame(vnm2, vnm2_info_all, match.ID = TRUE)
 
 save(vnm2_add, vnm2_info_all, file = file.path("data", "vnm2_map.Rdata"))
 ```
-

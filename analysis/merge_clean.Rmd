@@ -1,0 +1,140 @@
+---
+title: "Merge and clean"
+author: "Thinh"
+date: "8/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(data.table)
+library(dplyr)
+library(lubridate)
+library(stringi)
+
+metap <- file.path("~", "data", "vaccine_registry", "metadata")
+outp <- file.path("~", "data", "vaccine_registry", "merged")
+system(paste0("mkdir -p ", outp))
+datap <- file.path("/cluster_data", "vaccine_registry", "DVD4")
+folders <- list.dirs(datap, full.names = T, recursive = F)
+
+## Read vaccine name and schedule
+vacc_names <- readRDS(file.path(metap, "vacc_names.rds"))
+vacc_schedule <- readRDS(file.path(metap, "vacc_schedule.rds"))
+
+##### Select a folder to clean and merge #####
+# folders
+folder <- folders[6]
+
+## Identity column name
+iden_name <- "HO_TEN"
+  
+## Essential column names and rename
+cols <- c("MA_DOI_TUONG", "TO_CHAR(D.NGAY_SINH,'DD/MM/YYYY')", "GIOI_TINH", 
+        "TEN_TINH_DANG_KY", "TEN_HUYEN_DANG_KY", "TEN_XA_DANG_KY", 
+        "TEN_VACXIN", "TO_CHAR(LST.NGAY_TIEM,'DD/MM/YYYY')", 
+        "HINH_THUC_TIEM_CHUNG", "LOAI_CO_SO_TIEM", "COSO_TIEM")
+cols_rn <- c("pid", "dob", "sex", 
+           "province", "district", "commune", 
+           "vacname_init", "vacdate",
+           "vactype", "clinic_type", "clinic_name")
+
+## Column names to drop Vietnamese tone marks
+cols_dropvn <- c("vacname_init", "vactype", "clinic_type")
+
+## Province name
+pv_name <- basename(folder)
+pv_name <- gsub(".*\\.", "", pv_name)
+pv_name <- tolower(pv_name)
+
+## List all files
+files <- list.files(path = folder, full.names = T, recursive = T)
+
+##### Clean separated files, put in list #####
+l <- list()
+for (i in c(1:length(files))) {
+  cat("Reading file", basename(files[i]), "\n")
+  
+  ## Read file and store in list
+  l[[i]] <- read_excel(path = files[i], sheet = 1,
+                       col_types = "text")
+  l[[i]] <- as.data.table(l[[i]])
+  
+  ## Only keep these columns and rename them
+  l[[i]] <- l[[i]] %>% select(all_of(cols))
+  colnames(l[[i]]) <- cols_rn
+  
+  ## Set column types
+  l[[i]]$pid <- as.numeric(l[[i]]$pid)
+  l[[i]]$dob <- dmy(l[[i]]$dob)
+  l[[i]]$vacdate <- dmy(l[[i]]$vacdate)
+  l[[i]]$vacyear <- year(l[[i]]$vacdate)
+  l[[i]]$vacmonth <- month(l[[i]]$vacdate)
+  ## Those vaccinated before 2014 and after 2022 must be errors
+  l[[i]] <- l[[i]][which(l[[i]]$vacyear >= 2014 & l[[i]]$vacyear <= 2022),]
+  
+  ## Drop Vietnamese tone marks
+  l[[i]] <- l[[i]] %>% mutate(across(all_of(cols_dropvn), stri_trans_general, id = "latin-ascii"))
+  
+  ## Clean vaccine name
+  l[[i]] <- merge(l[[i]], vacc_names, by = "vacname_init", all.x = T, sort = F)
+  
+  ## Drop identity columns
+  l[[i]][[iden_name]] <- NULL
+}
+
+## Merge to a data frame
+dat <- rbindlist(l)
+dat <- as.data.table(dat)
+
+## Remove records with vaccination date before date of birth
+dat <- dat[!(which(dat$vacdate < dat$dob)),]
+
+## Remove duplication
+dat <- unique(dat, by = c("pid", "vacdate", "vacname"))
+
+##### Check uncleaned vaccine name #####
+tmp <- dat[which(is.na(dat$vacname)),]
+table(tmp$vacname_init)
+
+##### Vaccination schedule #####
+## Only get data with cleaned vaccine name
+dat <- dat %>% 
+  filter(!is.na(vacname))
+## Get the number of shot
+dat <- dat %>%
+  group_by(pid, vacname) %>%
+  arrange(vacdate) %>%
+  mutate(shot = 1:n()) %>%
+  ungroup()
+## Add vaccination schedule
+dat <- merge(dat, vacc_schedule, by = c("vacname", "shot"), all.x = T, sort = F)
+dat <- dat[which(!is.na(dat$start)),]
+
+##### Clean other variables #####
+### `vagem`: age when receive the vaccine shot (in month), difference between vaccination date and birth date
+### `vdelay`: number of delayed months, difference between age at vaccine shot (`vagem`) and the schedule date (`start`)
+dat <- dat %>% 
+  mutate(
+    vagem = ((vacdate - dob) / dyears(1)) * 12,
+    vdelay = vagem - start
+  )
+
+## Sex
+# dat$sex <- factor(dat$sex, levels = c("Nu", "Nam"), labels = c("F", "M"))
+
+## Translate some values to English
+dat$vactype <- recode(dat$vactype, 
+                      TCMR = "public", TCDV = "private", TCCD = "campaign")
+dat$clinic_type <- recode(dat$clinic_type,
+                          BV = "hospital",
+                          `Dia diem khac` = "other",
+                          DV = "private",
+                          `Khong ro` = "unknown",
+                          TCMR = "public")
+
+saveRDS(dat, file.path(outp, paste0(pv_name, ".rds")))
+
+```
+

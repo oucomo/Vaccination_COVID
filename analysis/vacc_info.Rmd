@@ -1,0 +1,98 @@
+---
+title: "Vaccine names"
+output: html_document
+date: "2022-10-31"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(data.table)
+
+outp <- file.path("~", "data", "vaccine_registry", "metadata")
+system(paste0("mkdir -p ", outp))
+
+vacc_names <- as.data.table(
+  rbind(
+    # BCG
+    cbind(vacname_init = "BCG",                     vacname = "BCG"),
+    cbind(vacname_init = "BCG-TCDV",                vacname = "BCG"),
+    cbind(vacname_init = "BKT 0,1ml tu khoa (BCG)", vacname = NA),
+    cbind(vacname_init = "BKT 0.1ml (BCG)",         vacname = NA),
+    cbind(vacname_init = "BKT 0.5 ml",              vacname = NA),
+    cbind(vacname_init = "BKT 1 ml",                vacname = NA),
+    cbind(vacname_init = "BKT 5 ml",                vacname = NA),
+    
+    cbind(vacname_init = "ComBE Five",              vacname = "DPT_HepB_Hib"),
+    cbind(vacname_init = "DPT-VGB-HIB (SII)",       vacname = "DPT_HepB_Hib"),
+    cbind(vacname_init = "Quinvaxem",               vacname = "DPT_HepB_Hib"),
+    cbind(vacname_init = "DPT",                     vacname = "DPT"),
+    cbind(vacname_init = "IPV",                     vacname = "IPV"),
+    cbind(vacname_init = "OPV",                     vacname = "OPV"),
+    
+    # Measles
+    ## Measles
+    cbind(vacname_init = "Soi", 
+          vacname = "Measles"),
+    ## Measles - rubella
+    cbind(vacname_init = "MR", 
+          vacname = "MR"),
+    cbind(vacname_init = "Measles and Rubella Vaccine Live, Attenuated (Freeze-Dried)",
+          vacname = "MR"),
+    ## Measles - mumps - rubella
+    cbind(vacname_init = "Measles, Mumps and Rubella Vaccine Live, Attenuated (Freeze-Dried)",
+          vacname = "MMR"),
+    cbind(vacname_init = "MMR II & Diluent inj 0.5ml",
+          vacname = "MMR"),
+    cbind(vacname_init = "MMR-II", 
+          vacname = "MMR"),
+    
+    # Tetanus
+    cbind(vacname_init = "Uon van",                 vacname = "Tetanus"),
+    cbind(vacname_init = "Vac xin uon van bach hau hap phu (Td) (Hop 10 lo 5ml)", 
+          vacname = "Td"),
+    cbind(vacname_init = "VAT (Lo 20 lieu)",        vacname = "Tetanus"),
+    
+    # Hep B
+    cbind(vacname_init = "Viem gan B",              vacname = "HepB"),
+    cbind(vacname_init = "Viem gan B so sinh",      vacname = "HepB"),
+    cbind(vacname_init = "Heberbiovac HB 10mcg/0,5ml", vacname = "HepB"),
+    cbind(vacname_init = "Heberbiovac HB 20mcg/1ml", vacname = "HepB"),
+    cbind(vacname_init = "Hepavax-Gene TF(R) Inj 10mcg/0,5ml", vacname = "HepB"),
+    cbind(vacname_init = "Gene-HBvax (Lo 0.5ml)",   vacname = "HepB"),
+    cbind(vacname_init = "Gene-HBvax (Lo 1ml)",     vacname = "HepB"),
+    cbind(vacname_init = "Euvax B 10mcg/0,5ml",     vacname = "HepB"),
+    cbind(vacname_init = "Euvax B  20mcg/1ml",      vacname = "HepB"),
+    cbind(vacname_init = "ENGERIX-B 10mcg/0,5ml",   vacname = "HepB"),
+    cbind(vacname_init = "ENGERIX-B 20mcg/1ml",     vacname = "HepB"),
+    
+    cbind(vacname_init = "VNNB",                    vacname = "JEV")
+  )
+)
+
+vacc_schedule <- as.data.table(
+  rbind(
+    cbind(vacname = "BCG",            epi = 1, shot = 1, start = 0),
+    cbind(vacname = "HepB",          epi = 1, shot = 1, start = 0),
+    cbind(vacname = "DPT_HepB_Hib",   epi = 1, shot = 1, start = 2),
+    cbind(vacname = "DPT_HepB_Hib",   epi = 1, shot = 2, start = 3),
+    cbind(vacname = "DPT_HepB_Hib",   epi = 1, shot = 3, start = 4),
+    cbind(vacname = "OPV",            epi = 1, shot = 1, start = 2),
+    cbind(vacname = "OPV",            epi = 1, shot = 2, start = 3),
+    cbind(vacname = "OPV",            epi = 1, shot = 3, start = 4),
+    cbind(vacname = "IPV",            epi = 1, shot = 1, start = 5),
+    cbind(vacname = "Measles",        epi = 1, shot = 1, start = 9),
+    cbind(vacname = "MR",             epi = 1, shot = 1, start = 18),
+    cbind(vacname = "MMR",            epi = 0, shot = 1, start = 12),
+    cbind(vacname = "DPT",            epi = 1, shot = 1, start = 18),
+    cbind(vacname = "JEV",            epi = 1, shot = 1, start = 12),
+    cbind(vacname = "Td",             epi = 0, shot = 1, start = 84)
+  )
+) %>%
+  mutate(epi = as.numeric(epi),
+         shot = as.numeric(shot),
+         start = as.numeric(start))
+
+saveRDS(vacc_names, file.path(outp, "vacc_names.rds"))
+saveRDS(vacc_schedule, file.path(outp, "vacc_schedule.rds"))
+
+```

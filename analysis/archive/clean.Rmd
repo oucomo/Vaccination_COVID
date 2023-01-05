@@ -12,7 +12,7 @@ library(dplyr)
 library(stringi)
 library(lubridate)
 
-datap <- file.path("~", "Downloads", "updated_dataset")
+datap <- file.path("/cluster_data", "vaccine_registry", "DVD1", "107.HaiDuong")
 
 # Load data
 df <- readRDS(file.path(datap, "haiduong_14_22_merged.rds"))
